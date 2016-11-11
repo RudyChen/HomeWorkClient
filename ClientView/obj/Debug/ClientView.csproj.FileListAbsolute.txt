@@ -1,0 +1,17 @@
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\bin\Debug\ClientView.exe.config
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\bin\Debug\ClientView.exe
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\bin\Debug\ClientView.pdb
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView.csprojResolveAssemblyReference.cache
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\MainWindow.g.cs
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\MathEditor.g.cs
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\App.g.cs
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView_MarkupCompile.cache
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView_MarkupCompile.lref
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\MainWindow.baml
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\MathEditor.baml
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView.g.resources
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView.Properties.Resources.resources
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView.csproj.GenerateResource.Cache
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView.exe
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView.pdb
