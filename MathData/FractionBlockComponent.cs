@@ -83,5 +83,10 @@ namespace MathData
         {
             throw new NotImplementedException();
         }
+
+        public Rect GetRect(Point rowPoint)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

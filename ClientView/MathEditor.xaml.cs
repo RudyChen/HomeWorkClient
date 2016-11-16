@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathData;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -24,6 +25,9 @@ namespace ClientView
 
         FontFamily fontFamily = new FontFamily("Times new roman");
 
+        BlockRow currentInputBlockRow = new BlockRow();
+
+        Stack<BlockComponent> inputBlockComponentStack = new Stack<BlockComponent>();
 
         public MathEditor()
         {
@@ -50,9 +54,9 @@ namespace ClientView
             }
             else
             {
-                lineOffsetX = AcceptEnglishInputText(0, 0);
+                lineOffsetX = AcceptEnglishInputText(0, 0,e.Text);
             }
-
+            e.Handled = true;
             SetCaretLocation(lineOffsetX, 0);
         }
 
@@ -62,17 +66,28 @@ namespace ClientView
         }
 
 
-        private double AcceptEnglishInputText(double lineOffsetX, double lineOffsetY)
+        private double AcceptEnglishInputText(double lineOffsetX, double lineOffsetY,string text)
         {
             TextBlock inputedTextBlock = new TextBlock();
-            inputedTextBlock.Text = caretTextBox.Text;
+            inputedTextBlock.Text = text;
             inputedTextBlock.FontSize = caretTextBox.FontSize;
             inputedTextBlock.FontFamily = fontFamily;
             inputedTextBlock.FontStyle =  FontStyles.Italic;
-            FormattedText formatted = new FormattedText(inputedTextBlock.Text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface(inputedTextBlock.FontFamily.ToString()), inputedTextBlock.FontSize, inputedTextBlock.Foreground);
+            inputedTextBlock.Uid = Guid.NewGuid().ToString();
 
+            CharBlock charBlock = new CharBlock(inputedTextBlock.Text, inputedTextBlock.FontStyle.ToString(), inputedTextBlock.FontFamily.ToString(), inputedTextBlock.Foreground.ToString(), inputedTextBlock.FontSize, inputedTextBlock.Uid);
             var oldCaretLeft = Canvas.GetLeft(caretTextBox);
             var oldCaretTop = Canvas.GetTop(caretTextBox);
+           var charRect= charBlock.GetRect(new Point(oldCaretLeft, oldCaretTop - currentInputBlockRow.RowTop));
+
+            if (inputBlockComponentStack.Count==0)
+            {
+                currentInputBlockRow.RowBlockItems.Add(charBlock);
+            }
+            else
+            {
+
+            }
 
             editorCanvas.Children.Add(inputedTextBlock);
 
@@ -80,8 +95,7 @@ namespace ClientView
             Canvas.SetTop(inputedTextBlock, oldCaretTop + lineOffsetY);
             caretTextBox.Text = string.Empty;
 
-            return formatted.WidthIncludingTrailingWhitespace;
-
+            return charBlock.WidthIncludingTrailingWhitespace;
         }
 
         private double AcceptChineseInputText(double lineOffsetX, double lineOffsetY)

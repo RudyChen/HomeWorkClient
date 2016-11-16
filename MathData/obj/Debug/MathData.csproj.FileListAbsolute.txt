@@ -1,0 +1,5 @@
+C:\Users\mike\Desktop\HomeWorkClient\MathData\bin\Debug\MathData.dll
+C:\Users\mike\Desktop\HomeWorkClient\MathData\bin\Debug\MathData.pdb
+C:\Users\mike\Desktop\HomeWorkClient\MathData\obj\Debug\MathData.csprojResolveAssemblyReference.cache
+C:\Users\mike\Desktop\HomeWorkClient\MathData\obj\Debug\MathData.dll
+C:\Users\mike\Desktop\HomeWorkClient\MathData\obj\Debug\MathData.pdb

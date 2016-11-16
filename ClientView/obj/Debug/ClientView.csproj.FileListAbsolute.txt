@@ -15,3 +15,5 @@ C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView.Properties.
 C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView.csproj.GenerateResource.Cache
 C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView.exe
 C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView.pdb
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\bin\Debug\MathData.dll
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\bin\Debug\MathData.pdb

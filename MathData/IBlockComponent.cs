@@ -13,5 +13,7 @@ namespace MathData
         void AddShapeChild();
         void RemoveCharChild();
         void LayoutChildren();
+
+        Rect GetRect(Point rowPoint);
     }
 }

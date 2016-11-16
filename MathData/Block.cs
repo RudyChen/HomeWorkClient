@@ -13,12 +13,12 @@ namespace MathData
 
         private Guid containerId;
 
-        private Guid renderUid;
+        private string renderUid;
 
         /// <summary>
         /// 显示的页面元素唯一ID
         /// </summary>
-        public Guid RenderUid
+        public string RenderUid
         {
             get { return renderUid; }
             set { renderUid = value; }

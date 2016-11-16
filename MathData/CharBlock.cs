@@ -11,7 +11,7 @@ namespace MathData
 {
     public class CharBlock : Block, IBlockComponent
     {
-        private int fontSize;
+        private double fontSize;
 
         private string foreground;
 
@@ -20,6 +20,25 @@ namespace MathData
         private string fontStyle;
 
         private string text;
+
+        public CharBlock(string text,string fontStyle,string fontFamily,string foreground,double fontSize,string renderUid)
+        {
+            this.text = text;
+            this.fontStyle = fontStyle;
+            this.fontFamily = fontFamily;
+            this.foreground = foreground;
+            this.fontSize = fontSize;
+            base.RenderUid = renderUid;
+        }
+
+        private double widthIncludingTrailingWhitespace;
+
+        public double WidthIncludingTrailingWhitespace
+        {
+            get { return widthIncludingTrailingWhitespace; }
+            set { widthIncludingTrailingWhitespace = value; }
+        }
+
 
         public string Text
         {
@@ -47,7 +66,7 @@ namespace MathData
             set { fontFamily = value; }
         }
 
-        public int FontSize
+        public double FontSize
         {
             get { return fontSize; }
             set { fontSize = value; }
@@ -60,6 +79,7 @@ namespace MathData
             FormattedText formatted = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface(fontFamily), fontSize, new SolidColorBrush(foregroundColor));
             blockSize.Width = formatted.Width;
             blockSize.Height = formatted.Height;
+            widthIncludingTrailingWhitespace = formatted.WidthIncludingTrailingWhitespace;
             return blockSize;
         }
 
@@ -81,6 +101,13 @@ namespace MathData
         public void LayoutChildren()
         {
             throw new NotImplementedException();
+        }
+
+        public Rect GetRect(Point rowPoint)
+        {
+            this.RowRect = new Rect(rowPoint, GetSize());
+
+            return this.RowRect;
         }
     }
 }
