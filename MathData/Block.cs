@@ -11,12 +11,36 @@ namespace MathData
     {
         private Rect rowRect;
 
+        private Guid containerId;
+
+        private Guid renderUid;
+
+        /// <summary>
+        /// 显示的页面元素唯一ID
+        /// </summary>
+        public Guid RenderUid
+        {
+            get { return renderUid; }
+            set { renderUid = value; }
+        }
+
+        /// <summary>
+        /// 所属容器GUID，
+        /// 如 row,page等
+        /// </summary>
+        public Guid ContainerId
+        {
+            get { return containerId; }
+            set { containerId = value; }
+        }
+
+        /// <summary>
+        /// 行内显示矩形区域
+        /// </summary>
         public Rect RowRect
         {
             get { return rowRect; }
             set { rowRect = value; }
         }
-
-
     }
 }

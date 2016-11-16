@@ -18,6 +18,21 @@ namespace MathData
 
         private List<IBlockComponent> rowBlockItems=new List<IBlockComponent>();
 
+        private Guid rowId;
+
+        /// <summary>
+        /// 行唯一标示
+        /// 联系行内元素
+        /// </summary>
+        public Guid RowId
+        {
+            get { return rowId; }
+            set { rowId = value; }
+        }
+
+        /// <summary>
+        /// 行内元素集合
+        /// </summary>
         public List<IBlockComponent> RowBlockItems
         {
             get { return rowBlockItems; }
