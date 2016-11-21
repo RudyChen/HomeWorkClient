@@ -47,6 +47,7 @@
     <Compile Include="BlockComponent.cs" />
     <Compile Include="BlockRow.cs" />
     <Compile Include="CharBlock.cs" />
+    <Compile Include="CommandsEnum.cs" />
     <Compile Include="FractionBlockComponent.cs" />
     <Compile Include="IBlockComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

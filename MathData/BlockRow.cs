@@ -18,6 +18,18 @@ namespace MathData
 
         private List<IBlockComponent> rowBlockItems=new List<IBlockComponent>();
 
+
+        private void AddBlockToRow(IBlockComponent block)
+        {
+            if (block is CharBlock)
+            {
+                RowBlockItems.Add(block);
+               
+
+            }
+
+        }
+
         private Guid rowId;
 
         /// <summary>

@@ -34,6 +34,26 @@ namespace ClientView
             InitializeComponent();
         }
 
+        public void AcceptInputCommand(InputCommands command)
+        {
+            switch (command)
+            {
+                case InputCommands.FractionCommand:
+                    var rowPoint = GetRowPoint();
+                    FractionBlockComponent fractionBlock = new FractionBlockComponent(rowPoint);
+
+                    
+
+                    break;
+                case InputCommands.Exponential:
+                    break;
+                case InputCommands.Radical:
+                    break;
+                default:
+                    break;
+            }
+        }
+
         private void editorCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             caretTextBox.Focus();
@@ -98,6 +118,8 @@ namespace ClientView
             return charBlock.WidthIncludingTrailingWhitespace;
         }
 
+     
+
         private double AcceptChineseInputText(double lineOffsetX, double lineOffsetY)
         {
             double allWidth = 0;
@@ -148,6 +170,23 @@ namespace ClientView
             }
 
             return true;
+        }
+
+        private Point GetCaretPoint()
+        {
+            var caretLeft = Canvas.GetLeft(caretTextBox);
+            var caretTop = Canvas.GetTop(caretTextBox);
+            Point caretPoint = new Point(caretLeft, caretTop);
+
+            return caretPoint;
+        }
+
+        private Point GetRowPoint()
+        {
+           var caretPoint= GetCaretPoint();
+            Point rowPoint = new Point(caretPoint.X, caretPoint.Y - currentInputBlockRow.RowTop);
+
+            return rowPoint;
         }
     }
 }

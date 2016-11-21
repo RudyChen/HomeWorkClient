@@ -10,8 +10,9 @@ namespace MathData
     public class FractionBlockComponent : BlockComponent, IBlockComponent
     {
         private int currentInputPart;
+        private double fontHeight = 18;
 
-        public FractionBlockComponent()
+        public FractionBlockComponent(Point rowPoint)
         {
             Children = new List<List<IBlockComponent>>();
             var child0 = new List<IBlockComponent>();
@@ -20,6 +21,8 @@ namespace MathData
             Children.Add(child0);
             Children.Add(child1);
             Children.Add(shapeChild);
+            Size size = new Size(10, fontHeight * 2 + fontHeight * 0.2);
+            this.Rect = new Rect(rowPoint, size);
         }
 
         /// <summary>
