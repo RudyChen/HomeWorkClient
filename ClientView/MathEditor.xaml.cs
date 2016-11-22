@@ -25,13 +25,15 @@ namespace ClientView
 
         FontFamily fontFamily = new FontFamily("Times new roman");
 
-        BlockRow currentInputBlockRow = new BlockRow();
 
-        Stack<BlockComponent> inputBlockComponentStack = new Stack<BlockComponent>();
+        BlockRow currentInputBlockRow;
+
+  
 
         public MathEditor()
         {
             InitializeComponent();
+            CreateNewRow();
         }
 
         public void AcceptInputCommand(InputCommands command)
@@ -98,11 +100,11 @@ namespace ClientView
             CharBlock charBlock = new CharBlock(inputedTextBlock.Text, inputedTextBlock.FontStyle.ToString(), inputedTextBlock.FontFamily.ToString(), inputedTextBlock.Foreground.ToString(), inputedTextBlock.FontSize, inputedTextBlock.Uid);
             var oldCaretLeft = Canvas.GetLeft(caretTextBox);
             var oldCaretTop = Canvas.GetTop(caretTextBox);
-           var charRect= charBlock.GetRect(new Point(oldCaretLeft, oldCaretTop - currentInputBlockRow.RowTop));
+           var charRect= charBlock.CreateRect(new Point(oldCaretLeft, oldCaretTop - currentInputBlockRow.RowTop));
 
             if (inputBlockComponentStack.Count==0)
             {
-                currentInputBlockRow.RowBlockItems.Add(charBlock);
+                currentInputBlockRow.Children.Add(charBlock);
             }
             else
             {
@@ -147,6 +149,12 @@ namespace ClientView
 
             return allWidth;
 
+        }
+
+        private void CreateNewRow()
+        {
+            var rowPoint = GetCaretPoint();
+            currentInputBlockRow = new BlockRow(rowPoint); 
         }
 
         private void SetCaretLocation(double x, double y)

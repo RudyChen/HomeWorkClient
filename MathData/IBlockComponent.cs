@@ -14,6 +14,8 @@ namespace MathData
         void RemoveCharChild();
         void LayoutChildren();
 
-        Rect GetRect(Point rowPoint);
+        Rect CreateRect(Point rowPoint);
+
+        Rect GetRect();
     }
 }

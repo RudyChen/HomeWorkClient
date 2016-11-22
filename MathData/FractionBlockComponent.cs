@@ -9,7 +9,7 @@ namespace MathData
 {
     public class FractionBlockComponent : BlockComponent, IBlockComponent
     {
-        private int currentInputPart;
+
         private double fontHeight = 18;
 
         public FractionBlockComponent(Point rowPoint)
@@ -25,15 +25,7 @@ namespace MathData
             this.Rect = new Rect(rowPoint, size);
         }
 
-        /// <summary>
-        /// 当前输入部分
-        /// 0代表分子，1代表分母
-        /// </summary>
-        public int CurrentInputPart
-        {
-            get { return currentInputPart; }
-            set { currentInputPart = value; }
-        }
+
 
 
         public void AddChild(IBlockComponent blockComponent, Point rowPoint)
@@ -51,7 +43,7 @@ namespace MathData
             {
                 var inputCharBlock = blockComponent as CharBlock;
                 var size = inputCharBlock.GetSize();
-                inputCharBlock.RowRect = new Rect(rowPoint, size);               
+                inputCharBlock.Rect = new Rect(rowPoint, size);               
                 this.OnSizeChanged(size);
             }
 
@@ -87,9 +79,14 @@ namespace MathData
             throw new NotImplementedException();
         }
 
-        public Rect GetRect(Point rowPoint)
+        public Rect CreateRect(Point rowPoint)
         {
             throw new NotImplementedException();
+        }
+
+        public Rect GetRect()
+        {
+            return this.Rect;
         }
     }
 }

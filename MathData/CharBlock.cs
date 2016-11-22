@@ -77,7 +77,7 @@ namespace MathData
             Size blockSize = new Size();
             Color foregroundColor=(Color)ColorConverter.ConvertFromString(foreground);
             FormattedText formatted = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface(fontFamily), fontSize, new SolidColorBrush(foregroundColor));
-            blockSize.Width = formatted.Width;
+            blockSize.Width = formatted.WidthIncludingTrailingWhitespace;
             blockSize.Height = formatted.Height;
             widthIncludingTrailingWhitespace = formatted.WidthIncludingTrailingWhitespace;
             return blockSize;
@@ -103,11 +103,16 @@ namespace MathData
             throw new NotImplementedException();
         }
 
-        public Rect GetRect(Point rowPoint)
+        public Rect CreateRect(Point rowPoint)
         {
-            this.RowRect = new Rect(rowPoint, GetSize());
+            this.Rect = new Rect(rowPoint, GetSize());
 
-            return this.RowRect;
+            return this.Rect;
+        }
+
+        public Rect GetRect()
+        {
+            return this.Rect;
         }
     }
 }

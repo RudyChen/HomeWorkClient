@@ -9,7 +9,7 @@ namespace MathData
 {
    public abstract class Block
     {
-        private Rect rowRect;
+        private Rect rect;
 
         private Guid containerId;
 
@@ -37,10 +37,10 @@ namespace MathData
         /// <summary>
         /// 行内显示矩形区域
         /// </summary>
-        public Rect RowRect
+        public Rect Rect
         {
-            get { return rowRect; }
-            set { rowRect = value; }
+            get { return rect; }
+            set { rect = value; }
         }
     }
 }

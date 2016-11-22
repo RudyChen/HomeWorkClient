@@ -11,6 +11,8 @@ namespace MathData
     {
         private List<List<IBlockComponent>> children=new List<List<IBlockComponent>>();
 
+        private int currentInputPart;
+
         private Rect rect;
 
         public Rect Rect
@@ -28,6 +30,16 @@ namespace MathData
             set { children = value; }
         }
 
+        /// <summary>
+        /// 当前输入部分
+        /// 0代表分子，1代表分母
+        /// </summary>
+        public int CurrentInputPart
+        {
+            get { return currentInputPart; }
+            set { currentInputPart = value; }
+        }
+
         protected virtual void OnSizeChanged(Size size)
         {
             if (this.SizeChangedEvent != null)
@@ -36,6 +48,30 @@ namespace MathData
             }
         }
 
+        public Rect GetChildRect(List<IBlockComponent> child)
+        {
+            double width = 0;
+            double heigh = 0;
+            Point mostLeftPoint=new Point(0,0);
+            foreach (var item in child)
+            {
+                var childItemRect = item.GetRect();
+                width += childItemRect.Width;
+                heigh = childItemRect.Height > heigh ? childItemRect.Height : heigh;
+                if (mostLeftPoint.X>childItemRect.Left)
+                {
+                    mostLeftPoint = new Point(childItemRect.Left, 0);
+                }
+            }
+
+            return new Rect(mostLeftPoint, new Size(width, heigh));
+        }
+
+        public Rect GetInputChildRect()
+        {
+           var rect= GetChildRect(children[currentInputPart]);
+            return rect;
+        }
 
     }
 }

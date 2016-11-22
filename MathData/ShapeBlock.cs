@@ -19,7 +19,12 @@ namespace MathData
             throw new NotImplementedException();
         }
 
-        public Rect GetRect(Point rowPoint)
+        public Rect CreateRect(Point rowPoint)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Rect GetRect()
         {
             throw new NotImplementedException();
         }
