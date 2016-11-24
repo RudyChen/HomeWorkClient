@@ -48,11 +48,11 @@ namespace MathData
             }
 
             //加入child元素
-            if (currentInputPart == 0)
+            if (CurrentInputPart == 0)
             {
                 Children[0].Add(blockComponent);
             }
-            else if (currentInputPart == 1)
+            else if (CurrentInputPart == 1)
             {
                 Children[1].Add(blockComponent);
             }

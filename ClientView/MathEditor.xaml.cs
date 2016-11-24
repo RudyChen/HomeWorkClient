@@ -28,7 +28,7 @@ namespace ClientView
 
         BlockRow currentInputBlockRow;
 
-  
+
 
         public MathEditor()
         {
@@ -44,7 +44,7 @@ namespace ClientView
                     var rowPoint = GetRowPoint();
                     FractionBlockComponent fractionBlock = new FractionBlockComponent(rowPoint);
 
-                    
+                    currentInputBlockRow.AddBlockToRow(fractionBlock, LayoutRowChildrenHorizontialCenter);
 
                     break;
                 case InputCommands.Exponential:
@@ -72,11 +72,14 @@ namespace ClientView
 
             if (IsChinese(e.Text))
             {
-                lineOffsetX = AcceptChineseInputText(0, 0);
+                if (!string.IsNullOrEmpty(e.Text))
+                {
+                    lineOffsetX = AcceptChineseInputText(0, 0, e.Text);
+                }
             }
             else
             {
-                lineOffsetX = AcceptEnglishInputText(0, 0,e.Text);
+                lineOffsetX = AcceptEnglishInputText(0, 0, e.Text);
             }
             e.Handled = true;
             SetCaretLocation(lineOffsetX, 0);
@@ -88,28 +91,22 @@ namespace ClientView
         }
 
 
-        private double AcceptEnglishInputText(double lineOffsetX, double lineOffsetY,string text)
+        private double AcceptEnglishInputText(double lineOffsetX, double lineOffsetY, string text)
         {
             TextBlock inputedTextBlock = new TextBlock();
             inputedTextBlock.Text = text;
             inputedTextBlock.FontSize = caretTextBox.FontSize;
             inputedTextBlock.FontFamily = fontFamily;
-            inputedTextBlock.FontStyle =  FontStyles.Italic;
+            inputedTextBlock.FontStyle = FontStyles.Italic;
             inputedTextBlock.Uid = Guid.NewGuid().ToString();
 
             CharBlock charBlock = new CharBlock(inputedTextBlock.Text, inputedTextBlock.FontStyle.ToString(), inputedTextBlock.FontFamily.ToString(), inputedTextBlock.Foreground.ToString(), inputedTextBlock.FontSize, inputedTextBlock.Uid);
             var oldCaretLeft = Canvas.GetLeft(caretTextBox);
             var oldCaretTop = Canvas.GetTop(caretTextBox);
-           var charRect= charBlock.CreateRect(new Point(oldCaretLeft, oldCaretTop - currentInputBlockRow.RowTop));
+            //初始化块区域
+            var charRect = charBlock.CreateRect(new Point(oldCaretLeft, oldCaretTop - currentInputBlockRow.RowRect.Top));
 
-            if (inputBlockComponentStack.Count==0)
-            {
-                currentInputBlockRow.Children.Add(charBlock);
-            }
-            else
-            {
-
-            }
+            currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter);
 
             editorCanvas.Children.Add(inputedTextBlock);
 
@@ -120,29 +117,50 @@ namespace ClientView
             return charBlock.WidthIncludingTrailingWhitespace;
         }
 
-     
+        public void LayoutRowChildrenHorizontialCenter()
+        {
 
-        private double AcceptChineseInputText(double lineOffsetX, double lineOffsetY)
+        }
+
+        private double AcceptChineseInputText(double lineOffsetX, double lineOffsetY,string text)
         {
             double allWidth = 0;
-            foreach (var item in caretTextBox.Text)
+            foreach (var item in text)
             {
                 TextBlock inputedTextBlock = new TextBlock();
                 inputedTextBlock.Text = item.ToString();
                 inputedTextBlock.FontSize = caretTextBox.FontSize;
                 inputedTextBlock.FontFamily = fontFamily;
-                inputedTextBlock.FontStyle =  FontStyles.Normal;
-                FormattedText formatted = new FormattedText(inputedTextBlock.Text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface(inputedTextBlock.FontFamily.ToString()), inputedTextBlock.FontSize, inputedTextBlock.Foreground);
+                inputedTextBlock.FontStyle = FontStyles.Normal;
+                inputedTextBlock.Uid = Guid.NewGuid().ToString();
 
+                CharBlock charBlock = new CharBlock(inputedTextBlock.Text, inputedTextBlock.FontStyle.ToString(), inputedTextBlock.FontFamily.ToString(), inputedTextBlock.Foreground.ToString(), inputedTextBlock.FontSize, inputedTextBlock.Uid);
                 var oldCaretLeft = Canvas.GetLeft(caretTextBox);
                 var oldCaretTop = Canvas.GetTop(caretTextBox);
+                //初始化块区域
+                var charRect = charBlock.CreateRect(new Point(oldCaretLeft, oldCaretTop - currentInputBlockRow.RowRect.Top));
+
+                currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter);
 
                 editorCanvas.Children.Add(inputedTextBlock);
 
                 Canvas.SetLeft(inputedTextBlock, oldCaretLeft + allWidth + lineOffsetX);
                 Canvas.SetTop(inputedTextBlock, oldCaretTop + lineOffsetY);
+                caretTextBox.Text = string.Empty;
 
-                allWidth += formatted.WidthIncludingTrailingWhitespace;
+                allWidth+= charBlock.WidthIncludingTrailingWhitespace;
+
+                //FormattedText formatted = new FormattedText(inputedTextBlock.Text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface(inputedTextBlock.FontFamily.ToString()), inputedTextBlock.FontSize, inputedTextBlock.Foreground);
+
+                //var oldCaretLeft = Canvas.GetLeft(caretTextBox);
+                //var oldCaretTop = Canvas.GetTop(caretTextBox);
+
+                //editorCanvas.Children.Add(inputedTextBlock);
+
+                //Canvas.SetLeft(inputedTextBlock, oldCaretLeft + allWidth + lineOffsetX);
+                //Canvas.SetTop(inputedTextBlock, oldCaretTop + lineOffsetY);
+
+                //allWidth += formatted.WidthIncludingTrailingWhitespace;
             }
 
             caretTextBox.Text = string.Empty;
@@ -154,7 +172,7 @@ namespace ClientView
         private void CreateNewRow()
         {
             var rowPoint = GetCaretPoint();
-            currentInputBlockRow = new BlockRow(rowPoint); 
+            currentInputBlockRow = new BlockRow(rowPoint);
         }
 
         private void SetCaretLocation(double x, double y)
@@ -191,8 +209,8 @@ namespace ClientView
 
         private Point GetRowPoint()
         {
-           var caretPoint= GetCaretPoint();
-            Point rowPoint = new Point(caretPoint.X, caretPoint.Y - currentInputBlockRow.RowTop);
+            var caretPoint = GetCaretPoint();
+            Point rowPoint = new Point(caretPoint.X, caretPoint.Y - currentInputBlockRow.RowRect.Top);
 
             return rowPoint;
         }

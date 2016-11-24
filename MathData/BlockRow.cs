@@ -9,7 +9,7 @@ namespace MathData
 {
     public class BlockRow
     {
-        private double height;
+        private double height=20;
         private double width;
         private Rect rowRect;
         private List<IBlockComponent> children = new List<IBlockComponent>();
@@ -20,7 +20,7 @@ namespace MathData
         /// <summary>
         /// 水平居中排列子元素
         /// </summary>
-        public delegate void LayoutChildrenHorizontialCenterHandler();
+        public delegate void LayoutRowChildrenHorizontialCenterHandler();
 
 
         public BlockRow(Point rowPoint)
@@ -28,16 +28,20 @@ namespace MathData
             rowRect = new Rect(rowPoint, new Size(width, height));
         }
 
-        private void AddBlockToRow(IBlockComponent block, LayoutChildrenHorizontialCenterHandler layoutChildrenHorizontialCenter)
+        public void AddBlockToRow(IBlockComponent block, LayoutRowChildrenHorizontialCenterHandler layoutRowChildrenHorizontialCenter)
         {
             if (block is CharBlock)
             {
                 Children.Add(block);
-
-                if (rowRect.Contains(block.GetRect()))
+                var blockRect = block.GetRect();
+                //嵌套元素输入
+                if (inputBlockComponentStack.Count > 0)
                 {
+                    //更新所有嵌套元素子块区域大小
+                    UpdateAllNastedComponentBlockChildRect(new Size(blockRect.Width,0));
+                }              
 
-                }
+                rowRect.Width += blockRect.Width;
 
 
             }
@@ -52,8 +56,17 @@ namespace MathData
                 if (inputBlockComponentStack.Count > 0)
                 {
                     var container = inputBlockComponentStack.Peek();
-                    var containerRect = container.GetInputChildRect();
+                    var containerChildRect = container.GetInputChildRect();
+                    if (containerChildRect.Height< componentBlock.Rect.Height)
+                    {
+                        var offsetHeight = componentBlock.Rect.Height - containerChildRect.Height;
+                        //更新所有嵌套元素子块区域大小
+                        UpdateAllNastedComponentBlockChildRect(new Size(0,offsetHeight));
 
+                        rowRect.Height += offsetHeight;
+                    }
+
+                    inputBlockComponentStack.Push(componentBlock);
 
                 }
                 else
@@ -64,12 +77,17 @@ namespace MathData
                     if (rowRect.Height<componentBlock.Rect.Height)
                     {
                         rowRect.Height += componentBlock.Rect.Height - rowRect.Height;
-                        layoutChildrenHorizontialCenter();
+                        layoutRowChildrenHorizontialCenter();
                     }
                 }
             }
 
-        }      
+        }
+
+        private void UpdateAllNastedComponentBlockChildRect(Size offsetSize)
+        {
+            throw new NotImplementedException();
+        }
 
         private Guid rowId;
 
