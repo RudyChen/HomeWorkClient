@@ -77,9 +77,10 @@ namespace MathData
                     if (rowRect.Height<componentBlock.Rect.Height)
                     {
                         rowRect.Height += componentBlock.Rect.Height - rowRect.Height;
-                        layoutRowChildrenHorizontialCenter();
                     }
                 }
+
+                layoutRowChildrenHorizontialCenter();
             }
 
         }

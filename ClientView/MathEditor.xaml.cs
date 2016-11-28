@@ -119,10 +119,133 @@ namespace ClientView
 
         public void LayoutRowChildrenHorizontialCenter()
         {
+            /*
+            1.找到对齐线最大的元素对齐线，2.对齐每个子块，3.更新行区域
+            */
+            double rowYOffset = GetChildrenMaxCenterLine();
+
+            AlignChildrenToMaxCenter(rowYOffset);
+
+            UpdateRowBlockRectByChildren();
 
         }
 
-        private double AcceptChineseInputText(double lineOffsetX, double lineOffsetY,string text)
+        private void UpdateRowBlockRectByChildren()
+        {
+            if (currentInputBlockRow!=null&& currentInputBlockRow.Children.Count>0)
+            {
+                foreach (var item in currentInputBlockRow.Children)
+                {
+                   var childRect=item.GetRect();
+                    //更新高度
+                    if (childRect.Top+childRect.Height>currentInputBlockRow.RowRect.Height)
+                    {
+                        currentInputBlockRow.RowRect = new Rect(currentInputBlockRow.RowRect.Location, new Size(currentInputBlockRow.RowRect.Width, childRect.Top + childRect.Height));
+                    }
+
+                    //更新宽度
+                    if (childRect.Left+childRect.Width>currentInputBlockRow.RowRect.Width)
+                    {
+                        currentInputBlockRow.RowRect = new Rect(currentInputBlockRow.RowRect.Location, new Size(childRect.Left + childRect.Width, currentInputBlockRow.RowRect.Height));
+                    }
+                }
+            }
+        }
+
+        private void AlignChildrenToMaxCenter(double maxcCenterLienYOffset)
+        {
+            if (currentInputBlockRow != null && currentInputBlockRow.Children.Count > 0)
+            {
+                foreach (var item in currentInputBlockRow.Children)
+                {
+                    var areaRect = item.GetRect();
+                    double itemCenterLineOffset = areaRect.Top + areaRect.Height / 2;
+
+                    double adjustYOffset = maxcCenterLienYOffset - itemCenterLineOffset;
+
+                    AdjustChildLocation(item,0, adjustYOffset);
+                }
+            }
+        }
+
+        private void AdjustBlockChildLocation(MathData.Block block,double xOffset,double yOffset)
+        {
+            FrameworkElement matchedElement = GetElementByUid(block.RenderUid);
+
+            if (null != matchedElement)
+            {
+                Canvas.SetLeft(matchedElement, Canvas.GetLeft(matchedElement) + xOffset);
+                Canvas.SetTop(matchedElement, Canvas.GetTop(matchedElement) + yOffset);
+            }
+        }
+
+        private void AdjustChildLocation(IBlockComponent block, double xOffset, double yOffset)
+        {
+            if (block is MathData.Block)
+            {
+                var blockItem = block as MathData.Block;
+
+                AdjustBlockChildLocation(blockItem, xOffset, yOffset);
+            }
+            else if (block is BlockComponent)
+            {
+                var componentBlock = block as BlockComponent;
+                foreach (var componentChild in componentBlock.Children)
+                {
+                    if (componentChild.Count>0)
+                    {
+                        foreach (var partChild in componentChild)
+                        {
+                            if (partChild is MathData.Block)
+                            {
+                                var blockChild = partChild as MathData.Block;
+                                AdjustBlockChildLocation(blockChild, xOffset, yOffset);
+                            }
+                            else if (partChild is BlockComponent)
+                            {
+                                AdjustChildLocation(partChild, xOffset, yOffset);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private FrameworkElement GetElementByUid(string uid)
+        {
+            var canvasChildren = LogicalTreeHelper.GetChildren(editorCanvas);
+            foreach (FrameworkElement item in canvasChildren)
+            {
+                if (item.Uid == uid)
+                {
+                    return item;
+                }
+            }
+
+            return null;
+        }
+        private double GetChildrenMaxCenterLine()
+        {
+            //行内Y偏移量
+            double maxCenterLineYOffset = 0;
+            if (currentInputBlockRow != null && currentInputBlockRow.Children.Count > 0)
+            {
+                foreach (var item in currentInputBlockRow.Children)
+                {
+                    var areaRect = item.GetRect();
+                    double itemCenterLineOffset = areaRect.Top + areaRect.Height / 2;
+                    if (itemCenterLineOffset > maxCenterLineYOffset)
+                    {
+                        maxCenterLineYOffset = itemCenterLineOffset;
+                    }
+                }
+            }
+
+            return maxCenterLineYOffset;
+        }
+
+        private double AcceptChineseInputText(double lineOffsetX, double lineOffsetY, string text)
         {
             double allWidth = 0;
             foreach (var item in text)
@@ -148,7 +271,7 @@ namespace ClientView
                 Canvas.SetTop(inputedTextBlock, oldCaretTop + lineOffsetY);
                 caretTextBox.Text = string.Empty;
 
-                allWidth+= charBlock.WidthIncludingTrailingWhitespace;
+                allWidth += charBlock.WidthIncludingTrailingWhitespace;
 
                 //FormattedText formatted = new FormattedText(inputedTextBlock.Text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface(inputedTextBlock.FontFamily.ToString()), inputedTextBlock.FontSize, inputedTextBlock.Foreground);
 
