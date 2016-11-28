@@ -45,7 +45,9 @@ namespace ClientView
                     FractionBlockComponent fractionBlock = new FractionBlockComponent(rowPoint);
 
                     currentInputBlockRow.AddBlockToRow(fractionBlock, LayoutRowChildrenHorizontialCenter);
-
+                    break;
+                case InputCommands.NextCommand:
+                    
                     break;
                 case InputCommands.Exponential:
                     break;
@@ -87,7 +89,7 @@ namespace ClientView
 
         private void EquationTypeButton_Clicked(object sender, RoutedEventArgs e)
         {
-
+            AcceptInputCommand(InputCommands.FractionCommand);
         }
 
 
@@ -336,6 +338,11 @@ namespace ClientView
             Point rowPoint = new Point(caretPoint.X, caretPoint.Y - currentInputBlockRow.RowRect.Top);
 
             return rowPoint;
+        }
+
+        private void NextPartButton_Clicked(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

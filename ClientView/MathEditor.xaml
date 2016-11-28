@@ -10,7 +10,7 @@
         <DockPanel>
             <WrapPanel DockPanel.Dock="Bottom">
                 <Button Content="分数" Click="EquationTypeButton_Clicked" Focusable="False"></Button>
-
+                <Button Content="下一部分" Click="NextPartButton_Clicked" Focusable="False"></Button>
             </WrapPanel>
             <Canvas Name="editorCanvas" DockPanel.Dock="Top" Focusable="False" MouseLeftButtonDown="editorCanvas_MouseLeftButtonDown" Background="White" PreviewKeyDown="editorCanvas_PreviewKeyDown">
                 <TextBox Name="caretTextBox" Padding="0" Margin="0" Canvas.Left="0" Canvas.Top="10"  Width="Auto" Height="Auto" Background="Transparent" BorderThickness="0" PreviewTextInput="caretTextBox_PreviewTextInput" FontFamily="Times New Roman" Foreground="Black" FontSize="16" FontStyle="Italic"></TextBox>

@@ -14,6 +14,11 @@ namespace MathData
         FractionCommand,
 
         /// <summary>
+        /// 输入下一个部分
+        /// </summary>
+        NextCommand,
+
+        /// <summary>
         /// 指数
         /// </summary>
         Exponential,

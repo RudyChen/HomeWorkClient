@@ -32,17 +32,21 @@ namespace MathData
         {
             if (block is CharBlock)
             {
-                Children.Add(block);
                 var blockRect = block.GetRect();
-                //嵌套元素输入
                 if (inputBlockComponentStack.Count > 0)
                 {
+                    var container = inputBlockComponentStack.Peek();
+                    container.Children[container.CurrentInputPart].Add(block);
+
                     //更新所有嵌套元素子块区域大小
-                    UpdateAllNastedComponentBlockChildRect(new Size(blockRect.Width,0));
-                }              
+                    UpdateAllNastedComponentBlockChildRect(new Size(blockRect.Width, 0));
+                }
+                else
+                {
+                    Children.Add(block);                    
+                }
 
                 rowRect.Width += blockRect.Width;
-
 
             }
             else if (block is ShapeBlock)
@@ -71,6 +75,7 @@ namespace MathData
                 }
                 else
                 {
+                    Children.Add(block);
                     //在行内加入组合块  
                     inputBlockComponentStack.Push(componentBlock);
 
@@ -87,7 +92,14 @@ namespace MathData
 
         private void UpdateAllNastedComponentBlockChildRect(Size offsetSize)
         {
-            throw new NotImplementedException();
+            //更新所有在输入的嵌套块宽度
+            if (inputBlockComponentStack.Count>0)
+            {
+                foreach (var item in inputBlockComponentStack)
+                {
+                    item.Rect = new Rect(item.Rect.Location, new Size(item.Rect.Width + offsetSize.Width, item.Rect.Height + offsetSize.Height));
+                }
+            }
         }
 
         private Guid rowId;
