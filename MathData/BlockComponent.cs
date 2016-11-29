@@ -53,14 +53,21 @@ namespace MathData
             double width = 0;
             double heigh = 0;
             Point mostLeftPoint=new Point(0,0);
-            foreach (var item in child)
+            if (child.Count==0)
             {
-                var childItemRect = item.GetRect();
-                width += childItemRect.Width;
-                heigh = childItemRect.Height > heigh ? childItemRect.Height : heigh;
-                if (mostLeftPoint.X>childItemRect.Left)
+                return new Rect(this.rect.Location, new Size(10, 18));
+            }
+            else
+            {
+                foreach (var item in child)
                 {
-                    mostLeftPoint = new Point(childItemRect.Left, 0);
+                    var childItemRect = item.GetRect();
+                    width += childItemRect.Width;
+                    heigh = childItemRect.Height > heigh ? childItemRect.Height : heigh;
+                    if (mostLeftPoint.X > childItemRect.Left)
+                    {
+                        mostLeftPoint = new Point(childItemRect.Left, 0);
+                    }
                 }
             }
 

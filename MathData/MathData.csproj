@@ -50,6 +50,7 @@
     <Compile Include="CommandsEnum.cs" />
     <Compile Include="FractionBlockComponent.cs" />
     <Compile Include="IBlockComponent.cs" />
+    <Compile Include="ShapeBlocks\LineBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShapeBlock.cs" />
   </ItemGroup>

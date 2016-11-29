@@ -17,5 +17,7 @@ namespace MathData
         Rect CreateRect(Point rowPoint);
 
         Rect GetRect();
+
+        double GetHorizontialAlignmentYOffset();
     }
 }

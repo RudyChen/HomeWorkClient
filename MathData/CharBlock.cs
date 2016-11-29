@@ -114,5 +114,10 @@ namespace MathData
         {
             return this.Rect;
         }
+
+        public double GetHorizontialAlignmentYOffset()
+        {
+            return this.Rect.Top+this.Rect.Height / 2;
+        }
     }
 }

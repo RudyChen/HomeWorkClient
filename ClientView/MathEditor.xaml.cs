@@ -25,6 +25,24 @@ namespace ClientView
 
         FontFamily fontFamily = new FontFamily("Times new roman");
 
+        private double fontSize = 18;
+
+        private double fractionSpace = 6;
+
+        public double FractionSpace
+        {
+            get { return fractionSpace; }
+            set { fractionSpace = value; }
+        }
+
+
+        public double FontSize
+        {
+            get { return fontSize; }
+            set { fontSize = value; }
+        }
+
+
 
         BlockRow currentInputBlockRow;
 
@@ -42,12 +60,28 @@ namespace ClientView
             {
                 case InputCommands.FractionCommand:
                     var rowPoint = GetRowPoint();
-                    FractionBlockComponent fractionBlock = new FractionBlockComponent(rowPoint);
+
+                    Line fractionLine = new Line();
+                    fractionLine.Stroke = Brushes.Black;
+                    fractionLine.X1 = rowPoint.X;
+                    fractionLine.Y1 = currentInputBlockRow.RowRect.Top + rowPoint.Y + fontSize + fractionSpace+2;
+                    fractionLine.X2 = rowPoint.X + 10;
+                    fractionLine.Y2 = fractionLine.Y1;
+                    fractionLine.Uid = Guid.NewGuid().ToString();
+                    fractionLine.StrokeThickness = 2;
+                    fractionLine.SnapsToDevicePixels = true;
+                    editorCanvas.Children.Add(fractionLine);
+
+                    LineBlock fractionLineData = new LineBlock(rowPoint);
+                    fractionLineData.Rect = new Rect(fractionLine.X1, fractionLine.Y1, fractionLine.X2, fractionLine.Y2);
+                    fractionLineData.RenderUid = fractionLine.Uid;
+
+                    FractionBlockComponent fractionBlock = new FractionBlockComponent(rowPoint, fractionLineData) { FractionSpace = fractionSpace, FontSize = fontSize };
 
                     currentInputBlockRow.AddBlockToRow(fractionBlock, LayoutRowChildrenHorizontialCenter);
                     break;
                 case InputCommands.NextCommand:
-                    
+                    InputNextPart();
                     break;
                 case InputCommands.Exponential:
                     break;
@@ -56,6 +90,28 @@ namespace ClientView
                 default:
                     break;
             }
+        }
+
+        private void InputNextPart()
+        {
+            if (currentInputBlockRow.InputBlockComponentStack.Count > 0)
+            {
+                var componentItem = currentInputBlockRow.InputBlockComponentStack.Peek();
+                if (componentItem is FractionBlockComponent)
+                {
+                    var fractionComponent = componentItem as FractionBlockComponent;
+                    var nextPartLocation = fractionComponent.GetNextPartLocation();
+                    SetCaretLocation(nextPartLocation);
+                    fractionComponent.CurrentInputPart++;
+                }
+            }
+
+        }
+
+        private void SetCaretLocation(Point location)
+        {
+            Canvas.SetLeft(caretTextBox, location.X);
+            Canvas.SetTop(caretTextBox, location.Y);
         }
 
         private void editorCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -134,19 +190,19 @@ namespace ClientView
 
         private void UpdateRowBlockRectByChildren()
         {
-            if (currentInputBlockRow!=null&& currentInputBlockRow.Children.Count>0)
+            if (currentInputBlockRow != null && currentInputBlockRow.Children.Count > 0)
             {
                 foreach (var item in currentInputBlockRow.Children)
                 {
-                   var childRect=item.GetRect();
+                    var childRect = item.GetRect();
                     //更新高度
-                    if (childRect.Top+childRect.Height>currentInputBlockRow.RowRect.Height)
+                    if (childRect.Top + childRect.Height > currentInputBlockRow.RowRect.Height)
                     {
                         currentInputBlockRow.RowRect = new Rect(currentInputBlockRow.RowRect.Location, new Size(currentInputBlockRow.RowRect.Width, childRect.Top + childRect.Height));
                     }
 
                     //更新宽度
-                    if (childRect.Left+childRect.Width>currentInputBlockRow.RowRect.Width)
+                    if (childRect.Left + childRect.Width > currentInputBlockRow.RowRect.Width)
                     {
                         currentInputBlockRow.RowRect = new Rect(currentInputBlockRow.RowRect.Location, new Size(childRect.Left + childRect.Width, currentInputBlockRow.RowRect.Height));
                     }
@@ -165,20 +221,50 @@ namespace ClientView
 
                     double adjustYOffset = maxcCenterLienYOffset - itemCenterLineOffset;
 
-                    AdjustChildLocation(item,0, adjustYOffset);
+                    AdjustChildLocation(item, 0, adjustYOffset);
                 }
             }
         }
 
-        private void AdjustBlockChildLocation(MathData.Block block,double xOffset,double yOffset)
+        private void AdjustBlockChildLocation(MathData.Block block, double xOffset, double yOffset)
         {
             FrameworkElement matchedElement = GetElementByUid(block.RenderUid);
 
             if (null != matchedElement)
             {
-                Canvas.SetLeft(matchedElement, Canvas.GetLeft(matchedElement) + xOffset);
-                Canvas.SetTop(matchedElement, Canvas.GetTop(matchedElement) + yOffset);
+                if (block is ShapeBlock)
+                {
+                    if (block is LineBlock)
+                    {
+                        var lineElement = matchedElement as Line;
+                        if (null != lineElement)
+                        {
+                            Line newLine = MoveLineElement(lineElement, xOffset, yOffset);
+                            editorCanvas.Children.Remove(matchedElement);
+                            editorCanvas.Children.Add(newLine);
+                        }
+                    }
+                }
+                else
+                {
+                    Canvas.SetLeft(matchedElement, Canvas.GetLeft(matchedElement) + xOffset);
+                    Canvas.SetTop(matchedElement, Canvas.GetTop(matchedElement) + yOffset);
+                }
             }
+        }
+
+        private Line MoveLineElement(Line lineElement, double xOffset, double yOffset)
+        {
+            Line newLine = new Line();
+            newLine.X1 = lineElement.X1 + xOffset;
+            newLine.Y1 = lineElement.Y1 + yOffset;
+            newLine.X2 = lineElement.X2 + xOffset;
+            newLine.Y2 = lineElement.Y2 + yOffset;
+            newLine.Stroke = lineElement.Stroke;
+            newLine.StrokeThickness = lineElement.StrokeThickness;
+            newLine.Uid = lineElement.Uid;
+
+            return newLine;
         }
 
         private void AdjustChildLocation(IBlockComponent block, double xOffset, double yOffset)
@@ -194,7 +280,7 @@ namespace ClientView
                 var componentBlock = block as BlockComponent;
                 foreach (var componentChild in componentBlock.Children)
                 {
-                    if (componentChild.Count>0)
+                    if (componentChild.Count > 0)
                     {
                         foreach (var partChild in componentChild)
                         {
@@ -236,7 +322,7 @@ namespace ClientView
                 foreach (var item in currentInputBlockRow.Children)
                 {
                     var areaRect = item.GetRect();
-                    double itemCenterLineOffset = areaRect.Top + areaRect.Height / 2;
+                    double itemCenterLineOffset = item.GetHorizontialAlignmentYOffset();
                     if (itemCenterLineOffset > maxCenterLineYOffset)
                     {
                         maxCenterLineYOffset = itemCenterLineOffset;
@@ -342,7 +428,7 @@ namespace ClientView
 
         private void NextPartButton_Clicked(object sender, RoutedEventArgs e)
         {
-
+            AcceptInputCommand(InputCommands.NextCommand);
         }
     }
 }

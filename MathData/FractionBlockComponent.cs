@@ -11,21 +11,59 @@ namespace MathData
     {
 
         private double fontHeight = 18;
-
-        public FractionBlockComponent(Point rowPoint)
+        public double FontSize
         {
-            Children = new List<List<IBlockComponent>>();
-            var child0 = new List<IBlockComponent>();
-            var child1 = new List<IBlockComponent>();
-            var shapeChild = new List<IBlockComponent>();
-            Children.Add(child0);
-            Children.Add(child1);
-            Children.Add(shapeChild);
-            Size size = new Size(10, fontHeight * 2 + fontHeight * 0.2);
-            this.Rect = new Rect(rowPoint, size);
+            get { return fontHeight; }
+            set { fontHeight = value; }
         }
 
 
+        private double fractionSpace=6;
+
+        public double FractionSpace
+        {
+            get { return fractionSpace; }
+            set { fractionSpace = value; }
+        }
+
+
+        public FractionBlockComponent(Point rowPoint,LineBlock fractionLineData)
+        {
+            Children = new List<List<IBlockComponent>>();
+            Size size = new Size(10, fontHeight * 2 + 2*fractionSpace);
+            this.Rect = new Rect(rowPoint, size);
+            var child0 = new List<IBlockComponent>();
+            var child1 = new List<IBlockComponent>();
+            var shapeChild = new List<IBlockComponent>();
+            shapeChild.Add(fractionLineData);
+
+            Children.Add(child0);
+            Children.Add(child1);
+            Children.Add(shapeChild);
+
+          
+
+        }
+
+        public Point GetNextPartLocation()
+        {
+            Point nextPartLocation = this.Rect.Location;
+            if (CurrentInputPart == 0)
+            {
+                var topChild = Children[CurrentInputPart];
+                var topRect = GetChildRect(topChild);
+                //加上分数分割线高度
+                nextPartLocation = new Point(this.Rect.Left, this.Rect.Top + topRect.Height + 2*fractionSpace+2);
+            }
+            else
+            {
+                var topChild = Children[CurrentInputPart];
+                var topRect = GetChildRect(topChild);
+                nextPartLocation = new Point(this.Rect.Left + this.Rect.Width, this.Rect.Top + topRect.Height + fontHeight * 0.1-fontHeight/2);
+            }
+
+            return nextPartLocation;
+        }
 
 
         public void AddChild(IBlockComponent blockComponent, Point rowPoint)
@@ -37,13 +75,13 @@ namespace MathData
                 baseBlockComponent.SizeChangedEvent += BlockBaseComponent_SizeChangedEvent;
 
 
-               
+
             }
             else
             {
                 var inputCharBlock = blockComponent as CharBlock;
                 var size = inputCharBlock.GetSize();
-                inputCharBlock.Rect = new Rect(rowPoint, size);               
+                inputCharBlock.Rect = new Rect(rowPoint, size);
                 this.OnSizeChanged(size);
             }
 
@@ -87,6 +125,13 @@ namespace MathData
         public Rect GetRect()
         {
             return this.Rect;
+        }
+
+        public double GetHorizontialAlignmentYOffset()
+        {
+            var topChild = Children[0];
+            var topRect = GetChildRect(topChild);
+            return topRect.Top+ topRect.Height + fontHeight * 0.1;
         }
     }
 }
