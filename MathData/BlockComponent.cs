@@ -80,5 +80,15 @@ namespace MathData
             return rect;
         }
 
+        /// <summary>
+        /// 子类更新图形块
+        /// </summary>
+        public virtual void UpdateShapeBlocks()
+        {
+
+        }
+
+
+
     }
 }

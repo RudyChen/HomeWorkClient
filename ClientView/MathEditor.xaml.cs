@@ -64,7 +64,7 @@ namespace ClientView
                     Line fractionLine = new Line();
                     fractionLine.Stroke = Brushes.Black;
                     fractionLine.X1 = rowPoint.X;
-                    fractionLine.Y1 = currentInputBlockRow.RowRect.Top + rowPoint.Y + fontSize + fractionSpace+2;
+                    fractionLine.Y1 = currentInputBlockRow.RowRect.Top + rowPoint.Y + fontSize + fractionSpace + 2;
                     fractionLine.X2 = rowPoint.X + 10;
                     fractionLine.Y2 = fractionLine.Y1;
                     fractionLine.Uid = Guid.NewGuid().ToString();
@@ -78,7 +78,7 @@ namespace ClientView
 
                     FractionBlockComponent fractionBlock = new FractionBlockComponent(rowPoint, fractionLineData) { FractionSpace = fractionSpace, FontSize = fontSize };
 
-                    currentInputBlockRow.AddBlockToRow(fractionBlock, LayoutRowChildrenHorizontialCenter);
+                    currentInputBlockRow.AddBlockToRow(fractionBlock, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
                     break;
                 case InputCommands.NextCommand:
                     InputNextPart();
@@ -164,7 +164,7 @@ namespace ClientView
             //初始化块区域
             var charRect = charBlock.CreateRect(new Point(oldCaretLeft, oldCaretTop - currentInputBlockRow.RowRect.Top));
 
-            currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter);
+            currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
 
             editorCanvas.Children.Add(inputedTextBlock);
 
@@ -173,6 +173,17 @@ namespace ClientView
             caretTextBox.Text = string.Empty;
 
             return charBlock.WidthIncludingTrailingWhitespace;
+        }
+
+        public void RefreshBlockRow()
+        {
+            //todo:更新shape block大小
+            if (currentInputBlockRow.InputBlockComponentStack.Count > 0)
+            {
+                var inputComponent = currentInputBlockRow.InputBlockComponentStack.Peek();
+                inputComponent.UpdateShapeBlocks();
+                RefreshComponentShapeBlock(inputComponent);
+            }
         }
 
         public void LayoutRowChildrenHorizontialCenter()
@@ -186,6 +197,22 @@ namespace ClientView
 
             UpdateRowBlockRectByChildren();
 
+           
+
+
+        }
+
+        private void RefreshComponentShapeBlock(BlockComponent inputComponent)
+        {
+            if (inputComponent is FractionBlockComponent)
+            {
+                var fractionComponent = inputComponent as FractionBlockComponent;
+                var lineBlock = fractionComponent.Children[2][0] as LineBlock;
+                var lineElement = GetElementByUid(lineBlock.RenderUid);
+                var newLineElement = RefreshLineElement(lineBlock,lineElement as Line);
+                editorCanvas.Children.Remove(lineElement);
+                editorCanvas.Children.Add(newLineElement);
+            }
         }
 
         private void UpdateRowBlockRectByChildren()
@@ -263,6 +290,20 @@ namespace ClientView
             newLine.Stroke = lineElement.Stroke;
             newLine.StrokeThickness = lineElement.StrokeThickness;
             newLine.Uid = lineElement.Uid;
+
+            return newLine;
+        }
+
+        private Line RefreshLineElement(LineBlock lineBlock,Line oldLine)
+        {
+            Line newLine = new Line();
+            newLine.X1 = oldLine.X1;
+            newLine.Y1 = oldLine.Y1;
+            newLine.X2 = oldLine.X1+ lineBlock.Rect.Width;
+            newLine.Y2 = oldLine.Y2;
+            newLine.Stroke = oldLine.Stroke;
+            newLine.StrokeThickness = oldLine.StrokeThickness;
+            newLine.Uid = oldLine.Uid;
 
             return newLine;
         }
@@ -351,7 +392,7 @@ namespace ClientView
                 //初始化块区域
                 var charRect = charBlock.CreateRect(new Point(oldCaretLeft, oldCaretTop - currentInputBlockRow.RowRect.Top));
 
-                currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter);
+                currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
 
                 editorCanvas.Children.Add(inputedTextBlock);
 

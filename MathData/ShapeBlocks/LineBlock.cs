@@ -18,14 +18,14 @@ namespace MathData
 
         private double height=1;
 
-        public double Height
+        public double DefaultHeight
         {
             get { return height; }
             set { height = value; }
         }
 
 
-        public double Width
+        public double DefaultWidth
         {
             get { return width; }
             set { width = value; }

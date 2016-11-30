@@ -9,7 +9,7 @@ namespace MathData
 {
     public class BlockRow
     {
-        private double height=20;
+        private double height = 20;
         private double width;
         private Rect rowRect;
         private List<IBlockComponent> children = new List<IBlockComponent>();
@@ -22,31 +22,40 @@ namespace MathData
         /// </summary>
         public delegate void LayoutRowChildrenHorizontialCenterHandler();
 
+        /// <summary>
+        /// 更新行内图形块等
+        /// </summary>
+        public delegate void RefreshBlockRowHandler();
+
 
         public BlockRow(Point rowPoint)
         {
             rowRect = new Rect(rowPoint, new Size(width, height));
         }
 
-        public void AddBlockToRow(IBlockComponent block, LayoutRowChildrenHorizontialCenterHandler layoutRowChildrenHorizontialCenter)
+        public void AddBlockToRow(IBlockComponent block, LayoutRowChildrenHorizontialCenterHandler layoutRowChildrenHorizontialCenter,RefreshBlockRowHandler refreshBlockRow)
         {
             if (block is CharBlock)
             {
                 var blockRect = block.GetRect();
                 if (inputBlockComponentStack.Count > 0)
                 {
-                    var container = inputBlockComponentStack.Peek();
+                    var container = inputBlockComponentStack.Peek();                  
                     container.Children[container.CurrentInputPart].Add(block);
 
                     //更新所有嵌套元素子块区域大小
                     UpdateAllNastedComponentBlockChildRect(new Size(blockRect.Width, 0));
+
+                   
                 }
                 else
                 {
-                    Children.Add(block);                    
+                    Children.Add(block);
                 }
 
                 rowRect.Width += blockRect.Width;
+
+                refreshBlockRow();
 
             }
             else if (block is ShapeBlock)
@@ -61,17 +70,17 @@ namespace MathData
                 {
                     var container = inputBlockComponentStack.Peek();
                     var containerChildRect = container.GetInputChildRect();
-                    if (containerChildRect.Height< componentBlock.Rect.Height)
+                    if (containerChildRect.Height < componentBlock.Rect.Height)
                     {
                         var offsetHeight = componentBlock.Rect.Height - containerChildRect.Height;
                         //更新所有嵌套元素子块区域大小
-                        UpdateAllNastedComponentBlockChildRect(new Size(0,offsetHeight));
+                        UpdateAllNastedComponentBlockChildRect(new Size(0, offsetHeight));
 
                         rowRect.Height += offsetHeight;
                     }
 
                     inputBlockComponentStack.Push(componentBlock);
-
+                    container.Children[container.CurrentInputPart].Add(block);
                 }
                 else
                 {
@@ -79,25 +88,30 @@ namespace MathData
                     //在行内加入组合块  
                     inputBlockComponentStack.Push(componentBlock);
 
-                    if (rowRect.Height<componentBlock.Rect.Height)
+                    if (rowRect.Height < componentBlock.Rect.Height)
                     {
                         rowRect.Height += componentBlock.Rect.Height - rowRect.Height;
                     }
                 }
-
                 layoutRowChildrenHorizontialCenter();
             }
 
+           
         }
 
         private void UpdateAllNastedComponentBlockChildRect(Size offsetSize)
         {
-            //更新所有在输入的嵌套块宽度
-            if (inputBlockComponentStack.Count>0)
+            //更新所有在输入的嵌套块当前输入部分块宽度
+            if (inputBlockComponentStack.Count > 0)
             {
                 foreach (var item in inputBlockComponentStack)
                 {
-                    item.Rect = new Rect(item.Rect.Location, new Size(item.Rect.Width + offsetSize.Width, item.Rect.Height + offsetSize.Height));
+                    var inputRect = item.GetInputChildRect();
+                    if (inputRect.Width + offsetSize.Width > item.Rect.Width)
+                    {
+                        item.Rect = new Rect(item.Rect.Location, new Size(item.Rect.Width + offsetSize.Width, item.Rect.Height));
+                    }
+                    item.Rect = new Rect(item.Rect.Location, new Size(item.Rect.Width, item.Rect.Height + offsetSize.Height));
                 }
             }
         }

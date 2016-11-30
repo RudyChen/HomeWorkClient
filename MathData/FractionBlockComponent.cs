@@ -133,5 +133,19 @@ namespace MathData
             var topRect = GetChildRect(topChild);
             return topRect.Top+ topRect.Height + fontHeight * 0.1;
         }
+
+        /// <summary>
+        /// 更新分数线长度
+        /// </summary>
+        public override void UpdateShapeBlocks()
+        {
+            LineBlock separateLineBlock = Children[2][0] as LineBlock;
+            var firstPartRect = GetChildRect(Children[0]);
+
+            Point lineStart = new Point(firstPartRect.Left, firstPartRect.Height + fractionSpace + 2);
+            separateLineBlock.Rect = new Rect(lineStart,new Size(this.Rect.Width,2));
+
+            base.UpdateShapeBlocks();
+        }
     }
 }
