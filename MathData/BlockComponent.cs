@@ -21,6 +21,11 @@ namespace MathData
             set { rect = value; }
         }
 
+        public void SetRect(Rect rect)
+        {
+            this.rect = rect;
+        }
+
         public delegate void SizeChangedEventHandler(Size size);
         public event SizeChangedEventHandler SizeChangedEvent;
 

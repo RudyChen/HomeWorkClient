@@ -27,6 +27,8 @@ namespace MathData
         /// </summary>
         public delegate void RefreshBlockRowHandler();
 
+      
+
 
         public BlockRow(Point rowPoint)
         {

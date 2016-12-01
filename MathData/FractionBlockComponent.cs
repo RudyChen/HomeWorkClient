@@ -18,19 +18,18 @@ namespace MathData
         }
 
 
-        private double fractionSpace=6;
+       
 
         public double FractionSpace
         {
-            get { return fractionSpace; }
-            set { fractionSpace = value; }
+            get { return 0.5* fontHeight; }           
         }
 
 
         public FractionBlockComponent(Point rowPoint,LineBlock fractionLineData)
         {
             Children = new List<List<IBlockComponent>>();
-            Size size = new Size(10, fontHeight * 2 + 2*fractionSpace);
+            Size size = new Size(10, fontHeight * 2 + 2* FractionSpace);
             this.Rect = new Rect(rowPoint, size);
             var child0 = new List<IBlockComponent>();
             var child1 = new List<IBlockComponent>();
@@ -45,24 +44,32 @@ namespace MathData
 
         }
 
-        public Point GetNextPartLocation()
+        public Point GetNextPartLocation(double rowTop)
         {
             Point nextPartLocation = this.Rect.Location;
+            var topChild = Children[0];
+            var topRect = GetChildRect(topChild);
             if (CurrentInputPart == 0)
             {
-                var topChild = Children[CurrentInputPart];
-                var topRect = GetChildRect(topChild);
-                //加上分数分割线高度
-                nextPartLocation = new Point(this.Rect.Left, this.Rect.Top + topRect.Height + 2*fractionSpace+2);
+                nextPartLocation = new Point(this.Rect.Left, this.Rect.Top + topRect.Height + 2* FractionSpace);
             }
             else
             {
-                var topChild = Children[CurrentInputPart];
-                var topRect = GetChildRect(topChild);
-                nextPartLocation = new Point(this.Rect.Left + this.Rect.Width, this.Rect.Top + topRect.Height + fontHeight * 0.1-fontHeight/2);
+                var lineBlock = Children[2][0] as LineBlock;
+                nextPartLocation = new Point(this.Rect.Left + this.Rect.Width,this.Rect.Top+ lineBlock.Rect.Top);
+                UpdateRect();
             }
 
             return nextPartLocation;
+        }
+
+        public void UpdateRect()
+        {
+            var firstChild = GetChildRect(Children[0]);
+            var secondChild = GetChildRect(Children[1]);
+            var width = firstChild.Width > secondChild.Width ? firstChild.Width : secondChild.Width;
+            var height =firstChild.Top+ secondChild.Height + firstChild.Height+2*FractionSpace;
+            this.Rect = new Rect(firstChild.Location, new Size(width, height));
         }
 
 
@@ -129,9 +136,9 @@ namespace MathData
 
         public double GetHorizontialAlignmentYOffset()
         {
-            var topChild = Children[0];
-            var topRect = GetChildRect(topChild);
-            return topRect.Top+ topRect.Height + fontHeight * 0.1;
+            var lineBlock = Children[2][0] as LineBlock;
+       
+            return lineBlock.Rect.Top;
         }
 
         /// <summary>
@@ -142,7 +149,7 @@ namespace MathData
             LineBlock separateLineBlock = Children[2][0] as LineBlock;
             var firstPartRect = GetChildRect(Children[0]);
 
-            Point lineStart = new Point(firstPartRect.Left, firstPartRect.Height + fractionSpace + 2);
+            Point lineStart = new Point(firstPartRect.Left, firstPartRect.Height + FractionSpace -1);
             separateLineBlock.Rect = new Rect(lineStart,new Size(this.Rect.Width,2));
 
             base.UpdateShapeBlocks();
