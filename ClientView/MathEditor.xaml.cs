@@ -64,7 +64,7 @@ namespace ClientView
                     Line fractionLine = new Line();
                     fractionLine.Stroke = Brushes.Black;
                     fractionLine.X1 = rowPoint.X;
-                    fractionLine.Y1 = currentInputBlockRow.RowRect.Top + fontSize + fontSize*0.5-1;
+                    fractionLine.Y1 = rowPoint.Y + fontSize + fontSize*0.5-1;
                     fractionLine.X2 = rowPoint.X + 10;
                     fractionLine.Y2 = fractionLine.Y1;
                     fractionLine.Uid = Guid.NewGuid().ToString();
@@ -213,7 +213,7 @@ namespace ClientView
 
             double rowYOffset = GetChildrenMaxCenterLine(currentInputBlockRow.Children);
 
-            AlignChildrenToMaxCenter(rowYOffset,currentInputBlockRow.Children);
+            AlignChildrenToMaxCenter(rowYOffset + currentInputBlockRow.RowRect.Top, currentInputBlockRow.Children);
                        
             UpdateRowBlockRectByChildren();
         }
@@ -264,7 +264,7 @@ namespace ClientView
                 var topComponent= currentRowComponentStack.Pop();
 
                 double rowYOffset = GetChildrenMaxCenterLine(topComponent.Children[topComponent.CurrentInputPart]);
-                AlignChildrenToMaxCenter(rowYOffset, topComponent.Children[topComponent.CurrentInputPart]);
+                AlignChildrenToMaxCenter(rowYOffset + currentInputBlockRow.RowRect.Top, topComponent.Children[topComponent.CurrentInputPart]);
                 UpdateBlockRectByChildren(topComponent, topComponent.Children[topComponent.CurrentInputPart]);
 
                 tempComponentStack.Push(topComponent);
@@ -312,7 +312,7 @@ namespace ClientView
             {
                 foreach (var item in children)
                 {
-                    var itemAlignmentYOffset=item.GetHorizontialAlignmentYOffset();
+                    var itemAlignmentYOffset=item.GetHorizontialAlignmentYOffset()+currentInputBlockRow.RowRect.Top;
 
                     double adjustYOffset = maxcCenterLienYOffset - itemAlignmentYOffset;
 
