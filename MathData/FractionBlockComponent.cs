@@ -136,9 +136,8 @@ namespace MathData
 
         public double GetHorizontialAlignmentYOffset()
         {
-            var lineBlock = Children[2][0] as LineBlock;
-       
-            return lineBlock.Rect.Top;
+            var topRect = GetChildRect(Children[0]);       
+            return  topRect.Top+topRect.Height+FractionSpace-1;
         }
 
         /// <summary>
@@ -148,11 +147,43 @@ namespace MathData
         {
             LineBlock separateLineBlock = Children[2][0] as LineBlock;
             var firstPartRect = GetChildRect(Children[0]);
+            var secondPartRect = GetChildRect(Children[1]);
+            double width = secondPartRect.Width;
+            if (firstPartRect.Width>=secondPartRect.Width)
+            {
+                width = firstPartRect.Width;
+            }
 
             Point lineStart = new Point(firstPartRect.Left, firstPartRect.Height + FractionSpace -1);
-            separateLineBlock.Rect = new Rect(lineStart,new Size(this.Rect.Width,2));
+            separateLineBlock.Rect = new Rect(lineStart,new Size(width, 2));
 
             base.UpdateShapeBlocks();
+        }
+
+        public override Rect GetChildRect(List<IBlockComponent> child)
+        {
+            double width = 0;
+            double heigh = 0;
+            Point mostLeftPoint = new Point(0, 0);
+            if (child.Count == 0)
+            {
+                return new Rect(this.Rect.Location, new Size(10, fontHeight));
+            }
+            else
+            {
+                foreach (var item in child)
+                {
+                    var childItemRect = item.GetRect();
+                    width += childItemRect.Width;
+                    heigh = childItemRect.Height > heigh ? childItemRect.Height : heigh;
+                    if (mostLeftPoint.X > childItemRect.Left)
+                    {
+                        mostLeftPoint = new Point(childItemRect.Left, 0);
+                    }
+                }
+            }
+
+            return new Rect(mostLeftPoint, new Size(width, heigh));
         }
     }
 }

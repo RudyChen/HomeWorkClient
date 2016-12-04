@@ -17,3 +17,22 @@ C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView.exe
 C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView.pdb
 C:\Users\mike\Desktop\HomeWorkClient\ClientView\bin\Debug\MathData.dll
 C:\Users\mike\Desktop\HomeWorkClient\ClientView\bin\Debug\MathData.pdb
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\ClientView.exe.config
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView.exe
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView.pdb
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\ClientView.exe
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\ClientView.pdb
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\MathData.dll
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\MathData.pdb
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView.csprojResolveAssemblyReference.cache
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\MainWindow.g.cs
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\MathEditor.g.cs
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\App.g.cs
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView_MarkupCompile.cache
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView_MarkupCompile.lref
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\MainWindow.baml
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\MathEditor.baml
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView.g.resources
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView.Properties.Resources.resources
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView.csproj.GenerateResource.Cache

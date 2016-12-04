@@ -53,30 +53,9 @@ namespace MathData
             }
         }
 
-        public Rect GetChildRect(List<IBlockComponent> child)
+        public virtual Rect GetChildRect(List<IBlockComponent> child)
         {
-            double width = 0;
-            double heigh = 0;
-            Point mostLeftPoint=new Point(0,0);
-            if (child.Count==0)
-            {
-                return new Rect(this.rect.Location, new Size(10, 18));
-            }
-            else
-            {
-                foreach (var item in child)
-                {
-                    var childItemRect = item.GetRect();
-                    width += childItemRect.Width;
-                    heigh = childItemRect.Height > heigh ? childItemRect.Height : heigh;
-                    if (mostLeftPoint.X > childItemRect.Left)
-                    {
-                        mostLeftPoint = new Point(childItemRect.Left, 0);
-                    }
-                }
-            }
-
-            return new Rect(mostLeftPoint, new Size(width, heigh));
+            return new Rect(0, 0, 0, 0);
         }
 
         public Rect GetInputChildRect()

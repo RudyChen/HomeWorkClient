@@ -3,3 +3,8 @@ C:\Users\mike\Desktop\HomeWorkClient\MathData\bin\Debug\MathData.pdb
 C:\Users\mike\Desktop\HomeWorkClient\MathData\obj\Debug\MathData.csprojResolveAssemblyReference.cache
 C:\Users\mike\Desktop\HomeWorkClient\MathData\obj\Debug\MathData.dll
 C:\Users\mike\Desktop\HomeWorkClient\MathData\obj\Debug\MathData.pdb
+D:\Git Projects\HomeWorkClient\MathData\bin\Debug\MathData.dll
+D:\Git Projects\HomeWorkClient\MathData\bin\Debug\MathData.pdb
+D:\Git Projects\HomeWorkClient\MathData\obj\Debug\MathData.csprojResolveAssemblyReference.cache
+D:\Git Projects\HomeWorkClient\MathData\obj\Debug\MathData.dll
+D:\Git Projects\HomeWorkClient\MathData\obj\Debug\MathData.pdb

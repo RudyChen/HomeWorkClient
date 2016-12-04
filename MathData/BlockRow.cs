@@ -14,6 +14,15 @@ namespace MathData
         private Rect rowRect;
         private List<IBlockComponent> children = new List<IBlockComponent>();
 
+        private double rowCenterYOffset;
+
+        public double RowCenterYOffset
+        {
+            get { return rowCenterYOffset; }
+            set { rowCenterYOffset = value; }
+        }
+
+
 
         private Stack<BlockComponent> inputBlockComponentStack = new Stack<BlockComponent>();
 
@@ -27,7 +36,7 @@ namespace MathData
         /// </summary>
         public delegate void RefreshBlockRowHandler();
 
-      
+
 
 
         public BlockRow(Point rowPoint)
@@ -35,20 +44,20 @@ namespace MathData
             rowRect = new Rect(rowPoint, new Size(width, height));
         }
 
-        public void AddBlockToRow(IBlockComponent block, LayoutRowChildrenHorizontialCenterHandler layoutRowChildrenHorizontialCenter,RefreshBlockRowHandler refreshBlockRow)
+        public void AddBlockToRow(IBlockComponent block, LayoutRowChildrenHorizontialCenterHandler layoutRowChildrenHorizontialCenter, RefreshBlockRowHandler refreshBlockRow)
         {
             if (block is CharBlock)
             {
                 var blockRect = block.GetRect();
-                if (inputBlockComponentStack.Count > 0)
+                if (InputBlockComponentStack.Count > 0)
                 {
-                    var container = inputBlockComponentStack.Peek();                  
+                    var container = InputBlockComponentStack.Peek();
                     container.Children[container.CurrentInputPart].Add(block);
 
                     //更新所有嵌套元素子块区域大小
                     UpdateAllNastedComponentBlockChildRect(new Size(blockRect.Width, 0));
 
-                   
+
                 }
                 else
                 {
@@ -68,9 +77,9 @@ namespace MathData
             {
                 var componentBlock = block as BlockComponent;
                 //嵌套在组合块里面的
-                if (inputBlockComponentStack.Count > 0)
+                if (InputBlockComponentStack.Count > 0)
                 {
-                    var container = inputBlockComponentStack.Peek();
+                    var container = InputBlockComponentStack.Peek();
                     var containerChildRect = container.GetInputChildRect();
                     if (containerChildRect.Height < componentBlock.Rect.Height)
                     {
@@ -81,14 +90,15 @@ namespace MathData
                         rowRect.Height += offsetHeight;
                     }
 
-                    inputBlockComponentStack.Push(componentBlock);
+                    InputBlockComponentStack.Push(componentBlock);
                     container.Children[container.CurrentInputPart].Add(block);
+                    container.UpdateShapeBlocks();
                 }
                 else
                 {
                     Children.Add(block);
                     //在行内加入组合块  
-                    inputBlockComponentStack.Push(componentBlock);
+                    InputBlockComponentStack.Push(componentBlock);
 
                     if (rowRect.Height < componentBlock.Rect.Height)
                     {
@@ -98,7 +108,7 @@ namespace MathData
                 layoutRowChildrenHorizontialCenter();
             }
 
-           
+
         }
 
         private void UpdateAllNastedComponentBlockChildRect(Size offsetSize)
