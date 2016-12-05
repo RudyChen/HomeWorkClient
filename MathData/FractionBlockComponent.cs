@@ -22,7 +22,7 @@ namespace MathData
 
         public double FractionSpace
         {
-            get { return 0.5* fontHeight; }           
+            get { return 0.2* fontHeight; }           
         }
 
 
@@ -30,7 +30,8 @@ namespace MathData
         {
             Children = new List<List<IBlockComponent>>();
             Size size = new Size(10, fontHeight * 2 + 2* FractionSpace);
-            this.Rect = new Rect(rowPoint, size);
+            Point location = new Point(rowPoint.X, rowPoint.Y);
+            this.Rect = new Rect(location, size);
             var child0 = new List<IBlockComponent>();
             var child1 = new List<IBlockComponent>();
             var shapeChild = new List<IBlockComponent>();
@@ -51,25 +52,28 @@ namespace MathData
             var topRect = GetChildRect(topChild);
             if (CurrentInputPart == 0)
             {
-                nextPartLocation = new Point(this.Rect.Left, this.Rect.Top + topRect.Height + 2* FractionSpace);
+                nextPartLocation = new Point(this.Rect.Left, rowTop+ this.Rect.Top + topRect.Height + 2 * FractionSpace);
             }
             else
             {
                 var lineBlock = Children[2][0] as LineBlock;
-                nextPartLocation = new Point(this.Rect.Left + this.Rect.Width,this.Rect.Top+ lineBlock.Rect.Top);
+                nextPartLocation = new Point(this.Rect.Left + this.Rect.Width, rowTop+ lineBlock.Rect.Top-0.5*fontHeight);
                 UpdateRect();
             }
 
             return nextPartLocation;
         }
 
-        public void UpdateRect()
+        public override void UpdateRect()
         {
-            var firstChild = GetChildRect(Children[0]);
-            var secondChild = GetChildRect(Children[1]);
-            var width = firstChild.Width > secondChild.Width ? firstChild.Width : secondChild.Width;
-            var height =firstChild.Top+ secondChild.Height + firstChild.Height+2*FractionSpace;
-            this.Rect = new Rect(firstChild.Location, new Size(width, height));
+            Rect componentRect = new Rect(Rect.Location, new Size(0, 0));
+            foreach (var item in Children)
+            {
+                var childRect=GetChildRect(item);
+                componentRect.Union(componentRect);
+            }
+
+            this.Rect = componentRect;
         }
 
 
@@ -137,7 +141,7 @@ namespace MathData
         public double GetHorizontialAlignmentYOffset()
         {
             var topRect = GetChildRect(Children[0]);       
-            return  topRect.Top+topRect.Height+FractionSpace-1;
+            return  topRect.Top+topRect.Height+FractionSpace;
         }
 
         /// <summary>
@@ -154,7 +158,8 @@ namespace MathData
                 width = firstPartRect.Width;
             }
 
-            Point lineStart = new Point(firstPartRect.Left, firstPartRect.Height + FractionSpace -1);
+            ///为了上下对称，分数分子分母间隔空隙不能用成平均的值
+            Point lineStart = new Point(firstPartRect.Left, firstPartRect.Height + 0.3*fontHeight);
             separateLineBlock.Rect = new Rect(lineStart,new Size(width, 2));
 
             base.UpdateShapeBlocks();
@@ -162,8 +167,6 @@ namespace MathData
 
         public override Rect GetChildRect(List<IBlockComponent> child)
         {
-            double width = 0;
-            double heigh = 0;
             Point mostLeftPoint = new Point(0, 0);
             if (child.Count == 0)
             {
@@ -171,19 +174,25 @@ namespace MathData
             }
             else
             {
+                Rect totalRect = new Rect(this.Rect.Location,new Size(0,0));
+                bool isFirst = true;
                 foreach (var item in child)
                 {
+                   
                     var childItemRect = item.GetRect();
-                    width += childItemRect.Width;
-                    heigh = childItemRect.Height > heigh ? childItemRect.Height : heigh;
-                    if (mostLeftPoint.X > childItemRect.Left)
+                    if (isFirst)
                     {
-                        mostLeftPoint = new Point(childItemRect.Left, 0);
+                        totalRect = childItemRect;
+                        isFirst = false;
                     }
+                    else
+                    {
+                        totalRect.Union(childItemRect);
+                    }                   
                 }
-            }
 
-            return new Rect(mostLeftPoint, new Size(width, heigh));
+                return totalRect;
+            }            
         }
     }
 }

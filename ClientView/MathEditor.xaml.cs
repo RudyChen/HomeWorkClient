@@ -66,7 +66,7 @@ namespace ClientView
                     Line fractionLine = new Line();
                     fractionLine.Stroke = Brushes.Black;
                     fractionLine.X1 = rowPoint.X;
-                    fractionLine.Y1 = currentInputBlockRow.RowRect.Top + rowPoint.Y + fontSize + fontSize * 0.5 - 1;
+                    fractionLine.Y1 = currentInputBlockRow.RowRect.Top + rowPoint.Y + fontSize + fontSize * 0.3;
                     fractionLine.X2 = rowPoint.X + 10;
                     fractionLine.Y2 = fractionLine.Y1;
                     fractionLine.Uid = Guid.NewGuid().ToString();
@@ -97,7 +97,7 @@ namespace ClientView
                                 fractionLine.Y2 = fractionLine.Y1;
                                 fractionLineData.Rect = new Rect(fractionLine.X1, fractionLine.Y1 - currentInputBlockRow.RowRect.Top, 10, 2);
 
-                                SetCaretLocation(0, centerOffset);
+                                SetCaretOffset(0, centerOffset);
                                 rowPoint = GetRowPoint();
                             }
                         }
@@ -115,7 +115,7 @@ namespace ClientView
                                 fractionLine.Y2 = fractionLine.Y1;
                                 fractionLineData.Rect = new Rect(fractionLine.X1, fractionLine.Y1 - currentInputBlockRow.RowRect.Top, 10, 2);
 
-                                SetCaretLocation(0, centerOffset);
+                                SetCaretOffset(0, centerOffset);
                                 rowPoint = GetRowPoint();
                             }
 
@@ -129,7 +129,7 @@ namespace ClientView
                     editorCanvas.Children.Add(fractionLine);
                     fractionBlock = new FractionBlockComponent(rowPoint, fractionLineData) { FontSize = fontSize };
                     currentInputBlockRow.AddBlockToRow(fractionBlock, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
-
+                    var componentRectTest = fractionBlock as BlockComponent;
 
                     break;
                 case InputCommands.NextCommand:
@@ -153,7 +153,7 @@ namespace ClientView
                 {
                     var fractionComponent = componentItem as FractionBlockComponent;
                     var rowTop = currentInputBlockRow.RowRect.Top;
-                    var nextPartLocation = fractionComponent.GetNextPartLocation(rowTop);
+                    var nextPartLocation = fractionComponent.GetNextPartLocation(rowTop);                    
                     SetCaretLocation(nextPartLocation);
                     if (fractionComponent.CurrentInputPart == 0)
                     {
@@ -203,7 +203,7 @@ namespace ClientView
                 lineOffsetX = AcceptEnglishInputText(0, 0, e.Text);
             }
             e.Handled = true;
-            SetCaretLocation(lineOffsetX, 0);
+            SetCaretOffset(lineOffsetX, 0);
         }
 
         private void EquationTypeButton_Clicked(object sender, RoutedEventArgs e)
@@ -287,21 +287,15 @@ namespace ClientView
         {
             if (currentInputBlockRow != null && currentInputBlockRow.Children.Count > 0)
             {
+                Rect rowRect = new Rect(currentInputBlockRow.RowRect.Location, new Size(0, 0));
                 foreach (var item in currentInputBlockRow.Children)
                 {
                     var childRect = item.GetRect();
-                    //更新高度
-                    if (childRect.Top + childRect.Height > currentInputBlockRow.RowRect.Height)
-                    {
-                        currentInputBlockRow.RowRect = new Rect(currentInputBlockRow.RowRect.Location, new Size(currentInputBlockRow.RowRect.Width, childRect.Top + childRect.Height));
-                    }
 
-                    //更新宽度
-                    if (childRect.Left + childRect.Width > currentInputBlockRow.RowRect.Width)
-                    {
-                        currentInputBlockRow.RowRect = new Rect(currentInputBlockRow.RowRect.Location, new Size(childRect.Left + childRect.Width, currentInputBlockRow.RowRect.Height));
-                    }
+                    rowRect.Union(childRect);                                   
                 }
+
+                currentInputBlockRow.RowRect = rowRect;
             }
         }
 
@@ -321,8 +315,10 @@ namespace ClientView
                 rowYOffset = GetChildrenMaxCenterLine(inputChild);
 
                 AlignChildrenToMaxCenter(rowYOffset, inputChild);
+
                 topComponent.UpdateShapeBlocks();
-                UpdateBlockRectByChildren(topComponent, inputChild);
+
+                topComponent.UpdateRect();              
 
                 UpdateShapeBlocksLocation(topComponent);
 
@@ -351,33 +347,7 @@ namespace ClientView
             }
         }
 
-        private void UpdateBlockRectByChildren(BlockComponent blockComponent, List<IBlockComponent> children)
-        {
-            if (children != null && children.Count > 0)
-            {
-                foreach (var item in children)
-                {
-                    var childRect = item.GetRect();
-
-                    var blockComponentItem = blockComponent as BlockComponent;
-
-                    //更新高度
-                    if (childRect.Top + childRect.Height > currentInputBlockRow.RowRect.Height)
-                    {
-
-                        var rect = new Rect(blockComponent.Rect.Location, new Size(blockComponent.Rect.Width, childRect.Top + childRect.Height));
-                        blockComponentItem.SetRect(rect);
-                    }
-
-                    //更新宽度
-                    if (childRect.Left + childRect.Width > currentInputBlockRow.RowRect.Width)
-                    {
-                        var rect = new Rect(blockComponent.Rect.Location, new Size(childRect.Left + childRect.Width, blockComponent.Rect.Height));
-                        blockComponentItem.SetRect(rect);
-                    }
-                }
-            }
-        }
+     
 
         private void AlignChildrenToMaxCenter(double maxcCenterLienYOffset, List<IBlockComponent> children)
         {
@@ -505,7 +475,7 @@ namespace ClientView
             }
             else if (block is BlockComponent)
             {
-                var componentBlock = block as BlockComponent;
+                var componentBlock = block as BlockComponent;                
                 foreach (var componentChild in componentBlock.Children)
                 {
                     if (componentChild.Count > 0)
@@ -519,8 +489,7 @@ namespace ClientView
                             }
                             else if (partChild is BlockComponent)
                             {
-                                var blockComponent = partChild as BlockComponent;
-                                UpdateBlockComponentRect(blockComponent, xOffset, yOffset);
+                                var blockComponent = partChild as BlockComponent;                             
                                 AdjustChildLocation(partChild, xOffset, yOffset);
 
                             }
@@ -605,13 +574,13 @@ namespace ClientView
             currentInputBlockRow = new BlockRow(rowPoint);
         }
 
-        private void SetCaretLocation(double x, double y)
+        private void SetCaretOffset(double xOffset, double yOffset)
         {
             var oldCaretLeft = Canvas.GetLeft(caretTextBox);
             var oldCaretTop = Canvas.GetTop(caretTextBox);
 
-            Canvas.SetLeft(caretTextBox, oldCaretLeft + x);
-            Canvas.SetTop(caretTextBox, oldCaretTop + y);
+            Canvas.SetLeft(caretTextBox, oldCaretLeft + xOffset);
+            Canvas.SetTop(caretTextBox, oldCaretTop + yOffset);
         }
 
         private bool IsChinese(string text)

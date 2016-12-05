@@ -23,7 +23,7 @@ namespace MathData
 
         public void SetRect(Rect rect)
         {
-            this.rect = rect;
+            this.Rect = rect;
         }
 
         public delegate void SizeChangedEventHandler(Size size);
@@ -72,7 +72,13 @@ namespace MathData
 
         }
 
+        /// <summary>
+        /// 更新组合块大小
+        /// </summary>
+        public virtual void UpdateRect()
+        {
 
+        }
 
     }
 }
