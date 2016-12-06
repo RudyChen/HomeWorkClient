@@ -61,76 +61,7 @@ namespace ClientView
             switch (command)
             {
                 case InputCommands.FractionCommand:
-                    var rowPoint = GetRowPoint();
-
-                    Line fractionLine = new Line();
-                    fractionLine.Stroke = Brushes.Black;
-                    fractionLine.X1 = rowPoint.X;
-                    fractionLine.Y1 = currentInputBlockRow.RowRect.Top + rowPoint.Y + fontSize + fontSize * 0.3;
-                    fractionLine.X2 = rowPoint.X + 10;
-                    fractionLine.Y2 = fractionLine.Y1;
-                    fractionLine.Uid = Guid.NewGuid().ToString();
-                    fractionLine.StrokeThickness = 1;
-                    fractionLine.SnapsToDevicePixels = true;
-
-
-                    LineBlock fractionLineData = new LineBlock(rowPoint);
-                    fractionLineData.Rect = new Rect(fractionLine.X1, fractionLine.Y1 - currentInputBlockRow.RowRect.Top, 10, 2);
-                    fractionLineData.RenderUid = fractionLine.Uid;
-
-                    FractionBlockComponent fractionBlock = new FractionBlockComponent(rowPoint, fractionLineData) { FontSize = fontSize };
-                    //行高大于输入元素的高度，并且没有嵌套
-
-
-                    double alignCenterYOffset = 0;
-                    var lastChild = currentInputBlockRow.Children.Last();
-                    if (null != lastChild)
-                    {
-                        if (currentInputBlockRow.InputBlockComponentStack.Count == 0)
-                        {
-                            if (currentInputBlockRow.RowRect.Height >= fractionBlock.Rect.Height)
-                            {
-                                alignCenterYOffset = lastChild.GetHorizontialAlignmentYOffset();
-
-                                var centerOffset = alignCenterYOffset - fractionLineData.Rect.Top;
-                                fractionLine.Y1 = fractionLine.Y1 + centerOffset;
-                                fractionLine.Y2 = fractionLine.Y1;
-                                fractionLineData.Rect = new Rect(fractionLine.X1, fractionLine.Y1 - currentInputBlockRow.RowRect.Top, 10, 2);
-
-                                SetCaretOffset(0, centerOffset);
-                                rowPoint = GetRowPoint();
-                            }
-                        }
-                        else
-                        {
-                            var componentBlock = currentInputBlockRow.InputBlockComponentStack.Peek();
-                            var inputChildren = componentBlock.Children[componentBlock.CurrentInputPart];
-                            var inputChildrenRect = componentBlock.GetChildRect(inputChildren);
-                            if (inputChildrenRect.Height >= fractionBlock.Rect.Height)
-                            {
-                                alignCenterYOffset = GetChildrenMaxCenterLine(inputChildren);
-
-                                var centerOffset = alignCenterYOffset - fractionLineData.Rect.Top;
-                                fractionLine.Y1 = fractionLine.Y1 + centerOffset;
-                                fractionLine.Y2 = fractionLine.Y1;
-                                fractionLineData.Rect = new Rect(fractionLine.X1, fractionLine.Y1 - currentInputBlockRow.RowRect.Top, 10, 2);
-
-                                SetCaretOffset(0, centerOffset);
-                                rowPoint = GetRowPoint();
-                            }
-
-                        }
-
-
-                    }
-
-
-
-                    editorCanvas.Children.Add(fractionLine);
-                    fractionBlock = new FractionBlockComponent(rowPoint, fractionLineData) { FontSize = fontSize };
-                    currentInputBlockRow.AddBlockToRow(fractionBlock, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
-                    var componentRectTest = fractionBlock as BlockComponent;
-
+                    AddDefaultFractionComponent();
                     break;
                 case InputCommands.NextCommand:
                     InputNextPart();
@@ -144,6 +75,71 @@ namespace ClientView
             }
         }
 
+        private void AddDefaultFractionComponent()
+        {
+            var rowPoint = GetRowPoint();
+
+            Line fractionLine = new Line();
+            fractionLine.Stroke = Brushes.Black;
+            fractionLine.X1 = rowPoint.X;
+            fractionLine.Y1 = currentInputBlockRow.RowRect.Top + rowPoint.Y + fontSize + fontSize * 0.3;
+            fractionLine.X2 = rowPoint.X + 10;
+            fractionLine.Y2 = fractionLine.Y1;
+            fractionLine.Uid = Guid.NewGuid().ToString();
+            fractionLine.StrokeThickness = 1;
+            fractionLine.SnapsToDevicePixels = true;
+
+
+            LineBlock fractionLineData = new LineBlock(rowPoint);
+            fractionLineData.Rect = new Rect(fractionLine.X1, fractionLine.Y1 - currentInputBlockRow.RowRect.Top, 10, 2);
+            fractionLineData.RenderUid = fractionLine.Uid;
+
+            FractionBlockComponent fractionBlock = new FractionBlockComponent(rowPoint, fractionLineData) { FontSize = fontSize };
+
+            double alignCenterYOffset = 0;
+            var lastChild = currentInputBlockRow.Children.Last();
+            if (null != lastChild)
+            {
+                if (currentInputBlockRow.InputBlockComponentStack.Count == 0)
+                {
+                    if (currentInputBlockRow.RowRect.Height >= fractionBlock.Rect.Height)
+                    {
+                        alignCenterYOffset = lastChild.GetHorizontialAlignmentYOffset();
+
+                        var centerOffset = alignCenterYOffset - fractionLineData.Rect.Top;
+                        fractionLine.Y1 = fractionLine.Y1 + centerOffset;
+                        fractionLine.Y2 = fractionLine.Y1;
+                        fractionLineData.Rect = new Rect(fractionLine.X1, fractionLine.Y1 - currentInputBlockRow.RowRect.Top, 10, 2);
+
+                        SetCaretOffset(0, centerOffset);
+                        rowPoint = GetRowPoint();
+                    }
+                }
+                else
+                {
+                    var componentBlock = currentInputBlockRow.InputBlockComponentStack.Peek();
+                    var inputChildren = componentBlock.Children[componentBlock.CurrentInputPart];
+                    var inputChildrenRect = componentBlock.GetChildRect(inputChildren);
+                    if (inputChildrenRect.Height >= fractionBlock.Rect.Height)
+                    {
+                        alignCenterYOffset = GetChildrenMaxCenterLine(inputChildren);
+
+                        var centerOffset = alignCenterYOffset - fractionLineData.Rect.Top;
+                        fractionLine.Y1 = fractionLine.Y1 + centerOffset;
+                        fractionLine.Y2 = fractionLine.Y1;
+                        fractionLineData.Rect = new Rect(fractionLine.X1, fractionLine.Y1 - currentInputBlockRow.RowRect.Top, 10, 2);
+
+                        SetCaretOffset(0, centerOffset);
+                        rowPoint = GetRowPoint();
+                    }
+                }
+            }
+
+            editorCanvas.Children.Add(fractionLine);
+            fractionBlock = new FractionBlockComponent(rowPoint, fractionLineData) { FontSize = fontSize };
+            currentInputBlockRow.AddBlockToRow(fractionBlock, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
+        }
+
         private void InputNextPart()
         {
             if (currentInputBlockRow.InputBlockComponentStack.Count > 0)
@@ -153,7 +149,7 @@ namespace ClientView
                 {
                     var fractionComponent = componentItem as FractionBlockComponent;
                     var rowTop = currentInputBlockRow.RowRect.Top;
-                    var nextPartLocation = fractionComponent.GetNextPartLocation(rowTop);                    
+                    var nextPartLocation = fractionComponent.GetNextPartLocation(rowTop);
                     SetCaretLocation(nextPartLocation);
                     if (fractionComponent.CurrentInputPart == 0)
                     {
@@ -292,10 +288,10 @@ namespace ClientView
                 {
                     var childRect = item.GetRect();
 
-                    rowRect.Union(childRect);                                   
+                    rowRect.Union(childRect);
                 }
 
-                currentInputBlockRow.RowRect = rowRect;
+                currentInputBlockRow.RowRect = new Rect(currentInputBlockRow.RowRect.Location, rowRect.Size);
             }
         }
 
@@ -303,7 +299,7 @@ namespace ClientView
         {
             Stack<BlockComponent> tempComponentStack = new Stack<BlockComponent>();
 
-            var newInputComponent=currentRowComponentStack.Pop();
+            var newInputComponent = currentRowComponentStack.Pop();
 
             while (currentRowComponentStack.Count > 0)
             {
@@ -316,9 +312,9 @@ namespace ClientView
 
                 AlignChildrenToMaxCenter(rowYOffset, inputChild);
 
-                topComponent.UpdateShapeBlocks();
+                topComponent.UpdateRect();
 
-                topComponent.UpdateRect();              
+                topComponent.UpdateShapeBlocks();
 
                 UpdateShapeBlocksLocation(topComponent);
 
@@ -347,7 +343,7 @@ namespace ClientView
             }
         }
 
-     
+
 
         private void AlignChildrenToMaxCenter(double maxcCenterLienYOffset, List<IBlockComponent> children)
         {
@@ -475,7 +471,7 @@ namespace ClientView
             }
             else if (block is BlockComponent)
             {
-                var componentBlock = block as BlockComponent;                
+                var componentBlock = block as BlockComponent;
                 foreach (var componentChild in componentBlock.Children)
                 {
                     if (componentChild.Count > 0)
@@ -489,7 +485,7 @@ namespace ClientView
                             }
                             else if (partChild is BlockComponent)
                             {
-                                var blockComponent = partChild as BlockComponent;                             
+                                var blockComponent = partChild as BlockComponent;
                                 AdjustChildLocation(partChild, xOffset, yOffset);
 
                             }

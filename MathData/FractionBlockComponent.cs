@@ -25,11 +25,10 @@ namespace MathData
             get { return 0.2* fontHeight; }           
         }
 
-
         public FractionBlockComponent(Point rowPoint,LineBlock fractionLineData)
         {
             Children = new List<List<IBlockComponent>>();
-            Size size = new Size(10, fontHeight * 2 + 2* FractionSpace);
+            Size size = new Size(10, fontHeight * 2.5);
             Point location = new Point(rowPoint.X, rowPoint.Y);
             this.Rect = new Rect(location, size);
             var child0 = new List<IBlockComponent>();
@@ -52,12 +51,13 @@ namespace MathData
             var topRect = GetChildRect(topChild);
             if (CurrentInputPart == 0)
             {
-                nextPartLocation = new Point(this.Rect.Left, rowTop+ this.Rect.Top + topRect.Height + 2 * FractionSpace);
+                nextPartLocation = new Point(this.Rect.Left, rowTop+ this.Rect.Top + topRect.Height + 0.4*fontHeight);
             }
             else
             {
-                var lineBlock = Children[2][0] as LineBlock;
-                nextPartLocation = new Point(this.Rect.Left + this.Rect.Width, rowTop+ lineBlock.Rect.Top-0.5*fontHeight);
+                var centerYOffset = GetHorizontialAlignmentYOffset();
+               
+                nextPartLocation = new Point(this.Rect.Left + this.Rect.Width, rowTop+ centerYOffset - 0.5*fontHeight);
                 UpdateRect();
             }
 
@@ -67,13 +67,31 @@ namespace MathData
         public override void UpdateRect()
         {
             Rect componentRect = new Rect(Rect.Location, new Size(0, 0));
+            if (IsEditComponent())
+            {
+                return;
+            }
+          
             foreach (var item in Children)
             {
                 var childRect=GetChildRect(item);
-                componentRect.Union(componentRect);
+                componentRect.Union(childRect);
             }
 
             this.Rect = componentRect;
+        }
+
+        private bool IsEditComponent()
+        {
+            foreach (var item in Children)
+            {
+                if (item.Count==0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
 
@@ -141,7 +159,7 @@ namespace MathData
         public double GetHorizontialAlignmentYOffset()
         {
             var topRect = GetChildRect(Children[0]);       
-            return  topRect.Top+topRect.Height+FractionSpace;
+            return  topRect.Top+topRect.Height+0.3*fontHeight;
         }
 
         /// <summary>
@@ -159,7 +177,7 @@ namespace MathData
             }
 
             ///为了上下对称，分数分子分母间隔空隙不能用成平均的值
-            Point lineStart = new Point(firstPartRect.Left, firstPartRect.Height + 0.3*fontHeight);
+            Point lineStart = new Point(firstPartRect.Left,this.Rect.Top+ firstPartRect.Height + 0.3*fontHeight);
             separateLineBlock.Rect = new Rect(lineStart,new Size(width, 2));
 
             base.UpdateShapeBlocks();

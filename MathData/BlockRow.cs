@@ -86,8 +86,6 @@ namespace MathData
                         var offsetHeight = componentBlock.Rect.Height - containerChildRect.Height;
                         //更新所有嵌套元素子块区域大小
                         UpdateAllNastedComponentBlockChildRect(new Size(0, offsetHeight));
-
-                        rowRect.Height += offsetHeight;
                     }
 
                     InputBlockComponentStack.Push(componentBlock);
@@ -100,10 +98,6 @@ namespace MathData
                     //在行内加入组合块  
                     InputBlockComponentStack.Push(componentBlock);
 
-                    if (rowRect.Height < componentBlock.Rect.Height)
-                    {
-                        rowRect.Height += componentBlock.Rect.Height - rowRect.Height;
-                    }
                 }
                 layoutRowChildrenHorizontialCenter();
             }
