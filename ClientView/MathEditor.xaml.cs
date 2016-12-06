@@ -145,21 +145,13 @@ namespace ClientView
             if (currentInputBlockRow.InputBlockComponentStack.Count > 0)
             {
                 var componentItem = currentInputBlockRow.InputBlockComponentStack.Peek();
-                if (componentItem is FractionBlockComponent)
+                var rowTop = currentInputBlockRow.RowRect.Top;
+                bool isFinished = false;
+                var nextPartLocation = componentItem.GetNextPartLocation(rowTop, ref isFinished);
+                SetCaretLocation(nextPartLocation);
+                if (isFinished)
                 {
-                    var fractionComponent = componentItem as FractionBlockComponent;
-                    var rowTop = currentInputBlockRow.RowRect.Top;
-                    var nextPartLocation = fractionComponent.GetNextPartLocation(rowTop);
-                    SetCaretLocation(nextPartLocation);
-                    if (fractionComponent.CurrentInputPart == 0)
-                    {
-                        fractionComponent.CurrentInputPart++;
-                    }
-                    else
-                    {
-                        currentInputBlockRow.InputBlockComponentStack.Pop();
-                    }
-
+                    currentInputBlockRow.InputBlockComponentStack.Pop();
                 }
             }
 
@@ -273,7 +265,7 @@ namespace ClientView
                 var fractionComponent = inputComponent as FractionBlockComponent;
                 var lineBlock = fractionComponent.Children[2][0] as LineBlock;
                 var lineElement = GetElementByUid(lineBlock.RenderUid);
-                var newLineElement = UpdateLineElementLength(lineBlock, lineElement as Line);
+                var newLineElement = UpdateFractionLineElementLength(lineBlock, lineElement as Line);
                 editorCanvas.Children.Remove(lineElement);
                 editorCanvas.Children.Add(newLineElement);
             }
@@ -337,7 +329,7 @@ namespace ClientView
                 var fractionComponent = topComponent as FractionBlockComponent;
                 var lineBlock = fractionComponent.Children[2][0] as LineBlock;
                 FrameworkElement lineElement = GetElementByUid(lineBlock.RenderUid);
-                var updatedLine = RefreshLineElement(lineBlock, lineElement as Line);
+                var updatedLine = RefreshFractionLineElement(lineBlock, lineElement as Line);
                 editorCanvas.Children.Remove(lineElement);
                 editorCanvas.Children.Add(updatedLine);
             }
@@ -355,7 +347,7 @@ namespace ClientView
 
                     double adjustYOffset = maxcCenterLienYOffset - itemAlignmentYOffset;
 
-                    AdjustChildLocation(item, 0, adjustYOffset);
+                    AdjustComponentChildrenLocation(item, 0, adjustYOffset);
                 }
             }
         }
@@ -404,12 +396,12 @@ namespace ClientView
                     Canvas.SetLeft(matchedElement, Canvas.GetLeft(matchedElement) + xOffset);
                     Canvas.SetTop(matchedElement, Canvas.GetTop(matchedElement) + yOffset);
 
-                    UpdateBlockRect(block, matchedElement);
+                    UpdateCharBlockRect(block, matchedElement);
                 }
             }
         }
 
-        private void UpdateBlockRect(MathData.Block block, FrameworkElement matchedElement)
+        private void UpdateCharBlockRect(MathData.Block block, FrameworkElement matchedElement)
         {
             Point blockLocation = new Point(Canvas.GetLeft(matchedElement), Canvas.GetTop(matchedElement) - currentInputBlockRow.RowRect.Top);
             block.Rect = new Rect(blockLocation, block.Rect.Size);
@@ -429,7 +421,7 @@ namespace ClientView
             return newLine;
         }
 
-        private Line RefreshLineElement(LineBlock lineBlock, Line oldLine)
+        private Line RefreshFractionLineElement(LineBlock lineBlock, Line oldLine)
         {
             Line newLine = new Line();
             newLine.X1 = oldLine.X1;
@@ -447,7 +439,7 @@ namespace ClientView
             return newLine;
         }
 
-        private Line UpdateLineElementLength(LineBlock lineBlock, Line oldLine)
+        private Line UpdateFractionLineElementLength(LineBlock lineBlock, Line oldLine)
         {
             Line newLine = new Line();
             newLine.X1 = oldLine.X1;
@@ -461,7 +453,7 @@ namespace ClientView
             return newLine;
         }
 
-        private void AdjustChildLocation(IBlockComponent block, double xOffset, double yOffset)
+        private void AdjustComponentChildrenLocation(IBlockComponent block, double xOffset, double yOffset)
         {
             if (block is MathData.Block)
             {
@@ -486,20 +478,13 @@ namespace ClientView
                             else if (partChild is BlockComponent)
                             {
                                 var blockComponent = partChild as BlockComponent;
-                                AdjustChildLocation(partChild, xOffset, yOffset);
+                                AdjustComponentChildrenLocation(partChild, xOffset, yOffset);
 
                             }
                         }
                     }
                 }
             }
-        }
-
-        private void UpdateBlockComponentRect(BlockComponent blockComponent, double xOffset, double yOffset)
-        {
-            Point componentLocation = new Point(blockComponent.Rect.Left + xOffset, blockComponent.Rect.Top + yOffset);
-            Rect newRect = new Rect(componentLocation, blockComponent.Rect.Size);
-            blockComponent.SetRect(newRect);
         }
 
         private FrameworkElement GetElementByUid(string uid)

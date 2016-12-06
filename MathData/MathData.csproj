@@ -48,11 +48,12 @@
     <Compile Include="BlockRow.cs" />
     <Compile Include="CharBlock.cs" />
     <Compile Include="CommandsEnum.cs" />
-    <Compile Include="FractionBlockComponent.cs" />
+    <Compile Include="Components\FractionBlockComponent.cs" />
     <Compile Include="IBlockComponent.cs" />
     <Compile Include="ShapeBlocks\LineBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShapeBlock.cs" />
+    <Compile Include="Components\SuperscriptComponent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

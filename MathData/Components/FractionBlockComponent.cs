@@ -17,9 +17,6 @@ namespace MathData
             set { fontHeight = value; }
         }
 
-
-       
-
         public double FractionSpace
         {
             get { return 0.2* fontHeight; }           
@@ -39,61 +36,7 @@ namespace MathData
             Children.Add(child0);
             Children.Add(child1);
             Children.Add(shapeChild);
-
-          
-
         }
-
-        public Point GetNextPartLocation(double rowTop)
-        {
-            Point nextPartLocation = this.Rect.Location;
-            var topChild = Children[0];
-            var topRect = GetChildRect(topChild);
-            if (CurrentInputPart == 0)
-            {
-                nextPartLocation = new Point(this.Rect.Left, rowTop+ this.Rect.Top + topRect.Height + 0.4*fontHeight);
-            }
-            else
-            {
-                var centerYOffset = GetHorizontialAlignmentYOffset();
-               
-                nextPartLocation = new Point(this.Rect.Left + this.Rect.Width, rowTop+ centerYOffset - 0.5*fontHeight);
-                UpdateRect();
-            }
-
-            return nextPartLocation;
-        }
-
-        public override void UpdateRect()
-        {
-            Rect componentRect = new Rect(Rect.Location, new Size(0, 0));
-            if (IsEditComponent())
-            {
-                return;
-            }
-          
-            foreach (var item in Children)
-            {
-                var childRect=GetChildRect(item);
-                componentRect.Union(childRect);
-            }
-
-            this.Rect = componentRect;
-        }
-
-        private bool IsEditComponent()
-        {
-            foreach (var item in Children)
-            {
-                if (item.Count==0)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
 
         public void AddChild(IBlockComponent blockComponent, Point rowPoint)
         {
@@ -211,6 +154,59 @@ namespace MathData
 
                 return totalRect;
             }            
+        }
+
+        public override Point GetNextPartLocation(double rowTop, ref bool isInputFinished)
+        {
+            Point nextPartLocation = this.Rect.Location;
+            var topChild = Children[0];
+            var topRect = GetChildRect(topChild);
+            if (CurrentInputPart == 0)
+            {
+                nextPartLocation = new Point(this.Rect.Left, rowTop + this.Rect.Top + topRect.Height + 0.4 * fontHeight);
+                CurrentInputPart++;
+                isInputFinished = false;
+            }
+            else
+            {
+                var centerYOffset = GetHorizontialAlignmentYOffset();
+
+                nextPartLocation = new Point(this.Rect.Left + this.Rect.Width, rowTop + centerYOffset - 0.5 * fontHeight);
+                UpdateRect();
+                isInputFinished = true;
+            }
+
+            return nextPartLocation;
+        }
+
+        public override void UpdateRect()
+        {
+            Rect componentRect = new Rect(Rect.Location, new Size(0, 0));
+            if (IsEditComponent())
+            {
+                return;
+            }
+
+            foreach (var item in Children)
+            {
+                var childRect = GetChildRect(item);
+                componentRect.Union(childRect);
+            }
+
+            this.Rect = componentRect;
+        }
+
+        private bool IsEditComponent()
+        {
+            foreach (var item in Children)
+            {
+                if (item.Count == 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

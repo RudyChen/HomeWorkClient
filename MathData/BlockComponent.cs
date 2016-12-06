@@ -80,5 +80,16 @@ namespace MathData
 
         }
 
+        /// <summary>
+        /// 获取组合块下一部分输入位置
+        /// </summary>
+        /// <param name="rowTop">行Y坐标</param>
+        /// <param name="isInputFinished">输入完毕标识</param>
+        /// <returns>下一部分输入位置</returns>
+        public virtual Point GetNextPartLocation(double rowTop,ref bool isInputFinished)
+        {
+            return new Point(0, 0);
+        }
+
     }
 }
