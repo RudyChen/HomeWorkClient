@@ -7,9 +7,9 @@ using System.Windows;
 
 namespace MathData
 {
-    public abstract class BlockComponent 
+    public abstract class BlockComponentBase
     {
-        private List<List<IBlockComponent>> children=new List<List<IBlockComponent>>();
+        private List<List<IBlockComponent>> children = new List<List<IBlockComponent>>();
 
         private int currentInputPart;
 
@@ -60,7 +60,7 @@ namespace MathData
 
         public Rect GetInputChildRect()
         {
-           var rect= GetChildRect(children[currentInputPart]);
+            var rect = GetChildRect(children[currentInputPart]);
             return rect;
         }
 
@@ -86,10 +86,18 @@ namespace MathData
         /// <param name="rowTop">行Y坐标</param>
         /// <param name="isInputFinished">输入完毕标识</param>
         /// <returns>下一部分输入位置</returns>
-        public virtual Point GetNextPartLocation(double rowTop,ref bool isInputFinished)
+        public virtual Point GetNextPartLocation(double rowTop, ref bool isInputFinished)
         {
             return new Point(0, 0);
         }
 
+        /// <summary>
+        /// 添加组合块后重新定位插字符
+        /// </summary>
+        /// <returns></returns>
+        public virtual Vector GetRedirectCaretVector()
+        {
+            return new Vector(0,0);
+        }
     }
 }

@@ -28,5 +28,10 @@ namespace MathData
         /// </summary>
         Radical,
 
+        /// <summary>
+        /// 下标
+        /// </summary>
+        SubscriptCommand,
+
     }
 }

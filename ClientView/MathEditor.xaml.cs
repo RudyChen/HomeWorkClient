@@ -67,12 +67,20 @@ namespace ClientView
                     InputNextPart();
                     break;
                 case InputCommands.Exponential:
+                    AddDefaultExponenttialComponent();
                     break;
                 case InputCommands.Radical:
                     break;
                 default:
                     break;
             }
+        }
+
+        private void AddDefaultExponenttialComponent()
+        {
+            var rowPoint = GetRowPoint();
+            SuperscriptComponent superscriptComponent = new SuperscriptComponent(rowPoint);
+            currentInputBlockRow.AddBlockToRow(superscriptComponent, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
         }
 
         private void AddDefaultFractionComponent()
@@ -122,7 +130,7 @@ namespace ClientView
                     var inputChildrenRect = componentBlock.GetChildRect(inputChildren);
                     if (inputChildrenRect.Height >= fractionBlock.Rect.Height)
                     {
-                        alignCenterYOffset = GetChildrenMaxCenterLine(inputChildren);
+                        alignCenterYOffset = BlockComponentTools.GetChildrenMaxCenterLine(inputChildren);
 
                         var centerOffset = alignCenterYOffset - fractionLineData.Rect.Top;
                         fractionLine.Y1 = fractionLine.Y1 + centerOffset;
@@ -249,16 +257,23 @@ namespace ClientView
                 LayoutComponentStackChildrenCenter(currentInputBlockRow.InputBlockComponentStack);
             }
 
-            currentInputBlockRow.RowCenterYOffset = GetChildrenMaxCenterLine(currentInputBlockRow.Children);
+            currentInputBlockRow.RowCenterYOffset = BlockComponentTools.GetChildrenMaxCenterLine(currentInputBlockRow.Children);
 
             AlignChildrenToMaxCenter(currentInputBlockRow.RowCenterYOffset, currentInputBlockRow.Children);
 
             UpdateRowBlockRectByChildren();
+
+            var caretRowPoint = GetRowPoint();
+            var topComponent = currentInputBlockRow.InputBlockComponentStack.Peek();
+            if (currentInputBlockRow.RowCenterYOffset > caretRowPoint.Y+0.5*fontSize)
+            { 
+                Vector caretVector = topComponent.GetRedirectCaretVector();
+                SetCaretOffset(caretVector.X, caretVector.Y);
+            }
+        
         }
 
-
-
-        private void RefreshComponentShapeBlock(BlockComponent inputComponent)
+        private void RefreshComponentShapeBlock(BlockComponentBase inputComponent)
         {
             if (inputComponent is FractionBlockComponent)
             {
@@ -287,9 +302,9 @@ namespace ClientView
             }
         }
 
-        public void LayoutComponentStackChildrenCenter(Stack<BlockComponent> currentRowComponentStack)
+        public void LayoutComponentStackChildrenCenter(Stack<BlockComponentBase> currentRowComponentStack)
         {
-            Stack<BlockComponent> tempComponentStack = new Stack<BlockComponent>();
+            Stack<BlockComponentBase> tempComponentStack = new Stack<BlockComponentBase>();
 
             var newInputComponent = currentRowComponentStack.Pop();
 
@@ -300,7 +315,7 @@ namespace ClientView
                 double rowYOffset = 0;
                 var inputChild = topComponent.Children[topComponent.CurrentInputPart];
 
-                rowYOffset = GetChildrenMaxCenterLine(inputChild);
+                rowYOffset = BlockComponentTools.GetChildrenMaxCenterLine(inputChild);
 
                 AlignChildrenToMaxCenter(rowYOffset, inputChild);
 
@@ -322,7 +337,7 @@ namespace ClientView
             currentRowComponentStack.Push(newInputComponent);
         }
 
-        private void UpdateShapeBlocksLocation(BlockComponent topComponent)
+        private void UpdateShapeBlocksLocation(BlockComponentBase topComponent)
         {
             if (topComponent is FractionBlockComponent)
             {
@@ -352,26 +367,7 @@ namespace ClientView
             }
         }
 
-        private double GetChildrenMaxCenterLine(List<IBlockComponent> children)
-        {
-            //行内Y偏移量
-            double maxCenterLineYOffset = 0;
-            if (children != null && children.Count > 0)
-            {
-                foreach (var item in children)
-                {
-                    var areaRect = item.GetRect();
-                    double itemCenterLineOffset = item.GetHorizontialAlignmentYOffset();
-                    if (itemCenterLineOffset > maxCenterLineYOffset)
-                    {
-                        maxCenterLineYOffset = itemCenterLineOffset;
-                    }
-                }
-            }
-
-            return maxCenterLineYOffset;
-        }
-
+   
         private void AdjustBlockChildLocation(MathData.Block block, double xOffset, double yOffset)
         {
             FrameworkElement matchedElement = GetElementByUid(block.RenderUid);
@@ -461,9 +457,9 @@ namespace ClientView
 
                 AdjustBlockChildLocation(blockItem, xOffset, yOffset);
             }
-            else if (block is BlockComponent)
+            else if (block is BlockComponentBase)
             {
-                var componentBlock = block as BlockComponent;
+                var componentBlock = block as BlockComponentBase;
                 foreach (var componentChild in componentBlock.Children)
                 {
                     if (componentChild.Count > 0)
@@ -475,9 +471,9 @@ namespace ClientView
                                 var blockChild = partChild as MathData.Block;
                                 AdjustBlockChildLocation(blockChild, xOffset, yOffset);
                             }
-                            else if (partChild is BlockComponent)
+                            else if (partChild is BlockComponentBase)
                             {
-                                var blockComponent = partChild as BlockComponent;
+                                var blockComponent = partChild as BlockComponentBase;
                                 AdjustComponentChildrenLocation(partChild, xOffset, yOffset);
 
                             }
@@ -598,6 +594,11 @@ namespace ClientView
         private void NextPartButton_Clicked(object sender, RoutedEventArgs e)
         {
             AcceptInputCommand(InputCommands.NextCommand);
+        }
+
+        private void SuperscriptTypeButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            AcceptInputCommand(InputCommands.Exponential);
         }
     }
 }

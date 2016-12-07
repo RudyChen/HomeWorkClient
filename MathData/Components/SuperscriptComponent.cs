@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace MathData
 {
-    public class SuperscriptComponent : BlockComponent, IBlockComponent
+    public class SuperscriptComponent : BlockComponentBase, IBlockComponent
     {
         private double fontHeight = 18;
         public double FontSize
@@ -15,11 +15,11 @@ namespace MathData
             get { return fontHeight; }
             set { fontHeight = value; }
         }
-   
+
 
         public double SuperscriptFontSize
         {
-            get { return 0.5* fontHeight; }           
+            get { return 0.5 * fontHeight; }
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace MathData
             throw new NotImplementedException();
         }
 
-     
+
 
         public void LayoutChildren()
         {
@@ -69,7 +69,16 @@ namespace MathData
 
         public double GetHorizontialAlignmentYOffset()
         {
-            return this.Rect.Top + this.Rect.Height * 2 / 3;
+            if (Children[0].Count == 0)
+            {
+                return this.Rect.Top+this.Rect.Height * 2 / 3;
+            }
+            else
+            {
+                double centerYOffset = BlockComponentTools.GetChildrenMaxCenterLine(Children[0]);
+                return this.Rect.Top + centerYOffset;
+            }
+
         }
 
         public Rect GetRect()
@@ -85,9 +94,9 @@ namespace MathData
                 //指数部分
                 if (child == Children[1])
                 {
-                    return new Rect(this.Rect.Location, new Size(4, 0.5*fontHeight));
+                    return new Rect(this.Rect.Location, new Size(4, 0.5 * fontHeight));
                 }
-              
+
                 return new Rect(this.Rect.Location, new Size(10, fontHeight));
             }
             else
@@ -111,7 +120,7 @@ namespace MathData
 
                 return totalRect;
             }
-                     
+
         }
 
         public override Point GetNextPartLocation(double rowTop, ref bool isInputFinished)
@@ -120,17 +129,59 @@ namespace MathData
 
             var baseChild = Children[0];
             var baseRect = GetChildRect(baseChild);
-            if (CurrentInputPart==0)
+            if (CurrentInputPart == 0)
             {
+                nextPartLocation = new Point(this.Rect.Left + baseRect.Width, rowTop + baseRect.Top - 0.5 * fontHeight);
                 CurrentInputPart++;
                 isInputFinished = false;
             }
             else
             {
+                var topRect = GetChildRect(Children[1]);
+                double centerYOffset = BlockComponentTools.GetChildrenMaxCenterLine(Children[0]);
+                nextPartLocation = new Point(this.Rect.Left + baseRect.Width+topRect.Width, rowTop + centerYOffset-0.5*fontHeight);
+
+                UpdateRect();
+
                 isInputFinished = true;
             }
 
             return nextPartLocation;
+        }
+
+        public override void UpdateRect()
+        {
+            Rect componentRect = new Rect(Rect.Location, new Size(0, 0));
+            if (IsEditComponent())
+            {
+                return;
+            }
+
+            foreach (var item in Children)
+            {
+                var childRect = GetChildRect(item);
+                componentRect.Union(childRect);
+            }
+
+            this.Rect = componentRect;
+        }
+
+        private bool IsEditComponent()
+        {
+            foreach (var item in Children)
+            {
+                if (item.Count == 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public override Vector GetRedirectCaretVector()
+        {
+            return new Vector(0, 0.5 * fontHeight);
         }
 
     }

@@ -44,7 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Block.cs" />
-    <Compile Include="BlockComponent.cs" />
+    <Compile Include="BlockComponentBase.cs" />
+    <Compile Include="BlockComponentTools.cs" />
     <Compile Include="BlockRow.cs" />
     <Compile Include="CharBlock.cs" />
     <Compile Include="CommandsEnum.cs" />

@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace MathData
 {
-    public class FractionBlockComponent : BlockComponent, IBlockComponent
+    public class FractionBlockComponent : BlockComponentBase, IBlockComponent
     {
 
         private double fontHeight = 18;
@@ -41,9 +41,9 @@ namespace MathData
         public void AddChild(IBlockComponent blockComponent, Point rowPoint)
         {
             //添加元素导致Block大小改变
-            if (blockComponent is BlockComponent)
+            if (blockComponent is BlockComponentBase)
             {
-                var baseBlockComponent = blockComponent as BlockComponent;
+                var baseBlockComponent = blockComponent as BlockComponentBase;
                 baseBlockComponent.SizeChangedEvent += BlockBaseComponent_SizeChangedEvent;
 
 

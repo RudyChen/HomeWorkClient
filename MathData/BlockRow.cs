@@ -24,7 +24,7 @@ namespace MathData
 
 
 
-        private Stack<BlockComponent> inputBlockComponentStack = new Stack<BlockComponent>();
+        private Stack<BlockComponentBase> inputBlockComponentStack = new Stack<BlockComponentBase>();
 
         /// <summary>
         /// 水平居中排列子元素
@@ -75,7 +75,7 @@ namespace MathData
             }
             else
             {
-                var componentBlock = block as BlockComponent;
+                var componentBlock = block as BlockComponentBase;
                 //嵌套在组合块里面的
                 if (InputBlockComponentStack.Count > 0)
                 {
@@ -101,8 +101,6 @@ namespace MathData
                 }
                 layoutRowChildrenHorizontialCenter();
             }
-
-
         }
 
         private void UpdateAllNastedComponentBlockChildRect(Size offsetSize)
@@ -161,7 +159,7 @@ namespace MathData
             set { rowRect = value; }
         }
 
-        public Stack<BlockComponent> InputBlockComponentStack
+        public Stack<BlockComponentBase> InputBlockComponentStack
         {
             get { return inputBlockComponentStack; }
             set { inputBlockComponentStack = value; }
