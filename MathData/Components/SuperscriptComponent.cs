@@ -75,8 +75,18 @@ namespace MathData
             }
             else
             {
-                double centerYOffset = BlockComponentTools.GetChildrenMaxCenterLine(Children[0]);
-                return this.Rect.Top + centerYOffset;
+                var baseRect = GetChildRect(Children[0]);
+              
+                var baseCenterYOffset = BlockComponentTools.GetChildrenMaxCenterLine(Children[0]);
+                double centerYOffset = 0;
+                if (Children[1].Count != 0)
+                {
+                    var superScript = GetChildRect(Children[1]);
+                    centerYOffset += superScript.Top + superScript.Height + baseCenterYOffset;
+                    return centerYOffset;
+                }
+
+                return this.Rect.Top + baseRect.Top+ baseCenterYOffset;
             }
 
         }
@@ -156,7 +166,7 @@ namespace MathData
             {
                 return;
             }
-
+         
             foreach (var item in Children)
             {
                 var childRect = GetChildRect(item);
