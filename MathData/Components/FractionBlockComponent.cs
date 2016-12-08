@@ -208,5 +208,13 @@ namespace MathData
 
             return false;
         }
+
+        public void Move(Vector offsetVector)
+        {
+            foreach (var item in Children)
+            {
+                BlockComponentTools.MoveBlockComponents(item, offsetVector);
+            }
+        }
     }
 }

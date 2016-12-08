@@ -119,5 +119,10 @@ namespace MathData
         {
             return this.Rect.Top+ this.Rect.Height / 2;
         }
+
+        public void Move(Vector offsetVector)
+        {
+            this.Rect = new Rect(this.Rect.X + offsetVector.X, this.Rect.Y + offsetVector.Y, this.Rect.Width, this.Rect.Height);
+        }
     }
 }

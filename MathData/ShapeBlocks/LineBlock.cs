@@ -67,5 +67,10 @@ namespace MathData
         {
             throw new NotImplementedException();
         }
+
+        public void Move(Vector offsetVector)
+        {
+            this.Rect = new Rect(this.Rect.X + offsetVector.X, this.Rect.Y + offsetVector.Y, this.Rect.Width, this.Rect.Height);
+        }
     }
 }

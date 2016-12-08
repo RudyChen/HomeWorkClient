@@ -194,5 +194,12 @@ namespace MathData
             return new Vector(0, 0.5 * fontHeight);
         }
 
+        public void Move(Vector offsetVector)
+        {
+            foreach (var item in Children)
+            {
+                BlockComponentTools.MoveBlockComponents(item, offsetVector);
+            }
+        }
     }
 }

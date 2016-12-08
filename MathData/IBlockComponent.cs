@@ -19,5 +19,7 @@ namespace MathData
         Rect GetRect();
 
         double GetHorizontialAlignmentYOffset();
+
+        void Move(Vector offsetVector);
     }
 }
