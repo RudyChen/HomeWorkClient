@@ -29,7 +29,7 @@ namespace MathData
         /// <summary>
         /// 水平居中排列子元素
         /// </summary>
-        public delegate void LayoutRowChildrenHorizontialCenterHandler();
+        public delegate void LayoutRowChildrenHorizontialCenterHandler(Vector offsetVector);
 
         /// <summary>
         /// 更新行内图形块等
@@ -75,6 +75,7 @@ namespace MathData
             }
             else
             {
+                Vector offsetVector = new Vector(0, 0);
                 var componentBlock = block as BlockComponentBase;
                 //嵌套在组合块里面的
                 if (InputBlockComponentStack.Count > 0)
@@ -83,14 +84,15 @@ namespace MathData
                     var containerChildRect = container.GetInputChildRect();
                     if (containerChildRect.Height < componentBlock.Rect.Height)
                     {
-                        var offsetHeight = componentBlock.Rect.Height - containerChildRect.Height;
+
+                        offsetVector.Y = componentBlock.Rect.Height - containerChildRect.Height;
                         //更新所有嵌套元素子块区域大小
-                        UpdateAllNastedComponentBlockChildRect(new Size(0, offsetHeight));
+                        UpdateAllNastedComponentBlockChildRect(new Size(0, offsetVector.Y));
                     }
 
                     InputBlockComponentStack.Push(componentBlock);
                     container.Children[container.CurrentInputPart].Add(block);
-                    container.UpdateShapeBlocks();
+                    //container.UpdateShapeBlocks();
                 }
                 else
                 {
@@ -99,9 +101,11 @@ namespace MathData
                     InputBlockComponentStack.Push(componentBlock);
 
                 }
-                layoutRowChildrenHorizontialCenter();
+                layoutRowChildrenHorizontialCenter(offsetVector);
             }
         }
+
+      
 
         private void UpdateAllNastedComponentBlockChildRect(Size offsetSize)
         {

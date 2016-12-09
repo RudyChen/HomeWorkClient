@@ -99,5 +99,13 @@ namespace MathData
         {
             return new Vector(0,0);
         }
+
+        /// <summary>
+        /// 更新非输入部分子块位置
+        /// </summary>
+        public virtual void UpdateOtherChildrenLocation(Vector offsetVector)
+        {
+
+        }
     }
 }

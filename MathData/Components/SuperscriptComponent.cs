@@ -201,5 +201,16 @@ namespace MathData
                 BlockComponentTools.MoveBlockComponents(item, offsetVector);
             }
         }
+
+        public override void UpdateOtherChildrenLocation(Vector offsetVector)
+        {
+            for (int i = 0; i < Children.Count; i++)
+            {
+                if (i != CurrentInputPart)
+                {
+                    BlockComponentTools.MoveBlockComponents(Children[i], offsetVector);
+                }
+            }
+        }
     }
 }

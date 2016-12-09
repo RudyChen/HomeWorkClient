@@ -80,7 +80,7 @@ namespace ClientView
         {
             var rowPoint = GetRowPoint();
             Point ExponentialLeftPoint = rowPoint;
-            
+
             var superscriptY = rowPoint.Y - 0.5 * fontSize;
             if (superscriptY >= 0)
             {
@@ -113,7 +113,7 @@ namespace ClientView
             FractionBlockComponent fractionBlock = new FractionBlockComponent(rowPoint, fractionLineData) { FontSize = fontSize };
 
             double alignCenterYOffset = 0;
-            if (currentInputBlockRow.Children.Count>0)
+            if (currentInputBlockRow.Children.Count > 0)
             {
                 var lastChild = currentInputBlockRow.Children.Last();
                 if (null != lastChild)
@@ -153,7 +153,7 @@ namespace ClientView
                     }
                 }
             }
-            
+
 
             editorCanvas.Children.Add(fractionLine);
             fractionBlock = new FractionBlockComponent(rowPoint, fractionLineData) { FontSize = fontSize };
@@ -257,7 +257,7 @@ namespace ClientView
             }
         }
 
-        public void LayoutRowChildrenHorizontialCenter()
+        public void LayoutRowChildrenHorizontialCenter(Vector offsetVector)
         {
             /*
             先循环输入组合堆栈，由内向外更新大小，对齐
@@ -266,7 +266,7 @@ namespace ClientView
 
             if (currentInputBlockRow.InputBlockComponentStack.Count > 0)
             {
-                LayoutComponentStackChildrenCenter(currentInputBlockRow.InputBlockComponentStack);
+                LayoutComponentStackChildrenCenter(currentInputBlockRow.InputBlockComponentStack, offsetVector);
             }
 
             currentInputBlockRow.RowCenterYOffset = BlockComponentTools.GetChildrenMaxCenterLine(currentInputBlockRow.Children);
@@ -277,12 +277,12 @@ namespace ClientView
 
             var caretRowPoint = GetRowPoint();
             var topComponent = currentInputBlockRow.InputBlockComponentStack.Peek();
-            if (caretRowPoint.Y-0.5*fontSize<0)
-            { 
+            if (caretRowPoint.Y - 0.5 * fontSize < 0)
+            {
                 Vector caretVector = topComponent.GetRedirectCaretVector();
                 SetCaretOffset(caretVector.X, caretVector.Y);
             }
-        
+
         }
 
         private void RefreshComponentShapeBlock(BlockComponentBase inputComponent)
@@ -314,7 +314,7 @@ namespace ClientView
             }
         }
 
-        public void LayoutComponentStackChildrenCenter(Stack<BlockComponentBase> currentRowComponentStack)
+        public void LayoutComponentStackChildrenCenter(Stack<BlockComponentBase> currentRowComponentStack, Vector offsetVector)
         {
             Stack<BlockComponentBase> tempComponentStack = new Stack<BlockComponentBase>();
 
@@ -331,11 +331,19 @@ namespace ClientView
 
                 AlignChildrenToMaxCenter(rowYOffset, inputChild);
 
-                //todo:输入部分大小改变，更新另外组成部分位置
+                /*输入部分大小改变(主要是高度变化)，更新另外组成部分位置
+                这是一种后台更新数据，与页面更新数据分离的方式，先更新后台数据，然后再更新页面
+                */
+                topComponent.UpdateOtherChildrenLocation(offsetVector);
 
-                topComponent.UpdateShapeBlocks();
+                UpdateOtherBlockChildrenLocation(topComponent, offsetVector);
 
-                UpdateShapeBlocksLocation(topComponent);
+                /*此处更新图形块由上面方法代替，但是分数线长度更新并不能代替所以得保留
+                */
+                //topComponent.UpdateShapeBlocks();
+
+                //UpdateShapeBlocksLocation(topComponent);
+
 
                 topComponent.UpdateRect();
 
@@ -351,20 +359,64 @@ namespace ClientView
             currentRowComponentStack.Push(newInputComponent);
         }
 
-        private void UpdateShapeBlocksLocation(BlockComponentBase topComponent)
+        /// <summary>
+        /// 用于更新不在输入堆栈中的子块位置
+        /// </summary>
+        /// <param name="componentBase"></param>
+        /// <param name="offsetVector"></param>
+        private void UpdateOtherBlockChildrenLocation(BlockComponentBase componentBase, Vector offsetVector)
         {
-            if (topComponent is FractionBlockComponent)
+            for (int i = 0; i < componentBase.Children.Count; i++)
             {
-                var fractionComponent = topComponent as FractionBlockComponent;
-                var lineBlock = fractionComponent.Children[2][0] as LineBlock;
-                FrameworkElement lineElement = GetElementByUid(lineBlock.RenderUid);
-                var updatedLine = RefreshFractionLineElement(lineBlock, lineElement as Line);
-                editorCanvas.Children.Remove(lineElement);
-                editorCanvas.Children.Add(updatedLine);
+                if (i != componentBase.CurrentInputPart)
+                {
+                    UpdateComponentChildrenLocation(componentBase.Children[i], offsetVector);
+                }
+            }
+        }
+        
+        private void UpdateComponentChildrenLocation(List<IBlockComponent> childBlocks, Vector offsetVector)
+        {
+            if (childBlocks.Count>0)
+            {
+                foreach (var item in childBlocks)
+                {
+                    if (item is BlockComponentBase)
+                    {
+                        var componentItem = item as BlockComponentBase;
+                        foreach (var itemChild in componentItem.Children)
+                        {
+                            UpdateComponentChildrenLocation(itemChild, offsetVector);
+                        }
+                    }
+                    else
+                    {
+                        var blockItem = item as MathData.Block;
+                        UpdateBlockLocation(blockItem, offsetVector);
+                    }
+                }
             }
         }
 
-
+        private void UpdateBlockLocation(MathData.Block block, Vector offsetVector)
+        {
+            FrameworkElement element = GetElementByUid(block.RenderUid);
+            if (block is CharBlock)
+            {
+                Canvas.SetLeft(element, Canvas.GetLeft(element) + offsetVector.X);
+                Canvas.SetTop(element, Canvas.GetTop(element) + offsetVector.Y);
+            }
+            else if (block is LineBlock)
+            {
+                var lineElement = element as Line;
+                editorCanvas.Children.Remove(lineElement);
+                lineElement.X1 += offsetVector.X;
+                lineElement.X2 += offsetVector.X;
+                lineElement.Y1 += offsetVector.Y;
+                lineElement.Y2 += offsetVector.Y;
+                editorCanvas.Children.Add(lineElement);
+            }
+        }
 
         private void AlignChildrenToMaxCenter(double maxcCenterLienYOffset, List<IBlockComponent> children)
         {
@@ -375,14 +427,13 @@ namespace ClientView
                     var itemAlignmentYOffset = item.GetHorizontialAlignmentYOffset();
 
                     double adjustYOffset = maxcCenterLienYOffset - itemAlignmentYOffset;
-
+                                       
                     AdjustComponentChildrenLocation(item, 0, adjustYOffset);
                 }
             }
         }
 
-   
-        private void AdjustBlockChildLocation(MathData.Block block, double xOffset, double yOffset)
+        private void AdjustBlockLocation(MathData.Block block, double xOffset, double yOffset)
         {
             FrameworkElement matchedElement = GetElementByUid(block.RenderUid);
 
@@ -431,24 +482,6 @@ namespace ClientView
             return newLine;
         }
 
-        private Line RefreshFractionLineElement(LineBlock lineBlock, Line oldLine)
-        {
-            Line newLine = new Line();
-            newLine.X1 = oldLine.X1;
-
-
-            newLine.Y1 = lineBlock.Rect.Top + currentInputBlockRow.RowRect.Top;
-            newLine.Y2 = newLine.Y1;
-
-            newLine.X2 = oldLine.X1 + lineBlock.Rect.Width;
-
-            newLine.Stroke = oldLine.Stroke;
-            newLine.StrokeThickness = oldLine.StrokeThickness;
-            newLine.Uid = oldLine.Uid;
-
-            return newLine;
-        }
-
         private Line UpdateFractionLineElementLength(LineBlock lineBlock, Line oldLine)
         {
             Line newLine = new Line();
@@ -469,7 +502,7 @@ namespace ClientView
             {
                 var blockItem = block as MathData.Block;
 
-                AdjustBlockChildLocation(blockItem, xOffset, yOffset);
+                AdjustBlockLocation(blockItem, xOffset, yOffset);
             }
             else if (block is BlockComponentBase)
             {
@@ -483,13 +516,12 @@ namespace ClientView
                             if (partChild is MathData.Block)
                             {
                                 var blockChild = partChild as MathData.Block;
-                                AdjustBlockChildLocation(blockChild, xOffset, yOffset);
+                                AdjustBlockLocation(blockChild, xOffset, yOffset);
                             }
                             else if (partChild is BlockComponentBase)
                             {
                                 var blockComponent = partChild as BlockComponentBase;
-                                AdjustComponentChildrenLocation(partChild, xOffset, yOffset);
-
+                                AdjustComponentChildrenLocation(partChild, xOffset, yOffset);                               
                             }
                         }
                     }
