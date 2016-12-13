@@ -9,7 +9,7 @@ namespace MathData
 {
     public class SuperscriptComponent : BlockComponentBase, IBlockComponent
     {
-        private double fontHeight = 18;
+        private double fontHeight = 18.4;
         public double FontSize
         {
             get { return fontHeight; }
@@ -78,15 +78,8 @@ namespace MathData
                 var baseRect = GetChildRect(Children[0]);
               
                 var baseCenterYOffset = BlockComponentTools.GetChildrenMaxCenterLine(Children[0]);
-                double centerYOffset = 0;
-                if (Children[1].Count != 0)
-                {
-                    var superScript = GetChildRect(Children[1]);
-                    centerYOffset += superScript.Top + superScript.Height + baseCenterYOffset;
-                    return centerYOffset;
-                }
 
-                return this.Rect.Top + baseRect.Top+ baseCenterYOffset;
+                return baseCenterYOffset;
             }
 
         }

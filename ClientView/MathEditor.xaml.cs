@@ -25,7 +25,7 @@ namespace ClientView
 
         FontFamily fontFamily = new FontFamily("Times new roman");
 
-        private double fontSize = 18;
+        private double fontSize = 18.4;
 
 
 
@@ -81,10 +81,26 @@ namespace ClientView
             var rowPoint = GetRowPoint();
             Point ExponentialLeftPoint = rowPoint;
 
+            Rect containerRect;
+            if (currentInputBlockRow.InputBlockComponentStack.Count>0)
+            {
+                var blockComponent=currentInputBlockRow.InputBlockComponentStack.Peek();
+                var inputChild = blockComponent.Children[blockComponent.CurrentInputPart];
+                containerRect = blockComponent.GetChildRect(inputChild);
+            }
+            else
+            {
+                containerRect = new Rect();
+            }
+
             var superscriptY = rowPoint.Y - 0.5 * fontSize;
-            if (superscriptY >= 0)
+            if (superscriptY >= containerRect.Top)
             {
                 ExponentialLeftPoint = new Point(rowPoint.X, superscriptY);
+            }
+            else
+            {
+                ExponentialLeftPoint = new Point(rowPoint.X, containerRect.Top);
             }
 
             SuperscriptComponent superscriptComponent = new SuperscriptComponent(ExponentialLeftPoint);
@@ -276,12 +292,32 @@ namespace ClientView
             UpdateRowBlockRectByChildren();
 
             var caretRowPoint = GetRowPoint();
-            var topComponent = currentInputBlockRow.InputBlockComponentStack.Peek();
-            if (caretRowPoint.Y - 0.5 * fontSize < 0)
+            var topComponent = currentInputBlockRow.InputBlockComponentStack.Pop();
+            BlockComponentBase containerComponent;
+            Rect containerInputChildRect;
+            if (currentInputBlockRow.InputBlockComponentStack.Count > 0)
             {
-                Vector caretVector = topComponent.GetRedirectCaretVector();
-                SetCaretOffset(caretVector.X, caretVector.Y);
+                containerComponent = currentInputBlockRow.InputBlockComponentStack.Peek();
+                
+                var inputChild = containerComponent.Children[containerComponent.CurrentInputPart];
+                containerInputChildRect = containerComponent.GetChildRect(inputChild);
             }
+            else
+            {
+                containerInputChildRect = new Rect();
+            }
+            currentInputBlockRow.InputBlockComponentStack.Push(topComponent);
+
+
+            if (topComponent is SuperscriptComponent)
+            {
+                if (caretRowPoint.Y - 0.5 * fontSize < containerInputChildRect.Top)
+                {
+                    Vector caretVector = topComponent.GetRedirectCaretVector();
+                    SetCaretLocation(new Point( caretRowPoint.X, currentInputBlockRow.RowRect.Top + containerInputChildRect.Top + 0.5 * fontSize));                    
+                }
+            }
+            
 
         }
 
@@ -318,7 +354,7 @@ namespace ClientView
         {
             Stack<BlockComponentBase> tempComponentStack = new Stack<BlockComponentBase>();
 
-            var newInputComponent = currentRowComponentStack.Pop();
+           // var newInputComponent = currentRowComponentStack.Pop();
 
             while (currentRowComponentStack.Count > 0)
             {
@@ -331,19 +367,21 @@ namespace ClientView
 
                 AlignChildrenToMaxCenter(rowYOffset, inputChild);
 
-                /*输入部分大小改变(主要是高度变化)，更新另外组成部分位置
-                这是一种后台更新数据，与页面更新数据分离的方式，先更新后台数据，然后再更新页面
-                */
-                topComponent.UpdateOtherChildrenLocation(offsetVector);
+                if (BlockComponentTools.CanUpdateOtherChildrenLocation(topComponent))
+                {
+                    /*输入部分大小改变(主要是高度变化)，更新另外组成部分位置
+                     这是一种后台更新数据，与页面更新数据分离的方式，先更新后台数据，然后再更新页面
+                     */
+                    topComponent.UpdateOtherChildrenLocation(offsetVector);
 
-                UpdateOtherBlockChildrenLocation(topComponent, offsetVector);
+                    UpdateOtherBlockChildrenLocation(topComponent, offsetVector);
 
-                /*此处更新图形块由上面方法代替，但是分数线长度更新并不能代替所以得保留
-                */
-                //topComponent.UpdateShapeBlocks();
+                    /*此处更新图形块由上面方法代替，但是分数线长度更新并不能代替所以得保留
+                    */
+                    //topComponent.UpdateShapeBlocks();
 
-                //UpdateShapeBlocksLocation(topComponent);
-
+                    //UpdateShapeBlocksLocation(topComponent);
+                }
 
                 topComponent.UpdateRect();
 
@@ -356,8 +394,11 @@ namespace ClientView
                 currentRowComponentStack.Push(backComponent);
             }
 
-            currentRowComponentStack.Push(newInputComponent);
+          //  currentRowComponentStack.Push(newInputComponent);
         }
+
+
+
 
         /// <summary>
         /// 用于更新不在输入堆栈中的子块位置
@@ -374,10 +415,10 @@ namespace ClientView
                 }
             }
         }
-        
+
         private void UpdateComponentChildrenLocation(List<IBlockComponent> childBlocks, Vector offsetVector)
         {
-            if (childBlocks.Count>0)
+            if (childBlocks.Count > 0)
             {
                 foreach (var item in childBlocks)
                 {
@@ -427,7 +468,7 @@ namespace ClientView
                     var itemAlignmentYOffset = item.GetHorizontialAlignmentYOffset();
 
                     double adjustYOffset = maxcCenterLienYOffset - itemAlignmentYOffset;
-                                       
+
                     AdjustComponentChildrenLocation(item, 0, adjustYOffset);
                 }
             }
@@ -521,7 +562,7 @@ namespace ClientView
                             else if (partChild is BlockComponentBase)
                             {
                                 var blockComponent = partChild as BlockComponentBase;
-                                AdjustComponentChildrenLocation(partChild, xOffset, yOffset);                               
+                                AdjustComponentChildrenLocation(partChild, xOffset, yOffset);
                             }
                         }
                     }

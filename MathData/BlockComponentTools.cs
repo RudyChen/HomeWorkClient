@@ -60,5 +60,32 @@ namespace MathData
                 }
             }
         }
+
+        public static bool CanUpdateOtherChildrenLocation(BlockComponentBase blockBase)
+        {
+            bool canUpdate = false;
+            if (blockBase is FractionBlockComponent)
+            {
+                //编辑分子，更新分母位置
+                if (blockBase.CurrentInputPart==0)
+                {
+                    if (blockBase.Children[1].Count>0)
+                    {
+                        canUpdate = false;
+                    }
+                }
+            }
+            else if (blockBase is SuperscriptComponent)
+            {
+                //编辑上标，更新基数位置
+                if (blockBase.CurrentInputPart==1)
+                {
+                    canUpdate = true;
+                }
+            }
+
+
+            return canUpdate;
+        }
     }
 }
