@@ -51,6 +51,7 @@
     <Compile Include="CommandsEnum.cs" />
     <Compile Include="Components\FractionBlockComponent.cs" />
     <Compile Include="IBlockComponent.cs" />
+    <Compile Include="Components\RadicalComponent.cs" />
     <Compile Include="ShapeBlocks\LineBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShapeBlock.cs" />

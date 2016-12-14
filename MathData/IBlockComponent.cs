@@ -9,13 +9,6 @@ namespace MathData
 {
     public interface IBlockComponent
     {
-        void AddChild(IBlockComponent blockComponent, Point rowPoint);
-        void AddShapeChild();
-        void RemoveCharChild();
-        void LayoutChildren();
-
-        Rect CreateRect(Point rowPoint);
-
         Rect GetRect();
 
         double GetHorizontialAlignmentYOffset();

@@ -10,7 +10,7 @@ namespace MathData
     public class FractionBlockComponent : BlockComponentBase, IBlockComponent
     {
 
-        private double fontHeight = 18;
+        private double fontHeight = 18.4;
         public double FontSize
         {
             get { return fontHeight; }
@@ -36,57 +36,6 @@ namespace MathData
             Children.Add(child0);
             Children.Add(child1);
             Children.Add(shapeChild);
-        }
-
-        public void AddChild(IBlockComponent blockComponent, Point rowPoint)
-        {
-            //添加元素导致Block大小改变
-            if (blockComponent is BlockComponentBase)
-            {
-                var baseBlockComponent = blockComponent as BlockComponentBase;
-                baseBlockComponent.SizeChangedEvent += BlockBaseComponent_SizeChangedEvent;
-
-
-
-            }
-            else
-            {
-                var inputCharBlock = blockComponent as CharBlock;
-                var size = inputCharBlock.GetSize();
-                inputCharBlock.Rect = new Rect(rowPoint, size);
-                this.OnSizeChanged(size);
-            }
-
-            //加入child元素
-            if (CurrentInputPart == 0)
-            {
-                Children[0].Add(blockComponent);
-            }
-            else if (CurrentInputPart == 1)
-            {
-                Children[1].Add(blockComponent);
-            }
-        }
-
-        private void BlockBaseComponent_SizeChangedEvent(Size size)
-        {
-            //this.OnSizeChangedEvent()
-            throw new NotImplementedException();
-        }
-
-        public void AddShapeChild()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void LayoutChildren()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveCharChild()
-        {
-            throw new NotImplementedException();
         }
 
         public Rect CreateRect(Point rowPoint)

@@ -31,18 +31,7 @@ namespace MathData
             set { width = value; }
         }
 
-
-        public void AddChild(IBlockComponent blockComponent, Point rowPoint)
-        {
-           
-        }
-
-        public void AddShapeChild()
-        {
-           
-        }
-
-        public Rect CreateRect(Point rowPoint)
+        private Rect CreateRect(Point rowPoint)
         {
             this.Rect= new Rect(rowPoint, new Size(width, height));
             return Rect;
@@ -57,16 +46,7 @@ namespace MathData
         {
             return this.Rect;
         }
-
-        public void LayoutChildren()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveCharChild()
-        {
-            throw new NotImplementedException();
-        }
+     
 
         public void Move(Vector offsetVector)
         {

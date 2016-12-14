@@ -21,7 +21,7 @@ namespace MathData
 
         private string text;
 
-        public CharBlock(string text,string fontStyle,string fontFamily,string foreground,double fontSize,string renderUid)
+        public CharBlock(string text,string fontStyle,string fontFamily,string foreground,double fontSize,string renderUid,Point rowPoint)
         {
             this.text = text;
             this.fontStyle = fontStyle;
@@ -29,6 +29,7 @@ namespace MathData
             this.foreground = foreground;
             this.fontSize = fontSize;
             base.RenderUid = renderUid;
+            this.Rect=CreateRect(rowPoint);
         }
 
         private double widthIncludingTrailingWhitespace;
@@ -103,7 +104,7 @@ namespace MathData
             throw new NotImplementedException();
         }
 
-        public Rect CreateRect(Point rowPoint)
+        private Rect CreateRect(Point rowPoint)
         {
             this.Rect = new Rect(rowPoint, GetSize());
 

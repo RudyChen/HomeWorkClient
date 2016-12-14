@@ -245,11 +245,12 @@ namespace ClientView
             inputedTextBlock.FontStyle = FontStyles.Italic;
             inputedTextBlock.Uid = Guid.NewGuid().ToString();
 
-            CharBlock charBlock = new CharBlock(inputedTextBlock.Text, inputedTextBlock.FontStyle.ToString(), inputedTextBlock.FontFamily.ToString(), inputedTextBlock.Foreground.ToString(), inputedTextBlock.FontSize, inputedTextBlock.Uid);
+            var rowPoint = GetRowPoint();
+            CharBlock charBlock = new CharBlock(inputedTextBlock.Text, inputedTextBlock.FontStyle.ToString(), inputedTextBlock.FontFamily.ToString(), inputedTextBlock.Foreground.ToString(), inputedTextBlock.FontSize, inputedTextBlock.Uid, rowPoint);
             var oldCaretLeft = Canvas.GetLeft(caretTextBox);
             var oldCaretTop = Canvas.GetTop(caretTextBox);
             //初始化块区域
-            var charRect = charBlock.CreateRect(new Point(oldCaretLeft, oldCaretTop - currentInputBlockRow.RowRect.Top));
+           
 
             currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
 
@@ -597,12 +598,11 @@ namespace ClientView
                 inputedTextBlock.FontStyle = FontStyles.Normal;
                 inputedTextBlock.Uid = Guid.NewGuid().ToString();
 
-                CharBlock charBlock = new CharBlock(inputedTextBlock.Text, inputedTextBlock.FontStyle.ToString(), inputedTextBlock.FontFamily.ToString(), inputedTextBlock.Foreground.ToString(), inputedTextBlock.FontSize, inputedTextBlock.Uid);
+                var rowPoint = GetRowPoint();
+                CharBlock charBlock = new CharBlock(inputedTextBlock.Text, inputedTextBlock.FontStyle.ToString(), inputedTextBlock.FontFamily.ToString(), inputedTextBlock.Foreground.ToString(), inputedTextBlock.FontSize, inputedTextBlock.Uid, rowPoint);
                 var oldCaretLeft = Canvas.GetLeft(caretTextBox);
                 var oldCaretTop = Canvas.GetTop(caretTextBox);
-                //初始化块区域
-                var charRect = charBlock.CreateRect(new Point(oldCaretLeft, oldCaretTop - currentInputBlockRow.RowRect.Top));
-
+                
                 currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
 
                 editorCanvas.Children.Add(inputedTextBlock);
