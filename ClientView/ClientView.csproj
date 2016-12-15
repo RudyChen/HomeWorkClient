@@ -76,6 +76,7 @@
     <Compile Include="MathEditor.xaml.cs">
       <DependentUpon>MathEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MathUIElementTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

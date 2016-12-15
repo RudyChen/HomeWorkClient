@@ -70,10 +70,25 @@ namespace ClientView
                     AddDefaultExponenttialComponent();
                     break;
                 case InputCommands.Radical:
+                    AddDefaultRadicalComponent();
+                    
                     break;
                 default:
                     break;
             }
+        }
+
+        private void AddDefaultRadicalComponent()
+        {
+            var location = GetCaretPoint();
+            var rowPoint = GetRowPoint();
+            Polyline polyline = MathUIElementTools.CreateRadicalPolyline(location, 18.4, 8, 10, Guid.NewGuid().ToString());
+            PolylineBlock raicalSymbol = MathUIElementTools.GetRadicalPolineBlocks(polyline, rowPoint);
+            RadicalComponent radicalComponent = new RadicalComponent(rowPoint, raicalSymbol);
+
+            currentInputBlockRow.AddBlockToRow(radicalComponent, LayoutRowChildrenHorizontialCenter, RefreshInputComponentShapeBlock);
+
+            editorCanvas.Children.Add(polyline);
         }
 
         private void AddDefaultExponenttialComponent()
@@ -104,7 +119,7 @@ namespace ClientView
             }
 
             SuperscriptComponent superscriptComponent = new SuperscriptComponent(ExponentialLeftPoint);
-            currentInputBlockRow.AddBlockToRow(superscriptComponent, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
+            currentInputBlockRow.AddBlockToRow(superscriptComponent, LayoutRowChildrenHorizontialCenter, RefreshInputComponentShapeBlock);
         }
 
         private void AddDefaultFractionComponent()
@@ -173,7 +188,7 @@ namespace ClientView
 
             editorCanvas.Children.Add(fractionLine);
             fractionBlock = new FractionBlockComponent(rowPoint, fractionLineData) { FontSize = fontSize };
-            currentInputBlockRow.AddBlockToRow(fractionBlock, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
+            currentInputBlockRow.AddBlockToRow(fractionBlock, LayoutRowChildrenHorizontialCenter, RefreshInputComponentShapeBlock);
         }
 
         private void InputNextPart()
@@ -252,7 +267,7 @@ namespace ClientView
             //初始化块区域
            
 
-            currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
+            currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter, RefreshInputComponentShapeBlock);
 
             editorCanvas.Children.Add(inputedTextBlock);
 
@@ -263,7 +278,7 @@ namespace ClientView
             return charBlock.WidthIncludingTrailingWhitespace;
         }
 
-        public void RefreshBlockRow()
+        public void RefreshInputComponentShapeBlock()
         {
             //todo:更新shape block大小
             if (currentInputBlockRow.InputBlockComponentStack.Count > 0)
@@ -603,7 +618,7 @@ namespace ClientView
                 var oldCaretLeft = Canvas.GetLeft(caretTextBox);
                 var oldCaretTop = Canvas.GetTop(caretTextBox);
                 
-                currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter, RefreshBlockRow);
+                currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter, RefreshInputComponentShapeBlock);
 
                 editorCanvas.Children.Add(inputedTextBlock);
 
@@ -686,6 +701,11 @@ namespace ClientView
         private void SuperscriptTypeButton_Clicked(object sender, RoutedEventArgs e)
         {
             AcceptInputCommand(InputCommands.Exponential);
+        }
+
+        private void RadicalTypeButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            AcceptInputCommand(InputCommands.Radical);
         }
     }
 }

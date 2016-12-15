@@ -19,9 +19,19 @@ namespace MathData
             set { fontHeight = value; }
         }
 
-        public RadicalComponent(Point rowPoint)
+        public RadicalComponent(Point rowPoint,PolylineBlock radicalSymbol)
         {
+            Children = new List<List<IBlockComponent>>();
+            this.Rect = radicalSymbol.Rect;
+            var child0= new List<IBlockComponent>();
+            var child1 = new List<IBlockComponent>();
+            var shapeChild= new List<IBlockComponent>();
 
+            shapeChild.Add(radicalSymbol);
+
+            Children.Add(child0);
+            Children.Add(child1);
+            Children.Add(shapeChild);
         }
              
         private Rect CreateRect(Point rowPoint)
