@@ -71,7 +71,7 @@ namespace ClientView
                     break;
                 case InputCommands.Radical:
                     AddDefaultRadicalComponent();
-                    
+                        
                     break;
                 default:
                     break;
@@ -81,14 +81,24 @@ namespace ClientView
         private void AddDefaultRadicalComponent()
         {
             var location = GetCaretPoint();
+            
             var rowPoint = GetRowPoint();
-            Polyline polyline = MathUIElementTools.CreateRadicalPolyline(location, 18.4, 8, 10, Guid.NewGuid().ToString());
-            PolylineBlock raicalSymbol = MathUIElementTools.GetRadicalPolineBlocks(polyline, rowPoint);
-            RadicalComponent radicalComponent = new RadicalComponent(rowPoint, raicalSymbol);
+            var id = Guid.NewGuid().ToString();
+            Polyline polyline = MathUIElementTools.CreateRadicalPolyline(new Point(location.X+2, location.Y), 18.4, 10, 10, id);
+            PolylineBlock raicalSymbol = MathUIElementTools.GetRadicalPolineBlocks(polyline, new Point(rowPoint.X+2,rowPoint.Y));
+            raicalSymbol.RenderUid = id;
+            RadicalComponent radicalComponent = new RadicalComponent(new Point(rowPoint.X + 2, rowPoint.Y), raicalSymbol);
 
             currentInputBlockRow.AddBlockToRow(radicalComponent, LayoutRowChildrenHorizontialCenter, RefreshInputComponentShapeBlock);
 
             editorCanvas.Children.Add(polyline);
+
+            if (radicalComponent.IsNeedRootIndex)
+            {
+                fontSize = fontSize * 2 / 3;
+                caretTextBox.FontSize = fontSize;
+            }
+
         }
 
         private void AddDefaultExponenttialComponent()
@@ -97,9 +107,9 @@ namespace ClientView
             Point ExponentialLeftPoint = rowPoint;
 
             Rect containerRect;
-            if (currentInputBlockRow.InputBlockComponentStack.Count>0)
+            if (currentInputBlockRow.InputBlockComponentStack.Count > 0)
             {
-                var blockComponent=currentInputBlockRow.InputBlockComponentStack.Peek();
+                var blockComponent = currentInputBlockRow.InputBlockComponentStack.Peek();
                 var inputChild = blockComponent.Children[blockComponent.CurrentInputPart];
                 containerRect = blockComponent.GetChildRect(inputChild);
             }
@@ -265,7 +275,7 @@ namespace ClientView
             var oldCaretLeft = Canvas.GetLeft(caretTextBox);
             var oldCaretTop = Canvas.GetTop(caretTextBox);
             //初始化块区域
-           
+
 
             currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter, RefreshInputComponentShapeBlock);
 
@@ -286,6 +296,28 @@ namespace ClientView
                 var inputComponent = currentInputBlockRow.InputBlockComponentStack.Peek();
                 inputComponent.UpdateShapeBlocks();
                 RefreshComponentShapeBlock(inputComponent);
+            }
+        }
+        private void RefreshComponentShapeBlock(BlockComponentBase inputComponent)
+        {
+            if (inputComponent is FractionBlockComponent)
+            {
+                var fractionComponent = inputComponent as FractionBlockComponent;
+                var lineBlock = fractionComponent.Children[2][0] as LineBlock;
+                var lineElement = GetElementByUid(lineBlock.RenderUid);
+                var newLineElement = UpdateFractionLineElementLength(lineBlock, lineElement as Line);
+                editorCanvas.Children.Remove(lineElement);
+                editorCanvas.Children.Add(newLineElement);
+            }
+            else if (inputComponent is RadicalComponent)
+            {
+                var radicalComponent = inputComponent as RadicalComponent;
+
+                var polylineBlock = radicalComponent.Children[radicalComponent.ShapeChildIndex][0] as PolylineBlock;
+                var oldRadicalSymbol = GetElementByUid(polylineBlock.RenderUid);
+                var polyline = MathUIElementTools.CreateRadicalPolyline(polylineBlock,currentInputBlockRow.RowRect.Top);
+                editorCanvas.Children.Remove(oldRadicalSymbol);
+                editorCanvas.Children.Add(polyline);
             }
         }
 
@@ -314,7 +346,7 @@ namespace ClientView
             if (currentInputBlockRow.InputBlockComponentStack.Count > 0)
             {
                 containerComponent = currentInputBlockRow.InputBlockComponentStack.Peek();
-                
+
                 var inputChild = containerComponent.Children[containerComponent.CurrentInputPart];
                 containerInputChildRect = containerComponent.GetChildRect(inputChild);
             }
@@ -324,30 +356,27 @@ namespace ClientView
             }
             currentInputBlockRow.InputBlockComponentStack.Push(topComponent);
 
-
             if (topComponent is SuperscriptComponent)
             {
                 if (caretRowPoint.Y - 0.5 * fontSize < containerInputChildRect.Top)
                 {
-                    Vector caretVector = topComponent.GetRedirectCaretVector();
-                    SetCaretLocation(new Point( caretRowPoint.X, currentInputBlockRow.RowRect.Top + containerInputChildRect.Top + 0.5 * fontSize));                    
+                    SetCaretLocation(new Point(caretRowPoint.X, currentInputBlockRow.RowRect.Top + containerInputChildRect.Top + 0.5 * fontSize));
                 }
             }
-            
-
-        }
-
-        private void RefreshComponentShapeBlock(BlockComponentBase inputComponent)
-        {
-            if (inputComponent is FractionBlockComponent)
+            else if (topComponent is RadicalComponent)
             {
-                var fractionComponent = inputComponent as FractionBlockComponent;
-                var lineBlock = fractionComponent.Children[2][0] as LineBlock;
-                var lineElement = GetElementByUid(lineBlock.RenderUid);
-                var newLineElement = UpdateFractionLineElementLength(lineBlock, lineElement as Line);
-                editorCanvas.Children.Remove(lineElement);
-                editorCanvas.Children.Add(newLineElement);
+                var radicalComponent = topComponent as RadicalComponent;
+                if (radicalComponent.IsNeedRootIndex)
+                {
+                    SetCaretOffset(4, 0);
+                }
+                else
+                {
+                    SetCaretOffset(radicalComponent.FirstDefaultPartWidth, 0);
+                }
             }
+
+
         }
 
         private void UpdateRowBlockRectByChildren()
@@ -370,7 +399,7 @@ namespace ClientView
         {
             Stack<BlockComponentBase> tempComponentStack = new Stack<BlockComponentBase>();
 
-           // var newInputComponent = currentRowComponentStack.Pop();
+            // var newInputComponent = currentRowComponentStack.Pop();
 
             while (currentRowComponentStack.Count > 0)
             {
@@ -410,7 +439,7 @@ namespace ClientView
                 currentRowComponentStack.Push(backComponent);
             }
 
-          //  currentRowComponentStack.Push(newInputComponent);
+            //  currentRowComponentStack.Push(newInputComponent);
         }
 
 
@@ -617,7 +646,7 @@ namespace ClientView
                 CharBlock charBlock = new CharBlock(inputedTextBlock.Text, inputedTextBlock.FontStyle.ToString(), inputedTextBlock.FontFamily.ToString(), inputedTextBlock.Foreground.ToString(), inputedTextBlock.FontSize, inputedTextBlock.Uid, rowPoint);
                 var oldCaretLeft = Canvas.GetLeft(caretTextBox);
                 var oldCaretTop = Canvas.GetTop(caretTextBox);
-                
+
                 currentInputBlockRow.AddBlockToRow(charBlock, LayoutRowChildrenHorizontialCenter, RefreshInputComponentShapeBlock);
 
                 editorCanvas.Children.Add(inputedTextBlock);

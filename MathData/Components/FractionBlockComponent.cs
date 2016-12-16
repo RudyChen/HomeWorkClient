@@ -32,6 +32,7 @@ namespace MathData
             var child1 = new List<IBlockComponent>();
             var shapeChild = new List<IBlockComponent>();
             shapeChild.Add(fractionLineData);
+            ShapeChildIndex = 2;
 
             Children.Add(child0);
             Children.Add(child1);

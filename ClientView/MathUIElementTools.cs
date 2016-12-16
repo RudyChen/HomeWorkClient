@@ -28,11 +28,11 @@ namespace ClientView
             radicalSymbol.Stroke = Brushes.Black;
             radicalSymbol.StrokeThickness = 1;
 
-            Point point1 = new Point(radicalLocation.X, radicalLocation.Y + radicalHeight* 7/ 8);
-            Point point2 = new Point(radicalLocation.X + firstPartWidth / 3, radicalLocation.Y + radicalHeight *2/ 3);
-            Point point3 = new Point(radicalLocation.X + firstPartWidth, radicalLocation.Y + radicalHeight);
-            Point point4 = new Point(radicalLocation.X + firstPartWidth * 4 / 3, radicalLocation.Y);
-            Point point5 = new Point(radicalLocation.X + firstPartWidth * 4 / 3 + secondPartWidth, radicalLocation.Y);
+            Point point1 = new Point(radicalLocation.X, radicalLocation.Y + radicalHeight * RadicalComponent.SYMBOL_POINT1_RATIO);
+            Point point2 = new Point(radicalLocation.X + firstPartWidth * RadicalComponent.SYMBOL_POINT2X_RATIO, radicalLocation.Y + radicalHeight * RadicalComponent.SYMBOL_POINT2Y_RATIO);
+            Point point3 = new Point(radicalLocation.X + firstPartWidth* RadicalComponent.SYMBOL_POINT3X_RATIO, radicalLocation.Y + radicalHeight);
+            Point point4 = new Point(radicalLocation.X + firstPartWidth * RadicalComponent.SYMBOL_POINT4X_RATIO, radicalLocation.Y);
+            Point point5 = new Point(radicalLocation.X + firstPartWidth * RadicalComponent.SYMBOL_POINT5X_RATIO + secondPartWidth, radicalLocation.Y);
 
             radicalSymbol.Points.Add(point1);
             radicalSymbol.Points.Add(point2);
@@ -46,7 +46,26 @@ namespace ClientView
 
         }
 
-        public static PolylineBlock  GetRadicalPolineBlocks(Polyline polyline,Point rowPoint)
+        public static Polyline CreateRadicalPolyline(PolylineBlock polylineBlock,double rowTop)
+        {
+            Polyline radicalSymbol = new Polyline();
+            radicalSymbol.Points = new PointCollection();
+            var color=(Color)ColorConverter.ConvertFromString(polylineBlock.Stroke);
+            radicalSymbol.Stroke = new SolidColorBrush(color);
+            radicalSymbol.StrokeThickness = polylineBlock.StrokeThickness;
+            radicalSymbol.Uid = polylineBlock.RenderUid;
+
+            for (int i = 0; i < polylineBlock.PolylinePoints.Count; i++)
+            {
+                Point polylinePoint = new Point(polylineBlock.PolylinePoints[i].X, polylineBlock.PolylinePoints[i].Y + rowTop);
+                radicalSymbol.Points.Add(polylinePoint);
+            }       
+
+            return radicalSymbol;
+        }
+
+
+        public static PolylineBlock GetRadicalPolineBlocks(Polyline polyline, Point rowPoint)
         {
             PolylineBlock polylineBlock = new PolylineBlock();
             polylineBlock.Stroke = polyline.Stroke.ToString();
@@ -57,7 +76,7 @@ namespace ClientView
                 polylineBlock.PolylinePoints.Add(pointItem);
             }
 
-            polylineBlock.Rect = new Rect(rowPoint.X,rowPoint.Y, polyline.Width, polyline.Height);
+            polylineBlock.Rect = new Rect(rowPoint.X, rowPoint.Y, polyline.Width, polyline.Height);
 
             return polylineBlock;
         }

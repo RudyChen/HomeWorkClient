@@ -15,6 +15,15 @@ namespace MathData
 
         private Rect rect;
 
+        private int shapeChildIndex;
+
+        public int ShapeChildIndex
+        {
+            get { return shapeChildIndex; }
+            set { shapeChildIndex = value; }
+        }
+
+
         public Rect Rect
         {
             get { return rect; }
@@ -90,16 +99,7 @@ namespace MathData
         {
             return new Point(0, 0);
         }
-
-        /// <summary>
-        /// 添加组合块后重新定位插字符
-        /// </summary>
-        /// <returns></returns>
-        public virtual Vector GetRedirectCaretVector()
-        {
-            return new Vector(0,0);
-        }
-
+              
         /// <summary>
         /// 更新非输入部分子块位置
         /// </summary>

@@ -12,31 +12,84 @@ namespace MathData
     /// </summary>
     public class RadicalComponent : BlockComponentBase, IBlockComponent
     {
+        /// <summary>
+        /// 根号符号第一点比例
+        /// </summary>
+        public static readonly double SYMBOL_POINT1_RATIO = 0.875;
+        /// <summary>
+        /// 根号符号第2点比例
+        /// </summary>
+        public static readonly double SYMBOL_POINT2X_RATIO = 0.33333;
+        /// <summary>
+        /// 根号符号第2点比例
+        /// </summary>
+        public static readonly double SYMBOL_POINT2Y_RATIO = 0.66666;
+        /// <summary>
+        /// 根号符号第3点比例
+        /// </summary>
+        public static readonly double SYMBOL_POINT3X_RATIO = 0.66666;
+        /// <summary>
+        /// 根号符号第4点比例
+        /// </summary>
+        public static readonly double SYMBOL_POINT4X_RATIO = 1;
+        /// <summary>
+        /// 根号符号第5点比例
+        /// </summary>
+        public static readonly double SYMBOL_POINT5X_RATIO = 1;
+
         private double fontHeight = 18.4;
-        public double FontSize
+
+        private double firstDefaultPartWidth = 10;
+
+        private double secondDefaultPartWidth = 10;
+
+        private bool isNeedRootIndex = false;
+
+        public bool IsNeedRootIndex
+        {
+            get { return isNeedRootIndex; }
+            set { isNeedRootIndex = value; }
+        }
+
+
+        public double SecondDefaultPartWidth
+        {
+            get { return secondDefaultPartWidth; }
+            set { secondDefaultPartWidth = value; }
+        }
+
+
+        public double FirstDefaultPartWidth
+        {
+            get { return firstDefaultPartWidth; }
+            set { firstDefaultPartWidth = value; }
+        }
+
+        public double FontHeight
         {
             get { return fontHeight; }
             set { fontHeight = value; }
         }
 
-        public RadicalComponent(Point rowPoint,PolylineBlock radicalSymbol)
+        public RadicalComponent(Point rowPoint, PolylineBlock radicalSymbol)
         {
             Children = new List<List<IBlockComponent>>();
-            this.Rect = radicalSymbol.Rect;
-            var child0= new List<IBlockComponent>();
+            this.Rect = new Rect(radicalSymbol.Rect.Location, new Size(firstDefaultPartWidth + secondDefaultPartWidth, fontHeight));
+            var child0 = new List<IBlockComponent>();
             var child1 = new List<IBlockComponent>();
-            var shapeChild= new List<IBlockComponent>();
+            var shapeChild = new List<IBlockComponent>();
+
+            if (!isNeedRootIndex)
+            {
+                CurrentInputPart = 1;                
+            }
 
             shapeChild.Add(radicalSymbol);
+            ShapeChildIndex = 2;
 
             Children.Add(child0);
             Children.Add(child1);
             Children.Add(shapeChild);
-        }
-             
-        private Rect CreateRect(Point rowPoint)
-        {
-            throw new NotImplementedException();
         }
 
         public double GetHorizontialAlignmentYOffset()
@@ -55,7 +108,7 @@ namespace MathData
             Point mostLeftPoint = new Point(0, 0);
             if (child.Count == 0)
             {
-                return new Rect(this.Rect.Location, new Size(10, fontHeight));
+                return new Rect(this.Rect.Location, new Size(firstDefaultPartWidth, fontHeight));
             }
             else
             {
@@ -83,14 +136,30 @@ namespace MathData
         public override Point GetNextPartLocation(double rowTop, ref bool isInputFinished)
         {
             Point nextPartLocation = this.Rect.Location;
-            //todo:下一部分位置
+            var firstRect = GetChildRect(Children[0]);
+            if (CurrentInputPart == 0)
+            {
+                nextPartLocation = new Point(this.Rect.Left + firstRect.Width + 2, rowTop + this.Rect.Top);
+                CurrentInputPart++;
+                isInputFinished = false;
+            }
+            else if (CurrentInputPart == 1)
+            {
+                nextPartLocation = new Point(this.Rect.Left + this.Rect.Width + 2, rowTop + this.Rect.Top);
+                isInputFinished = true;
+            }
 
             return nextPartLocation;
         }
 
         public override void UpdateRect()
         {
-            Rect componentRect = new Rect(Rect.Location, new Size(0, 0));
+            Rect componentRect = new Rect(Rect.Location, new Size(this.Rect.Width, this.Rect.Height));
+
+            if (Children[1].Count == 0)
+            {
+                return;
+            }
 
             foreach (var item in Children)
             {
@@ -118,6 +187,32 @@ namespace MathData
                     BlockComponentTools.MoveBlockComponents(Children[i], offsetVector);
                 }
             }
+        }
+
+        public override void UpdateShapeBlocks()
+        {
+            if (Children[0].Count > 0)
+            {
+                var firstRect = GetChildRect(Children[0]);
+                firstDefaultPartWidth = firstRect.Width;
+            }
+            var secondRect = Children[1].Count == 0 ? new Rect(this.Rect.Location, new Size(secondDefaultPartWidth, fontHeight)) : GetChildRect(Children[1]);
+
+
+            Point point1 = new Point(Rect.X, Rect.Y + Rect.Height * SYMBOL_POINT1_RATIO);
+            Point point2 = new Point(Rect.X + firstDefaultPartWidth * SYMBOL_POINT2X_RATIO, Rect.Y + Rect.Height * SYMBOL_POINT2Y_RATIO);
+            Point point3 = new Point(Rect.X + firstDefaultPartWidth* SYMBOL_POINT3X_RATIO, Rect.Y + Rect.Height);
+            Point point4 = new Point(Rect.X + firstDefaultPartWidth * SYMBOL_POINT4X_RATIO, Rect.Y);
+            Point point5 = new Point(Rect.X + firstDefaultPartWidth * SYMBOL_POINT5X_RATIO + secondRect.Width, Rect.Y);
+
+            PolylineBlock newPolylineBlock = new PolylineBlock();
+            var symbolBlock = Children[ShapeChildIndex][0] as PolylineBlock;
+            symbolBlock.PolylinePoints.Clear();
+            symbolBlock.PolylinePoints.Add(point1);
+            symbolBlock.PolylinePoints.Add(point2);
+            symbolBlock.PolylinePoints.Add(point3);
+            symbolBlock.PolylinePoints.Add(point4);
+            symbolBlock.PolylinePoints.Add(point5);
         }
     }
 }
