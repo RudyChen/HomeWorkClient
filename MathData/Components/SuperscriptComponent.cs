@@ -7,6 +7,7 @@ using System.Windows;
 
 namespace MathData
 {
+    [Serializable]
     public class SuperscriptComponent : BlockComponentBase, IBlockComponent
     {
         private double fontHeight = 18.4;
@@ -20,6 +21,11 @@ namespace MathData
         public double SuperscriptFontSize
         {
             get { return 0.5 * fontHeight; }
+        }
+
+        public SuperscriptComponent()
+        {
+
         }
 
         /// <summary>

@@ -9,6 +9,7 @@ using System.Windows.Media;
 
 namespace MathData
 {
+    [Serializable]
     public class CharBlock : Block, IBlockComponent
     {
         private double fontSize;

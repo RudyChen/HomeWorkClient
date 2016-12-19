@@ -7,6 +7,7 @@ using System.Windows;
 
 namespace MathData
 {
+    [Serializable]
     public class ShapeBlock : Block
     {
        

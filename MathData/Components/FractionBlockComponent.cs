@@ -7,6 +7,7 @@ using System.Windows;
 
 namespace MathData
 {
+    [Serializable]
     public class FractionBlockComponent : BlockComponentBase, IBlockComponent
     {
 
@@ -20,6 +21,11 @@ namespace MathData
         public double FractionSpace
         {
             get { return 0.2* fontHeight; }           
+        }
+
+        public FractionBlockComponent()
+        {
+
         }
 
         public FractionBlockComponent(Point rowPoint,LineBlock fractionLineData)

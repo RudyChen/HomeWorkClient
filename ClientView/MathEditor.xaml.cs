@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 
 namespace ClientView
 {
@@ -743,6 +746,26 @@ namespace ClientView
         private void RadicalTypeButton_Clicked(object sender, RoutedEventArgs e)
         {
             AcceptInputCommand(InputCommands.Radical);
+        }
+
+        private void SaveButton_Clicked(object sender, RoutedEventArgs e)
+        {
+          
+            FileStream readstream = new FileStream("D:\\StrObj.txt", FileMode.Open, FileAccess.Read,
+          FileShare.Read);
+            BinaryFormatter formatter = new BinaryFormatter();
+            var readdata = (BlockRow)formatter.Deserialize(readstream);
+            readstream.Close();
+            Console.WriteLine(readdata);
+            Console.ReadLine();
+
+
+           // FileStream stream = new FileStream("D:\\StrObj.txt", FileMode.Create, FileAccess.Write,
+           //FileShare.None);
+           // BinaryFormatter formatter = new BinaryFormatter();
+           // formatter.Serialize(stream, currentInputBlockRow);
+           // stream.Close();
+
         }
     }
 }

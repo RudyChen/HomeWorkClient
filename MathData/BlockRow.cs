@@ -7,6 +7,7 @@ using System.Windows;
 
 namespace MathData
 {
+    [Serializable]
     public class BlockRow
     {
         private double height = 20;
@@ -37,7 +38,10 @@ namespace MathData
         public delegate void RefreshBlockRowHandler();
 
 
+        public BlockRow()
+        {
 
+        }
 
         public BlockRow(Point rowPoint)
         {

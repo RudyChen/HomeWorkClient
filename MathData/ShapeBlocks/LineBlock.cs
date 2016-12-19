@@ -7,8 +7,14 @@ using System.Windows;
 
 namespace MathData
 {
+    [Serializable]
     public class LineBlock : ShapeBlock, IBlockComponent
     {
+        public LineBlock()
+        {
+                
+        }
+
         public LineBlock(Point rowPoint)
         {
             CreateRect(rowPoint);

@@ -7,6 +7,7 @@ using System.Windows;
 
 namespace MathData
 {
+    [Serializable]
     /// <summary>
     /// 根式组合块
     /// </summary>
@@ -69,6 +70,11 @@ namespace MathData
         {
             get { return fontHeight; }
             set { fontHeight = value; }
+        }
+
+        public RadicalComponent()
+        {
+
         }
 
         public RadicalComponent(Point rowPoint, PolylineBlock radicalSymbol)

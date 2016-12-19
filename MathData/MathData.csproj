@@ -55,7 +55,7 @@
     <Compile Include="ShapeBlocks\PolylineBlock.cs" />
     <Compile Include="ShapeBlocks\LineBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShapeBlock.cs" />
+    <Compile Include="ShapeBlocks\ShapeBlock.cs" />
     <Compile Include="Components\SuperscriptComponent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

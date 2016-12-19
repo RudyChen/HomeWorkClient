@@ -7,6 +7,7 @@ using System.Windows;
 
 namespace MathData
 {
+    [Serializable]
     public abstract class BlockComponentBase
     {
         private List<List<IBlockComponent>> children = new List<List<IBlockComponent>>();

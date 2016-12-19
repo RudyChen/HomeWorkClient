@@ -7,7 +7,8 @@ using System.Windows;
 
 namespace MathData
 {
-   public abstract class Block
+    [Serializable]
+    public abstract class Block
     {
         private Rect rect;
 

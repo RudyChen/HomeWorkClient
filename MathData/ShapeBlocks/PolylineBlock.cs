@@ -7,6 +7,7 @@ using System.Windows;
 
 namespace MathData
 {
+    [Serializable]
     public class PolylineBlock : ShapeBlock, IBlockComponent
     {
 
@@ -45,7 +46,10 @@ namespace MathData
             set { polylinePoints = value; }
         }
 
+        public PolylineBlock()
+        {
 
+        }
         public PolylineBlock(Point rowPoint)
         {
             this.rowPoint = rowPoint;
