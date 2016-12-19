@@ -94,7 +94,16 @@ namespace MathData
 
         public double GetHorizontialAlignmentYOffset()
         {
-            var maxCenterY = BlockComponentTools.GetChildrenMaxCenterLine(Children[0]);
+            double maxCenterY = 0;
+            if (Children[1].Count>0)
+            {
+                maxCenterY= BlockComponentTools.GetChildrenMaxCenterLine(Children[1]);
+            }
+            else
+            {
+               // maxCenterY = BlockComponentTools.GetChildrenMaxCenterLine(Children[0]);
+            }
+            
             return maxCenterY;
         }
 
@@ -145,7 +154,9 @@ namespace MathData
             }
             else if (CurrentInputPart == 1)
             {
-                nextPartLocation = new Point(this.Rect.Left + this.Rect.Width + 2, rowTop + this.Rect.Top);
+                var centerY = BlockComponentTools.GetChildrenMaxCenterLine(Children[1]);
+                nextPartLocation = new Point(this.Rect.Left + this.Rect.Width + 2, centerY);
+              
                 isInputFinished = true;
             }
 
@@ -205,7 +216,7 @@ namespace MathData
             Point point4 = new Point(Rect.X + firstDefaultPartWidth * SYMBOL_POINT4X_RATIO, Rect.Y);
             Point point5 = new Point(Rect.X + firstDefaultPartWidth * SYMBOL_POINT5X_RATIO + secondRect.Width, Rect.Y);
 
-            PolylineBlock newPolylineBlock = new PolylineBlock();
+            PolylineBlock newPolylineBlock = new PolylineBlock(this.Rect.Location);
             var symbolBlock = Children[ShapeChildIndex][0] as PolylineBlock;
             symbolBlock.PolylinePoints.Clear();
             symbolBlock.PolylinePoints.Add(point1);

@@ -67,7 +67,7 @@ namespace ClientView
 
         public static PolylineBlock GetRadicalPolineBlocks(Polyline polyline, Point rowPoint)
         {
-            PolylineBlock polylineBlock = new PolylineBlock();
+            PolylineBlock polylineBlock = new PolylineBlock(rowPoint);
             polylineBlock.Stroke = polyline.Stroke.ToString();
             polylineBlock.StrokeThickness = polyline.StrokeThickness;
             foreach (var item in polyline.Points)

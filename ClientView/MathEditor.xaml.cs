@@ -293,11 +293,15 @@ namespace ClientView
             //todo:更新shape block大小
             if (currentInputBlockRow.InputBlockComponentStack.Count > 0)
             {
-                var inputComponent = currentInputBlockRow.InputBlockComponentStack.Peek();
-                inputComponent.UpdateShapeBlocks();
-                RefreshComponentShapeBlock(inputComponent);
+                foreach (var item in currentInputBlockRow.InputBlockComponentStack)
+                {
+                    item.UpdateShapeBlocks();
+                    RefreshComponentShapeBlock(item);
+                }
             }
         }
+
+
         private void RefreshComponentShapeBlock(BlockComponentBase inputComponent)
         {
             if (inputComponent is FractionBlockComponent)
@@ -431,6 +435,10 @@ namespace ClientView
                 topComponent.UpdateRect();
 
                 tempComponentStack.Push(topComponent);
+
+                //为了更新根号高度
+                topComponent.UpdateShapeBlocks();
+                RefreshComponentShapeBlock(topComponent);
             }
 
             while (tempComponentStack.Count > 0)

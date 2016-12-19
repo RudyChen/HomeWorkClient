@@ -16,6 +16,15 @@ namespace MathData
 
         private double strokeThickness;
 
+        private Point rowPoint;
+
+        public Point RowPoint
+        {
+            get { return rowPoint; }
+            set { rowPoint = value; }
+        }
+
+
         public double StrokeThickness
         {
             get { return strokeThickness; }
@@ -37,9 +46,9 @@ namespace MathData
         }
 
 
-        public PolylineBlock()
+        public PolylineBlock(Point rowPoint)
         {
-
+            this.rowPoint = rowPoint;
         }
 
         public double GetHorizontialAlignmentYOffset()
@@ -49,6 +58,12 @@ namespace MathData
 
         public Rect GetRect()
         {
+            var shapeRect = new Rect(rowPoint, new Size(0,0));
+            foreach (var item in polylinePoints)
+            {
+                shapeRect.Union(item);
+            }
+            this.Rect = shapeRect;
             return this.Rect;
         }
 

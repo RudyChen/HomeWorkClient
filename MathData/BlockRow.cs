@@ -53,18 +53,14 @@ namespace MathData
                 {
                     var container = InputBlockComponentStack.Peek();
                     container.Children[container.CurrentInputPart].Add(block);
-
-                    //更新所有嵌套元素子块区域大小
-                    UpdateAllNastedComponentBlockChildRect(new Size(blockRect.Width, 0));
-
-
                 }
                 else
                 {
                     Children.Add(block);
                 }
 
-                rowRect.Width += blockRect.Width;
+                UpdateAllNastedComponentBlockChildRect(new Size(blockRect.Width, 0));
+                rowRect.Width += blockRect.Width;         
 
                 refreshBlockRow();
 
@@ -87,8 +83,17 @@ namespace MathData
 
                         offsetVector.Y = componentBlock.Rect.Height - containerChildRect.Height;
                         //更新所有嵌套元素子块区域大小
-                        UpdateAllNastedComponentBlockChildRect(new Size(0, offsetVector.Y));
+                        UpdateAllNastedComponentBlockChildRect(new Size(0, offsetVector.Y));                       
                     }
+
+
+                    if (rowRect.Width<componentBlock.Rect.X+componentBlock.Rect.Width)
+                    {
+                        //rowRect.Width += componentBlock.Rect.Width;
+                        UpdateAllNastedComponentBlockChildRect(new Size(componentBlock.Rect.Width, 0));
+                        
+                    }
+                    refreshBlockRow();
 
                     InputBlockComponentStack.Push(componentBlock);
                     container.Children[container.CurrentInputPart].Add(block);
