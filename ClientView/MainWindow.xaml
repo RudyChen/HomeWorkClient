@@ -7,6 +7,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <local:MathEditor></local:MathEditor>        
+        <DockPanel>
+            <WrapPanel DockPanel.Dock="Top" Background="Blue">
+                <Button Content="保存" Click="SaveEquationsButton_Clicked"></Button>
+                <Button Content="打开" Click="OpenEquationsButton_Clicked"></Button>
+            </WrapPanel>
+            <local:MathEditor x:Name="mathEditor" DockPanel.Dock="Top"></local:MathEditor>
+        </DockPanel>
     </Grid>
 </Window>

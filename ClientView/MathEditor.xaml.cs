@@ -1,4 +1,6 @@
 ﻿using MathData;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using Microsoft.WindowsAPICodePack.Shell;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -28,11 +30,15 @@ namespace ClientView
 
         FontFamily fontFamily = new FontFamily("Times new roman");
 
+
+
         private double fontSize = 18.4;
 
 
 
         private double fractionSpace = 6;
+
+
 
         public double FractionSpace
         {
@@ -74,7 +80,7 @@ namespace ClientView
                     break;
                 case InputCommands.Radical:
                     AddDefaultRadicalComponent();
-                        
+
                     break;
                 default:
                     break;
@@ -84,11 +90,11 @@ namespace ClientView
         private void AddDefaultRadicalComponent()
         {
             var location = GetCaretPoint();
-            
+
             var rowPoint = GetRowPoint();
             var id = Guid.NewGuid().ToString();
-            Polyline polyline = MathUIElementTools.CreateRadicalPolyline(new Point(location.X+2, location.Y), 18.4, 10, 10, id);
-            PolylineBlock raicalSymbol = MathUIElementTools.GetRadicalPolineBlocks(polyline, new Point(rowPoint.X+2,rowPoint.Y));
+            Polyline polyline = MathUIElementTools.CreateRadicalPolyline(new Point(location.X + 2, location.Y), 18.4, 10, 10, id);
+            PolylineBlock raicalSymbol = MathUIElementTools.GetRadicalPolineBlocks(polyline, new Point(rowPoint.X + 2, rowPoint.Y));
             raicalSymbol.RenderUid = id;
             RadicalComponent radicalComponent = new RadicalComponent(new Point(rowPoint.X + 2, rowPoint.Y), raicalSymbol);
 
@@ -322,7 +328,7 @@ namespace ClientView
 
                 var polylineBlock = radicalComponent.Children[radicalComponent.ShapeChildIndex][0] as PolylineBlock;
                 var oldRadicalSymbol = GetElementByUid(polylineBlock.RenderUid);
-                var polyline = MathUIElementTools.CreateRadicalPolyline(polylineBlock,currentInputBlockRow.RowRect.Top);
+                var polyline = MathUIElementTools.CreateRadicalPolyline(polylineBlock, currentInputBlockRow.RowRect.Top);
                 editorCanvas.Children.Remove(oldRadicalSymbol);
                 editorCanvas.Children.Add(polyline);
             }
@@ -513,6 +519,14 @@ namespace ClientView
                 lineElement.Y2 += offsetVector.Y;
                 editorCanvas.Children.Add(lineElement);
             }
+            else if (block is PolylineBlock)
+            {
+                var polyline = element as Polyline;
+                editorCanvas.Children.Remove(polyline);
+                var polylineBlock = block as PolylineBlock;
+                var newPolylineBlock = MathUIElementTools.CreateRadicalPolyline(polylineBlock, currentInputBlockRow.RowRect.Top);
+                editorCanvas.Children.Add(newPolylineBlock);
+            }
         }
 
         private void AlignChildrenToMaxCenter(double maxcCenterLienYOffset, List<IBlockComponent> children)
@@ -644,6 +658,8 @@ namespace ClientView
         private double AcceptChineseInputText(double lineOffsetX, double lineOffsetY, string text)
         {
             double allWidth = 0;
+            var rowPoint = GetRowPoint();
+            Point blockPoint = new Point(rowPoint.X, rowPoint.Y);
             foreach (var item in text)
             {
                 TextBlock inputedTextBlock = new TextBlock();
@@ -653,8 +669,8 @@ namespace ClientView
                 inputedTextBlock.FontStyle = FontStyles.Normal;
                 inputedTextBlock.Uid = Guid.NewGuid().ToString();
 
-                var rowPoint = GetRowPoint();
-                CharBlock charBlock = new CharBlock(inputedTextBlock.Text, inputedTextBlock.FontStyle.ToString(), inputedTextBlock.FontFamily.ToString(), inputedTextBlock.Foreground.ToString(), inputedTextBlock.FontSize, inputedTextBlock.Uid, rowPoint);
+
+                CharBlock charBlock = new CharBlock(inputedTextBlock.Text, inputedTextBlock.FontStyle.ToString(), inputedTextBlock.FontFamily.ToString(), inputedTextBlock.Foreground.ToString(), inputedTextBlock.FontSize, inputedTextBlock.Uid, blockPoint);
                 var oldCaretLeft = Canvas.GetLeft(caretTextBox);
                 var oldCaretTop = Canvas.GetTop(caretTextBox);
 
@@ -667,6 +683,7 @@ namespace ClientView
                 caretTextBox.Text = string.Empty;
 
                 allWidth += charBlock.WidthIncludingTrailingWhitespace;
+                blockPoint = new Point(blockPoint.X + charBlock.WidthIncludingTrailingWhitespace, blockPoint.Y);
 
                 //FormattedText formatted = new FormattedText(inputedTextBlock.Text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface(inputedTextBlock.FontFamily.ToString()), inputedTextBlock.FontSize, inputedTextBlock.Foreground);
 
@@ -750,21 +767,71 @@ namespace ClientView
 
         private void SaveButton_Clicked(object sender, RoutedEventArgs e)
         {
-          
-            FileStream readstream = new FileStream("D:\\StrObj.txt", FileMode.Open, FileAccess.Read,
-          FileShare.Read);
-            BinaryFormatter formatter = new BinaryFormatter();
-            var readdata = (BlockRow)formatter.Deserialize(readstream);
-            readstream.Close();
-            Console.WriteLine(readdata);
-            Console.ReadLine();
+
+            //  FileStream readstream = new FileStream("D:\\StrObj.txt", FileMode.Open, FileAccess.Read,
+            //FileShare.Read);
+            //  BinaryFormatter formatter = new BinaryFormatter();
+            //  var readdata = (BlockRow)formatter.Deserialize(readstream);
+            //  readstream.Close();
+            //  Console.WriteLine(readdata);
+            //  Console.ReadLine();
 
 
-           // FileStream stream = new FileStream("D:\\StrObj.txt", FileMode.Create, FileAccess.Write,
-           //FileShare.None);
-           // BinaryFormatter formatter = new BinaryFormatter();
-           // formatter.Serialize(stream, currentInputBlockRow);
-           // stream.Close();
+            // FileStream stream = new FileStream("D:\\StrObj.txt", FileMode.Create, FileAccess.Write,
+            //FileShare.None);
+            // BinaryFormatter formatter = new BinaryFormatter();
+            // formatter.Serialize(stream, currentInputBlockRow);
+            // stream.Close();
+
+        }
+
+        public void SaveMathEquationText()
+        {
+            string defaultFileName = "MathEquation";
+            CommonSaveFileDialog saveFileDialog = new CommonSaveFileDialog(defaultFileName);
+            saveFileDialog.DefaultExtension = "met";
+            saveFileDialog.DefaultFileName = defaultFileName;
+            saveFileDialog.RestoreDirectory = true;
+
+            if (saveFileDialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                string path = saveFileDialog.FileName;
+                BinaryFormatter formatter = new BinaryFormatter();
+                using (FileStream stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    formatter.Serialize(stream, currentInputBlockRow);
+                    stream.Close();
+                }
+            }
+        }
+
+        public void OpenMathEquationText()
+        {
+            ShellContainer selectedFolder = null;
+            selectedFolder = KnownFolders.Computer as ShellContainer;
+            CommonOpenFileDialog openFileDialog = new CommonOpenFileDialog();
+            openFileDialog.InitialDirectoryShellContainer = selectedFolder;
+            openFileDialog.EnsurePathExists = true;
+            openFileDialog.EnsureFileExists = true;
+            openFileDialog.DefaultExtension = "met";
+            openFileDialog.EnsureReadOnly = true;
+            BlockRow blockRowRead = null;
+            if (openFileDialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                var filePath = openFileDialog.FileName;
+                BinaryFormatter formatter = new BinaryFormatter();
+                using (FileStream readstream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    blockRowRead = (BlockRow)formatter.Deserialize(readstream);
+                    readstream.Close();
+                }
+            }
+
+            if (null != blockRowRead)
+            {
+                currentInputBlockRow = blockRowRead;
+                MathUIElementTools.CreateBlockRowUIElements(editorCanvas, currentInputBlockRow);
+            }
 
         }
     }

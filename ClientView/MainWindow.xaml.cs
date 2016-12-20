@@ -24,5 +24,15 @@ namespace ClientView
         {
             InitializeComponent();
         }
+
+        private void SaveEquationsButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            mathEditor.SaveMathEquationText();
+        }
+
+        private void OpenEquationsButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            mathEditor.OpenMathEquationText();
+        }
     }
 }

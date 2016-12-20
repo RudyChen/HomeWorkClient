@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -64,6 +65,14 @@ namespace ClientView
             return radicalSymbol;
         }
 
+        public static Line CreateLine(LineBlock lineBlock,double rowTop)
+        {
+            Line line = new Line();
+            line.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(lineBlock.Stroke));
+
+            return line;
+        }
+
 
         public static PolylineBlock GetRadicalPolineBlocks(Polyline polyline, Point rowPoint)
         {
@@ -79,6 +88,114 @@ namespace ClientView
             polylineBlock.Rect = new Rect(rowPoint.X, rowPoint.Y, polyline.Width, polyline.Height);
 
             return polylineBlock;
+        }
+
+
+        
+        public static void CreateCharBlockUIElement(Canvas containerCanvas,CharBlock block,Double rowTop)
+        {
+            TextBlock textBlock = new TextBlock();
+            textBlock.FontSize = block.FontSize;
+            textBlock.FontFamily = (FontFamily)(new FontFamilyConverter().ConvertFromString(block.FontFamily));
+            textBlock.FontStyle = (FontStyle)(new FontStyleConverter().ConvertFromString(block.FontStyle));
+            textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(block.ForeGround));
+            textBlock.Text = block.Text;
+            textBlock.Uid = block.RenderUid;
+
+            containerCanvas.Children.Add(textBlock);
+
+            Canvas.SetLeft(textBlock, block.Rect.Left);
+            Canvas.SetTop(textBlock, block.Rect.Top + rowTop);
+        }
+
+        public static void CreateShapeBlockUIElement(Canvas containerCanvas,ShapeBlock shapeBlock,double rowTop)
+        {
+            if (shapeBlock is LineBlock)
+            {
+                LineBlock lineBlock = shapeBlock as LineBlock;
+                Line line = new Line();
+                line.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(lineBlock.Stroke)); ;
+                line.StrokeThickness = lineBlock.StrokeThickness;
+                line.X1 = lineBlock.Rect.Left;
+                line.X2 = lineBlock.Rect.Left + lineBlock.Rect.Width;
+                line.Y1 = lineBlock.Rect.Top + rowTop;
+                line.Y2 = line.Y1;
+                line.Uid = lineBlock.RenderUid;
+
+                containerCanvas.Children.Add(line);
+            }
+            else if (shapeBlock is PolylineBlock)
+            {
+                PolylineBlock polylineBlock = shapeBlock as PolylineBlock;
+                Polyline polyline = new Polyline();
+                polyline.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(polylineBlock.Stroke));
+                polyline.StrokeThickness = polylineBlock.StrokeThickness;
+                polyline.Uid = polylineBlock.RenderUid;
+                polyline.Points = new PointCollection();
+                foreach (var item in polylineBlock.PolylinePoints)
+                {
+                    Point pointItem = new Point(item.X, item.Y + rowTop);
+                    polyline.Points.Add(pointItem);
+                }
+
+                containerCanvas.Children.Add(polyline);
+            }
+        }
+
+        public static void CreateComponentBaseUIElements(Canvas container,BlockComponentBase blockComponentBase,double rowTop)
+        {
+            if (blockComponentBase.Children.Count>0)
+            {
+                foreach (var childItem in blockComponentBase.Children)
+                {
+                    if (childItem.Count>0)
+                    {
+                        foreach (var blockItem in childItem)
+                        {
+                            if (blockItem is CharBlock)
+                            {
+                                var charBlock = blockItem as CharBlock;
+                                CreateCharBlockUIElement(container, charBlock, rowTop);
+                            }
+                            else if (blockItem is ShapeBlock)
+                            {
+                                var shapeBlock = blockItem as ShapeBlock;
+                                CreateShapeBlockUIElement(container, shapeBlock, rowTop);
+                            }
+                            else if (blockItem is BlockComponentBase)
+                            {
+                                var blockComponent = blockItem as BlockComponentBase;
+                                CreateComponentBaseUIElements(container, blockComponent, rowTop);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void CreateBlockRowUIElements(Canvas container,BlockRow blockRow)
+        {
+            if (blockRow.Children.Count>0)
+            {
+                foreach (var child in blockRow.Children)
+                {
+                    if (child is CharBlock)
+                    {
+                        var charBlock = child as CharBlock;
+                        CreateCharBlockUIElement(container, charBlock, blockRow.RowRect.Top);
+                    }
+                    else if (child is ShapeBlock)
+                    {
+                        var shapeBlock = child as ShapeBlock;
+                        CreateShapeBlockUIElement(container, shapeBlock, blockRow.RowRect.Top);
+                    }
+                    else if (child is BlockComponentBase)
+                    {
+                        var blockComponent = child as BlockComponentBase;
+                        CreateComponentBaseUIElements(container, blockComponent, blockRow.RowRect.Top);
+                    }
+                }
+            }
         }
     }
 }

@@ -36,3 +36,6 @@ D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\MathEditor.baml
 D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView.g.resources
 D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView.Properties.Resources.resources
 D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView.csproj.GenerateResource.Cache
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\bin\Debug\Microsoft.WindowsAPICodePack.dll
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\bin\Debug\Microsoft.WindowsAPICodePack.Shell.dll
+C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView_Content.g.cs

@@ -24,6 +24,42 @@ namespace MathData
 
         private double height=1;
 
+        private Point startPoint;
+
+        private Point endPoint;
+
+        private string stroke="Black";
+
+        private double strokeThickness=1;
+
+        public double StrokeThickness
+        {
+            get { return strokeThickness; }
+            set { strokeThickness = value; }
+        }
+
+
+        public string Stroke
+        {
+            get { return stroke; }
+            set { stroke = value; }
+        }
+
+
+        public Point EndPoint
+        {
+            get { return endPoint; }
+            set { endPoint = value; }
+        }
+
+
+        public Point StartPoint
+        {
+            get { return startPoint; }
+            set { startPoint = value; }
+        }
+
+
         public double DefaultHeight
         {
             get { return height; }
