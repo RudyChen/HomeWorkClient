@@ -69,7 +69,7 @@ namespace MathData
                 //编辑分子，更新分母位置
                 if (blockBase.CurrentInputPart==0)
                 {
-                    if (blockBase.Children[0].Count>0)
+                    if (blockBase.Children[1].Count>0)
                     {
                         canUpdate = true;
                     }

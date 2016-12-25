@@ -92,7 +92,9 @@ namespace MathData
 
         public void Move(Vector offsetVector)
         {
-            this.Rect = new Rect(this.Rect.X + offsetVector.X, this.Rect.Y + offsetVector.Y, this.Rect.Width, this.Rect.Height);
+            startPoint = new Point(startPoint.X + offsetVector.X, startPoint.Y + offsetVector.Y);
+            endPoint = new Point(endPoint.X + offsetVector.X, endPoint.Y + offsetVector.Y);
+            this.Rect = new Rect(startPoint.X, startPoint.Y, this.Rect.Width, this.Rect.Height);
         }
     }
 }

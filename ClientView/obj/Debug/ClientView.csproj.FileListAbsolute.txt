@@ -39,3 +39,6 @@ D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView.csproj.GenerateRe
 C:\Users\mike\Desktop\HomeWorkClient\ClientView\bin\Debug\Microsoft.WindowsAPICodePack.dll
 C:\Users\mike\Desktop\HomeWorkClient\ClientView\bin\Debug\Microsoft.WindowsAPICodePack.Shell.dll
 C:\Users\mike\Desktop\HomeWorkClient\ClientView\obj\Debug\ClientView_Content.g.cs
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\Microsoft.WindowsAPICodePack.dll
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\Microsoft.WindowsAPICodePack.Shell.dll
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\ClientView_Content.g.cs

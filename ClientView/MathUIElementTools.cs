@@ -31,7 +31,7 @@ namespace ClientView
 
             Point point1 = new Point(radicalLocation.X, radicalLocation.Y + radicalHeight * RadicalComponent.SYMBOL_POINT1_RATIO);
             Point point2 = new Point(radicalLocation.X + firstPartWidth * RadicalComponent.SYMBOL_POINT2X_RATIO, radicalLocation.Y + radicalHeight * RadicalComponent.SYMBOL_POINT2Y_RATIO);
-            Point point3 = new Point(radicalLocation.X + firstPartWidth* RadicalComponent.SYMBOL_POINT3X_RATIO, radicalLocation.Y + radicalHeight);
+            Point point3 = new Point(radicalLocation.X + firstPartWidth * RadicalComponent.SYMBOL_POINT3X_RATIO, radicalLocation.Y + radicalHeight);
             Point point4 = new Point(radicalLocation.X + firstPartWidth * RadicalComponent.SYMBOL_POINT4X_RATIO, radicalLocation.Y);
             Point point5 = new Point(radicalLocation.X + firstPartWidth * RadicalComponent.SYMBOL_POINT5X_RATIO + secondPartWidth, radicalLocation.Y);
 
@@ -47,11 +47,11 @@ namespace ClientView
 
         }
 
-        public static Polyline CreateRadicalPolyline(PolylineBlock polylineBlock,double rowTop)
+        public static Polyline CreateRadicalPolyline(PolylineBlock polylineBlock, double rowTop)
         {
             Polyline radicalSymbol = new Polyline();
             radicalSymbol.Points = new PointCollection();
-            var color=(Color)ColorConverter.ConvertFromString(polylineBlock.Stroke);
+            var color = (Color)ColorConverter.ConvertFromString(polylineBlock.Stroke);
             radicalSymbol.Stroke = new SolidColorBrush(color);
             radicalSymbol.StrokeThickness = polylineBlock.StrokeThickness;
             radicalSymbol.Uid = polylineBlock.RenderUid;
@@ -60,16 +60,23 @@ namespace ClientView
             {
                 Point polylinePoint = new Point(polylineBlock.PolylinePoints[i].X, polylineBlock.PolylinePoints[i].Y + rowTop);
                 radicalSymbol.Points.Add(polylinePoint);
-            }       
+            }
 
             return radicalSymbol;
         }
 
-        public static Line CreateLine(LineBlock lineBlock,double rowTop)
+
+
+        public static Line CreateLine(LineBlock lineBlock, double rowTop)
         {
             Line line = new Line();
             line.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(lineBlock.Stroke));
-
+            line.StrokeThickness = lineBlock.StrokeThickness;
+            line.X1 = lineBlock.StartPoint.X;
+            line.X2 = lineBlock.EndPoint.X;
+            line.Y1 = lineBlock.StartPoint.Y + rowTop;
+            line.Y2 = lineBlock.EndPoint.Y + rowTop;
+            line.Uid = lineBlock.RenderUid;
             return line;
         }
 
@@ -91,8 +98,8 @@ namespace ClientView
         }
 
 
-        
-        public static void CreateCharBlockUIElement(Canvas containerCanvas,CharBlock block,Double rowTop)
+
+        public static void CreateCharBlockUIElement(Canvas containerCanvas, CharBlock block, Double rowTop)
         {
             TextBlock textBlock = new TextBlock();
             textBlock.FontSize = block.FontSize;
@@ -108,7 +115,7 @@ namespace ClientView
             Canvas.SetTop(textBlock, block.Rect.Top + rowTop);
         }
 
-        public static void CreateShapeBlockUIElement(Canvas containerCanvas,ShapeBlock shapeBlock,double rowTop)
+        public static void CreateShapeBlockUIElement(Canvas containerCanvas, ShapeBlock shapeBlock, double rowTop)
         {
             if (shapeBlock is LineBlock)
             {
@@ -142,13 +149,13 @@ namespace ClientView
             }
         }
 
-        public static void CreateComponentBaseUIElements(Canvas container,BlockComponentBase blockComponentBase,double rowTop)
+        public static void CreateComponentBaseUIElements(Canvas container, BlockComponentBase blockComponentBase, double rowTop)
         {
-            if (blockComponentBase.Children.Count>0)
+            if (blockComponentBase.Children.Count > 0)
             {
                 foreach (var childItem in blockComponentBase.Children)
                 {
-                    if (childItem.Count>0)
+                    if (childItem.Count > 0)
                     {
                         foreach (var blockItem in childItem)
                         {
@@ -173,9 +180,9 @@ namespace ClientView
             }
         }
 
-        public static void CreateBlockRowUIElements(Canvas container,BlockRow blockRow)
+        public static void CreateBlockRowUIElements(Canvas container, BlockRow blockRow)
         {
-            if (blockRow.Children.Count>0)
+            if (blockRow.Children.Count > 0)
             {
                 foreach (var child in blockRow.Children)
                 {

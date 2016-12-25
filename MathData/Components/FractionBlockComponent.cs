@@ -74,10 +74,11 @@ namespace MathData
             {
                 width = firstPartRect.Width;
             }
-
+           
             ///为了上下对称，分数分子分母间隔空隙不能用成平均的值
-            Point lineStart = new Point(firstPartRect.Left,this.Rect.Top+ firstPartRect.Height + 0.3*fontHeight);
-            separateLineBlock.Rect = new Rect(lineStart,new Size(width, 2));
+            separateLineBlock.StartPoint= new Point(firstPartRect.Left,this.Rect.Top+ firstPartRect.Height + 0.3*fontHeight);
+            separateLineBlock.EndPoint = new Point(separateLineBlock.StartPoint.X + width, separateLineBlock.StartPoint.Y);
+            separateLineBlock.Rect = new Rect(separateLineBlock.StartPoint, separateLineBlock.EndPoint);
 
             base.UpdateShapeBlocks();
         }

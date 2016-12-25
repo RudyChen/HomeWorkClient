@@ -73,7 +73,22 @@ namespace MathData
 
         public void Move(Vector offsetVector)
         {
+            MovePoints(offsetVector);
             this.Rect = new Rect(this.Rect.X + offsetVector.X, this.Rect.Y + offsetVector.Y, this.Rect.Width, this.Rect.Height);
+        }
+
+        private void MovePoints(Vector offsetVector)
+        {
+            if (null!=polylinePoints&& polylinePoints.Count>0)
+            {
+                List<Point> newPoints = new List<Point>();
+                foreach (var item in polylinePoints)
+                {
+                    var newPoint= new Point(item.X + offsetVector.X, item.Y + offsetVector.Y);
+                    newPoints.Add(newPoint);
+                }
+                polylinePoints = newPoints;
+            }
         }
     }
 }
