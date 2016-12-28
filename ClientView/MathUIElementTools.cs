@@ -86,6 +86,7 @@ namespace ClientView
             PolylineBlock polylineBlock = new PolylineBlock(rowPoint);
             polylineBlock.Stroke = polyline.Stroke.ToString();
             polylineBlock.StrokeThickness = polyline.StrokeThickness;
+            polylineBlock.RenderUid = polyline.Uid;
             foreach (var item in polyline.Points)
             {
                 Point pointItem = new Point(item.X, item.Y - rowPoint.Y);

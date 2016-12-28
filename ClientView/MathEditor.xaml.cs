@@ -95,7 +95,6 @@ namespace ClientView
             var id = Guid.NewGuid().ToString();
             Polyline polyline = MathUIElementTools.CreateRadicalPolyline(new Point(location.X + 2, location.Y), 18.4, 10, 10, id);
             PolylineBlock raicalSymbol = MathUIElementTools.GetRadicalPolineBlocks(polyline, new Point(rowPoint.X + 2, rowPoint.Y));
-            raicalSymbol.RenderUid = id;
             RadicalComponent radicalComponent = new RadicalComponent(new Point(rowPoint.X + 2, rowPoint.Y), raicalSymbol);
 
             currentInputBlockRow.AddBlockToRow(radicalComponent, LayoutRowChildrenHorizontialCenter, RefreshInputComponentShapeBlock);
@@ -322,9 +321,12 @@ namespace ClientView
 
                 var polylineBlock = radicalComponent.Children[radicalComponent.ShapeChildIndex][0] as PolylineBlock;
                 var oldRadicalSymbol = GetElementByUid(polylineBlock.RenderUid);
-                var polyline = MathUIElementTools.CreateRadicalPolyline(polylineBlock, currentInputBlockRow.RowRect.Top);
-                editorCanvas.Children.Remove(oldRadicalSymbol);
-                editorCanvas.Children.Add(polyline);
+                if (null != oldRadicalSymbol)
+                {
+                    var polyline = MathUIElementTools.CreateRadicalPolyline(polylineBlock, currentInputBlockRow.RowRect.Top);
+                    editorCanvas.Children.Remove(oldRadicalSymbol);
+                    editorCanvas.Children.Add(polyline);
+                }
             }
         }
 
@@ -503,8 +505,11 @@ namespace ClientView
             {
                 var charBlock = block as CharBlock;
                 charBlock.Move(offsetVector);
-                Canvas.SetLeft(element, Canvas.GetLeft(element) + offsetVector.X);
-                Canvas.SetTop(element, Canvas.GetTop(element) + offsetVector.Y);
+                if (null != element)
+                {
+                    Canvas.SetLeft(element, Canvas.GetLeft(element) + offsetVector.X);
+                    Canvas.SetTop(element, Canvas.GetTop(element) + offsetVector.Y);
+                }
             }
             else if (block is LineBlock)
             {
@@ -512,16 +517,22 @@ namespace ClientView
                 LineBlock.Move(offsetVector);
                 var line = MathUIElementTools.CreateLine(LineBlock, currentInputBlockRow.RowRect.Top);
 
-                editorCanvas.Children.Remove(element);
-                editorCanvas.Children.Add(line);
+                if (null != element)
+                {
+                    editorCanvas.Children.Remove(element);
+                    editorCanvas.Children.Add(line);
+                }
             }
             else if (block is PolylineBlock)
             {
-                var polyline = element as Polyline;
-                editorCanvas.Children.Remove(element);
                 var polylineBlock = block as PolylineBlock;
+                polylineBlock.Move(offsetVector);
                 var newPolylineBlock = MathUIElementTools.CreateRadicalPolyline(polylineBlock, currentInputBlockRow.RowRect.Top);
-                editorCanvas.Children.Add(newPolylineBlock);
+                if (null != element)
+                {
+                    editorCanvas.Children.Remove(element);
+                    editorCanvas.Children.Add(newPolylineBlock);
+                }
             }
         }
 
@@ -541,6 +552,7 @@ namespace ClientView
             }
         }
 
+        /* 已有更规范的调整位置的方法替换这个了
         private void AdjustComponentChildrenLocation(IBlockComponent block, double xOffset, double yOffset)
         {
             if (block is MathData.Block)
@@ -615,6 +627,7 @@ namespace ClientView
             }
         }
 
+        */
         private void UpdateCharBlockRect(MathData.Block block, FrameworkElement matchedElement)
         {
             Point blockLocation = new Point(Canvas.GetLeft(matchedElement), Canvas.GetTop(matchedElement) - currentInputBlockRow.RowRect.Top);
@@ -634,22 +647,6 @@ namespace ClientView
 
             return newLine;
         }
-
-        private Line UpdateFractionLineElementLength(LineBlock lineBlock, Line oldLine)
-        {
-            Line newLine = new Line();
-            newLine.X1 = oldLine.X1;
-            newLine.Y1 = oldLine.Y1;
-            newLine.X2 = oldLine.X1 + lineBlock.Rect.Width;
-            newLine.Y2 = oldLine.Y2;
-            newLine.Stroke = oldLine.Stroke;
-            newLine.StrokeThickness = oldLine.StrokeThickness;
-            newLine.Uid = oldLine.Uid;
-
-            return newLine;
-        }
-
-
 
         private FrameworkElement GetElementByUid(string uid)
         {

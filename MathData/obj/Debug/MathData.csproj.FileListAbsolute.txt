@@ -8,3 +8,8 @@ D:\Git Projects\HomeWorkClient\MathData\bin\Debug\MathData.pdb
 D:\Git Projects\HomeWorkClient\MathData\obj\Debug\MathData.csprojResolveAssemblyReference.cache
 D:\Git Projects\HomeWorkClient\MathData\obj\Debug\MathData.dll
 D:\Git Projects\HomeWorkClient\MathData\obj\Debug\MathData.pdb
+F:\GitHub\HomeWorkClient\MathData\bin\Debug\MathData.dll
+F:\GitHub\HomeWorkClient\MathData\bin\Debug\MathData.pdb
+F:\GitHub\HomeWorkClient\MathData\obj\Debug\MathData.csprojResolveAssemblyReference.cache
+F:\GitHub\HomeWorkClient\MathData\obj\Debug\MathData.dll
+F:\GitHub\HomeWorkClient\MathData\obj\Debug\MathData.pdb

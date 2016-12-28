@@ -193,6 +193,7 @@ namespace MathData
             {
                 BlockComponentTools.MoveBlockComponents(item, offsetVector);
             }
+            this.Rect = new Rect(this.Rect.X + offsetVector.X, this.Rect.Y + offsetVector.Y, this.Rect.Width, this.Rect.Height);
         }
 
         public override void UpdateOtherChildrenLocation(Vector offsetVector)

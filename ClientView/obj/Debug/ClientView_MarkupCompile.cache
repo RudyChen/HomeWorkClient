@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\
+F:\GitHub\HomeWorkClient\ClientView\obj\Debug\
 ClientView
 none
 false
 DEBUG;TRACE
-D:\Git Projects\HomeWorkClient\ClientView\App.xaml
+F:\GitHub\HomeWorkClient\ClientView\App.xaml
 2-526122893
 21808732302
 7819985101
-17-2131633026
+17189370906
 MainWindow.xaml;MathEditor.xaml;
 
 False
