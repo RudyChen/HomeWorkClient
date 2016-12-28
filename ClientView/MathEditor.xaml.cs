@@ -30,7 +30,7 @@ namespace ClientView
 
         FontFamily fontFamily = new FontFamily("Times new roman");
 
-
+        List<Rectangle> inputPartsTipRect = new List<Rectangle>();
 
         private double fontSize = 18.4;
 
@@ -63,6 +63,24 @@ namespace ClientView
         {
             InitializeComponent();
             CreateNewRow();
+            CreateDefaultInputTipRect();
+        }
+
+        private void CreateDefaultInputTipRect()
+        {
+            var caretPoint = GetCaretPoint();
+            Rectangle tipRect = new Rectangle();
+            tipRect.Width = 10;
+            tipRect.Height = FontSize;
+            inputPartsTipRect.Clear();
+            inputPartsTipRect.Add(tipRect);
+            tipRect.Stroke = Brushes.Blue;
+            tipRect.StrokeThickness = 1;
+            tipRect.StrokeDashArray = new DoubleCollection() { 3, 1 };
+
+            editorCanvas.Children.Add(tipRect);
+            Canvas.SetLeft(tipRect, caretPoint.X);
+            Canvas.SetTop(tipRect, caretPoint.Y);
         }
 
         public void AcceptInputCommand(InputCommands command)
@@ -328,6 +346,8 @@ namespace ClientView
                     editorCanvas.Children.Add(polyline);
                 }
             }
+
+
         }
 
         public void LayoutRowChildrenHorizontialCenter(Vector offsetVector)
