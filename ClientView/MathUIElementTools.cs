@@ -205,5 +205,62 @@ namespace ClientView
                 }
             }
         }
+
+        /// <summary>
+        /// 鼠标点击，返回重定位插字符位置
+        /// </summary>        
+        public static Point RelocateCaretByClick(Point rowPoint, BlockRow currentBlockRow, double fontSize)
+        {
+            Point relocatePoint=new Point();
+
+            if (currentBlockRow.InputBlockComponentStack.Count > 0)
+            {
+                currentBlockRow.InputBlockComponentStack.Clear();
+            }
+
+            //1 找到包含点击的点的block元素。2 构造包含点击点的输入堆栈
+
+            foreach (var item in currentBlockRow.Children)
+            {
+                CreateInputBlockStack(item, rowPoint, currentBlockRow.InputBlockComponentStack,ref relocatePoint);
+            }
+
+            return relocatePoint;
+        }
+
+        private static void CreateInputBlockStack(IBlockComponent component, Point rowPoint, Stack<BlockComponentBase> inputStack,ref Point relocateCaretPoint)
+        {
+            var childRect = component.GetRect();
+            // 包含偏移一点点
+            var containerRect = new Rect(childRect.X + 2, childRect.Y, childRect.Width, childRect.Height);
+            if (containerRect.Contains(rowPoint))
+            {
+                if (component is BlockComponentBase)
+                {
+                    var blockBase = component as BlockComponentBase;
+                    inputStack.Push(blockBase);
+
+                    for (int i = 0; i < blockBase.Children.Count; i++)
+                    {
+                        if (i!=blockBase.ShapeChildIndex)
+                        {
+                            var chilRect = blockBase.GetChildRect(blockBase.Children[i]);
+                            var childContainerRect = new Rect(chilRect.X + 2, chilRect.Y, chilRect.Width, chilRect.Height);
+                            if (childContainerRect.Contains(rowPoint))
+                            {
+                                foreach (var child in blockBase.Children[i])
+                                {
+                                    CreateInputBlockStack(child, rowPoint, inputStack,ref relocateCaretPoint);
+                                }
+                            }
+                        }                        
+                    }                 
+                }
+                else
+                {
+                    relocateCaretPoint = new Point(childRect.X + childRect.Width, childRect.Y);
+                }
+            }
+        }
     }
 }

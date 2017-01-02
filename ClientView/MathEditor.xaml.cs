@@ -63,24 +63,49 @@ namespace ClientView
         {
             InitializeComponent();
             CreateNewRow();
-            CreateDefaultInputTipRect();
+            UpdateDefaultInputTipRect();
         }
 
-        private void CreateDefaultInputTipRect()
+        private void UpdateDefaultInputTipRect()
         {
             var caretPoint = GetCaretPoint();
-            Rectangle tipRect = new Rectangle();
-            tipRect.Width = 10;
-            tipRect.Height = FontSize;
-            inputPartsTipRect.Clear();
-            inputPartsTipRect.Add(tipRect);
-            tipRect.Stroke = Brushes.Blue;
-            tipRect.StrokeThickness = 1;
-            tipRect.StrokeDashArray = new DoubleCollection() { 3, 1 };
 
+            var tipRect = CreateRectangle(10, FontSize, Brushes.Blue, 1, new DoubleCollection() { 2, 1 });
+        
+            inputPartsTipRect.Add(tipRect);
             editorCanvas.Children.Add(tipRect);
             Canvas.SetLeft(tipRect, caretPoint.X);
             Canvas.SetTop(tipRect, caretPoint.Y);
+        }
+
+        /// <summary>
+        /// 提示输入插字符的位置
+        /// </summary>                
+        private Rectangle CreateRectangle(double width,double height,Brush brush,double strokeThickness,DoubleCollection strokeDashArray)
+        {
+            Rectangle tipRect = new Rectangle();
+            tipRect.Width = width;
+            tipRect.Height = height;
+
+            tipRect.Stroke = brush;
+            tipRect.StrokeThickness = strokeThickness;
+            tipRect.StrokeDashArray = strokeDashArray;
+
+            return tipRect;
+        }
+
+        private Rectangle CreateRectangle(Rect childRect)
+        {
+            Rectangle tipRect = new Rectangle();
+            tipRect.Width = childRect.Width;
+            tipRect.Height = childRect.Height;
+
+            tipRect.Stroke = Brushes.Blue;
+            tipRect.StrokeThickness = 1;
+            tipRect.StrokeDashArray = new DoubleCollection() { 2,1};
+
+           
+            return tipRect;
         }
 
         public void AcceptInputCommand(InputCommands command)
@@ -103,6 +128,8 @@ namespace ClientView
                 default:
                     break;
             }
+
+            UpdateBlockInputTicRectangles();
         }
 
         private void AddDefaultRadicalComponent()
@@ -233,6 +260,7 @@ namespace ClientView
                 {
                     currentInputBlockRow.InputBlockComponentStack.Pop();
                 }
+                UpdateBlockInputTicRectangles();
             }
 
         }
@@ -248,6 +276,20 @@ namespace ClientView
         private void editorCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             caretTextBox.Focus();
+
+            var absolutePoint=e.GetPosition(editorCanvas);
+            //todo: find the row who contains this absolutePoint as currentInputBlockRow
+            var rowPoint = new Point(absolutePoint.X, absolutePoint.Y - currentInputBlockRow.RowRect.Top);
+            if (currentInputBlockRow.RowRect.Contains(rowPoint))
+            {
+                var caretRowPoint = MathUIElementTools.RelocateCaretByClick(rowPoint, currentInputBlockRow, FontSize);
+                if (caretRowPoint != new Point())
+                {
+                    var newAbsoluteCaretPoint = new Point(caretRowPoint.X, caretRowPoint.Y + currentInputBlockRow.RowRect.Top);
+                    SetCaretLocation(newAbsoluteCaretPoint);
+                }
+            }
+           
         }
 
         private void editorCanvas_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -272,7 +314,48 @@ namespace ClientView
             }
             e.Handled = true;
             SetCaretOffset(lineOffsetX, 0);
+
+            UpdateBlockInputTicRectangles();
+            
         }
+
+        public void UpdateBlockInputTicRectangles()
+        {
+
+            foreach (var item in inputPartsTipRect)
+            {
+                editorCanvas.Children.Remove(item);
+            }
+            inputPartsTipRect.Clear();
+
+            if (currentInputBlockRow.InputBlockComponentStack.Count>0)
+            {
+                var blockComponentBase = currentInputBlockRow.InputBlockComponentStack.Peek();
+               
+
+                for (int i = 0; i < blockComponentBase.Children.Count; i++)
+                {
+                    if (i!=blockComponentBase.ShapeChildIndex)
+                    {
+                        Rect childRect = blockComponentBase.GetChildRect(blockComponentBase.Children[i]);
+                        Rectangle childRectangle = CreateRectangle(childRect);
+
+                        inputPartsTipRect.Add(childRectangle);
+
+                        editorCanvas.Children.Add(childRectangle);
+                        Canvas.SetLeft(childRectangle, childRect.Left);
+                        Canvas.SetTop(childRectangle, childRect.Top + currentInputBlockRow.RowRect.Top);
+
+                    }
+                }
+            }
+            else
+            {
+                UpdateDefaultInputTipRect();
+            }
+        }
+
+    
 
         private void EquationTypeButton_Clicked(object sender, RoutedEventArgs e)
         {
@@ -813,6 +896,72 @@ namespace ClientView
 
         }
 
+        private void BackSpaceButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            DeleteElementBeforeCaret();
+        }
+
+        private void DeleteElementBeforeCaret()
+        {
+            //1.找到插字符前面一个元素 2.移除元素对应页面元素 3.修改尾随元素位置，修改相应界面元素位置 4.移除这个元素
+            var caretPoint = GetCaretPoint();
+            var caretPointOffset = new Point(caretPoint.X - 2, caretPoint.Y);
+            IBlockComponent block = null;
+           
+            if (currentInputBlockRow.InputBlockComponentStack.Count>0)
+            {
+                var topComponent = currentInputBlockRow.InputBlockComponentStack.Peek();
+                for (int i = 0; i < topComponent.Children.Count; i++)
+                {
+                    if (i!=topComponent.ShapeChildIndex)
+                    {
+                        var itemRect = topComponent.GetChildRect(topComponent.Children[i]);
+                        if (itemRect.Contains(caretPointOffset))
+                        {
+                            foreach (var child in topComponent.Children[i])
+                            {
+                               var childRect = child.GetRect();
+                                if (childRect.Contains(caretPointOffset))
+                                {
+                                    block = child;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (var item in currentInputBlockRow.Children)
+                {
+                   var childRect = item.GetRect();
+                    if (childRect.Contains(caretPointOffset))
+                    {
+                        block = item;
+                        break;
+                    }
+                }
+            }
+
+            if (block is CharBlock)
+            {
+                var charBlock = block as CharBlock;
+                FrameworkElement element= GetElementByUid(charBlock.RenderUid);
+                if (null!=element)
+                {
+                    editorCanvas.Children.Remove(element);
+                }
+
+
+
+            }
+           
+
+        }
+
+      
+
         public void SaveMathEquationText()
         {
             string defaultFileName = "MathEquation";
@@ -862,5 +1011,7 @@ namespace ClientView
             }
 
         }
+
+      
     }
 }

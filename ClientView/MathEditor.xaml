@@ -13,6 +13,7 @@
                 <Button Content="指数" Click="SuperscriptTypeButton_Clicked" Focusable="False"></Button>
                 <Button Content="根式" Click="RadicalTypeButton_Clicked" Focusable="False"></Button>
                 <Button Content="下一部分" Click="NextPartButton_Clicked" Focusable="False"></Button>
+                <Button Content="←" Click="BackSpaceButton_Clicked" Focusable="False"></Button>
                 
             </WrapPanel>
             <Canvas Name="editorCanvas" DockPanel.Dock="Top" Focusable="False" MouseLeftButtonDown="editorCanvas_MouseLeftButtonDown" Background="White" PreviewKeyDown="editorCanvas_PreviewKeyDown">

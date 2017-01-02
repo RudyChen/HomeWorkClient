@@ -1,0 +1,6 @@
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\StudentWarDataServer.dll.config
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\StudentWarDataServer.dll
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\StudentWarDataServer.pdb
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\obj\Debug\StudentWarDataServer.csprojResolveAssemblyReference.cache
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\obj\Debug\StudentWarDataServer.dll
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\obj\Debug\StudentWarDataServer.pdb

@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClientView"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="672" Width="1224">
     <Grid>
         <DockPanel>
-            <WrapPanel DockPanel.Dock="Top" Background="Blue">
+            <WrapPanel DockPanel.Dock="Top" Background="Blue" Visibility="Collapsed">
                 <Button Content="保存" Click="SaveEquationsButton_Clicked"></Button>
                 <Button Content="打开" Click="OpenEquationsButton_Clicked"></Button>
             </WrapPanel>
+            
             <local:MathEditor x:Name="mathEditor" DockPanel.Dock="Top"></local:MathEditor>
         </DockPanel>
     </Grid>
