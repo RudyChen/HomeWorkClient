@@ -71,7 +71,7 @@ namespace ClientView
             var caretPoint = GetCaretPoint();
 
             var tipRect = CreateRectangle(10, FontSize, Brushes.Blue, 1, new DoubleCollection() { 2, 1 });
-        
+
             inputPartsTipRect.Add(tipRect);
             editorCanvas.Children.Add(tipRect);
             Canvas.SetLeft(tipRect, caretPoint.X);
@@ -81,7 +81,7 @@ namespace ClientView
         /// <summary>
         /// 提示输入插字符的位置
         /// </summary>                
-        private Rectangle CreateRectangle(double width,double height,Brush brush,double strokeThickness,DoubleCollection strokeDashArray)
+        private Rectangle CreateRectangle(double width, double height, Brush brush, double strokeThickness, DoubleCollection strokeDashArray)
         {
             Rectangle tipRect = new Rectangle();
             tipRect.Width = width;
@@ -102,9 +102,9 @@ namespace ClientView
 
             tipRect.Stroke = Brushes.Blue;
             tipRect.StrokeThickness = 1;
-            tipRect.StrokeDashArray = new DoubleCollection() { 2,1};
+            tipRect.StrokeDashArray = new DoubleCollection() { 2, 1 };
 
-           
+
             return tipRect;
         }
 
@@ -277,7 +277,7 @@ namespace ClientView
         {
             caretTextBox.Focus();
 
-            var absolutePoint=e.GetPosition(editorCanvas);
+            var absolutePoint = e.GetPosition(editorCanvas);
             //todo: find the row who contains this absolutePoint as currentInputBlockRow
             var rowPoint = new Point(absolutePoint.X, absolutePoint.Y - currentInputBlockRow.RowRect.Top);
             if (currentInputBlockRow.RowRect.Contains(rowPoint))
@@ -289,7 +289,7 @@ namespace ClientView
                     SetCaretLocation(newAbsoluteCaretPoint);
                 }
             }
-           
+
         }
 
         private void editorCanvas_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -316,7 +316,7 @@ namespace ClientView
             SetCaretOffset(lineOffsetX, 0);
 
             UpdateBlockInputTicRectangles();
-            
+
         }
 
         public void UpdateBlockInputTicRectangles()
@@ -328,14 +328,14 @@ namespace ClientView
             }
             inputPartsTipRect.Clear();
 
-            if (currentInputBlockRow.InputBlockComponentStack.Count>0)
+            if (currentInputBlockRow.InputBlockComponentStack.Count > 0)
             {
                 var blockComponentBase = currentInputBlockRow.InputBlockComponentStack.Peek();
-               
+
 
                 for (int i = 0; i < blockComponentBase.Children.Count; i++)
                 {
-                    if (i!=blockComponentBase.ShapeChildIndex)
+                    if (i != blockComponentBase.ShapeChildIndex)
                     {
                         Rect childRect = blockComponentBase.GetChildRect(blockComponentBase.Children[i]);
                         Rectangle childRectangle = CreateRectangle(childRect);
@@ -355,7 +355,7 @@ namespace ClientView
             }
         }
 
-    
+
 
         private void EquationTypeButton_Clicked(object sender, RoutedEventArgs e)
         {
@@ -907,60 +907,149 @@ namespace ClientView
             var caretPoint = GetCaretPoint();
             var caretPointOffset = new Point(caretPoint.X - 2, caretPoint.Y);
             IBlockComponent block = null;
-           
-            if (currentInputBlockRow.InputBlockComponentStack.Count>0)
+
+            if (currentInputBlockRow.InputBlockComponentStack.Count > 0)
             {
                 var topComponent = currentInputBlockRow.InputBlockComponentStack.Peek();
                 for (int i = 0; i < topComponent.Children.Count; i++)
                 {
-                    if (i!=topComponent.ShapeChildIndex)
+                    if (i != topComponent.ShapeChildIndex)
                     {
                         var itemRect = topComponent.GetChildRect(topComponent.Children[i]);
                         if (itemRect.Contains(caretPointOffset))
                         {
                             foreach (var child in topComponent.Children[i])
                             {
-                               var childRect = child.GetRect();
+                                var childRect = child.GetRect();
                                 if (childRect.Contains(caretPointOffset))
                                 {
                                     block = child;
+                                    topComponent.CurrentInputPart = i;
                                     break;
                                 }
+                            }
+                            if (null != block)
+                            {
+                                break;
                             }
                         }
                     }
                 }
+
+                var behindBrothers = topComponent.GetBlockBehindBrothers(block);
+                var blockRect = block.GetRect();
+                if (null != behindBrothers && behindBrothers.Count > 0)
+                {
+                    foreach (var item in behindBrothers)
+                    {
+                       
+                        var vector = new Vector(-blockRect.Width, 0);
+                        
+                        var mathDataBlock = item as MathData.Block;
+                        UpdateBlockLocation(mathDataBlock, vector);
+                    }
+                }
+
+                RemoveBlockComponentUIElements(block);
+                topComponent.Children[topComponent.CurrentInputPart].Remove(block);
+                SetCaretOffset(-blockRect.Width, 0);
             }
             else
             {
                 foreach (var item in currentInputBlockRow.Children)
                 {
-                   var childRect = item.GetRect();
+                    var childRect = item.GetRect();
                     if (childRect.Contains(caretPointOffset))
                     {
                         block = item;
                         break;
                     }
                 }
-            }
 
-            if (block is CharBlock)
-            {
-                var charBlock = block as CharBlock;
-                FrameworkElement element= GetElementByUid(charBlock.RenderUid);
-                if (null!=element)
+                var behindBrothers= GetBlockBehindBrothers(block);
+                var blockRect = block.GetRect();
+                if (null != behindBrothers && behindBrothers.Count > 0)
                 {
-                    editorCanvas.Children.Remove(element);
+                    foreach (var item in behindBrothers)
+                    {
+                        var vector = new Vector(-blockRect.Width, 0);
+                        var mathDataBlock = item as MathData.Block;
+                        UpdateBlockLocation(mathDataBlock, vector);
+                    }
                 }
 
-
-
+                RemoveBlockComponentUIElements(block);
+                currentInputBlockRow.Children.Remove(block);
+                SetCaretOffset(-blockRect.Width, 0);
             }
-           
+
+            //if (block is CharBlock)
+            //{
+            //    var charBlock = block as CharBlock;
+            //    FrameworkElement element= GetElementByUid(charBlock.RenderUid);
+            //    if (null!=element)
+            //    {
+            //        editorCanvas.Children.Remove(element);
+            //    }
+
+
+
+            //}
+            UpdateBlockInputTicRectangles();
 
         }
 
-      
+        public List<IBlockComponent> GetBlockBehindBrothers(IBlockComponent blockComponent)
+        {
+            List<IBlockComponent> behindBrothers = null;
+            var index = currentInputBlockRow.Children.IndexOf(blockComponent);
+            if (index>=0&&index<currentInputBlockRow.Children.Count)
+            {
+                var count = currentInputBlockRow.Children.Count - index - 1;
+                behindBrothers = currentInputBlockRow.Children.GetRange(index + 1, count);
+            }
+
+            return behindBrothers;
+        }
+
+        public void RemoveBlockComponentUIElements(IBlockComponent blockComponent)
+        {
+            if (blockComponent is BlockComponentBase)
+            {
+                var componentBase = blockComponent as BlockComponentBase;
+                foreach (List<IBlockComponent> item in componentBase.Children)
+                {
+                    foreach (var blockItem in item)
+                    {
+                        if (blockItem is MathData.Block)
+                        {
+                            var block = blockItem as MathData.Block;
+                            RemoveUIElement(block);
+                        }
+                        else
+                        {
+                            RemoveBlockComponentUIElements(blockItem);
+                        }
+                    }
+                }
+            }
+            else if(blockComponent is MathData.Block)
+            {
+                var block = blockComponent as MathData.Block;
+                RemoveUIElement(block);
+            }
+
+        }
+
+        public void RemoveUIElement(MathData.Block block)
+        {
+            var uiElement = GetElementByUid(block.RenderUid);
+            if (null != uiElement)
+            {
+                editorCanvas.Children.Remove(uiElement);
+            }
+        }
+
 
         public void SaveMathEquationText()
         {
@@ -1012,6 +1101,6 @@ namespace ClientView
 
         }
 
-      
+
     }
 }

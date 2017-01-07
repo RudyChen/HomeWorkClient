@@ -108,5 +108,23 @@ namespace MathData
         {
 
         }
+
+        /// <summary>
+        /// 返回当前块的后兄弟节点
+        /// </summary>
+        /// <param name="block"></param>
+        /// <returns></returns>
+        public List<IBlockComponent> GetBlockBehindBrothers(IBlockComponent block)
+        {
+            List<IBlockComponent> brothers = null;
+            int index = this.Children[CurrentInputPart].IndexOf(block);
+            if (index >= 0 && index < Children[CurrentInputPart].Count)
+            {
+                var count = Children[CurrentInputPart].Count - index - 1;
+                brothers=Children[CurrentInputPart].GetRange(index + 1, count);
+            }
+
+            return brothers;
+        }
     }
 }
