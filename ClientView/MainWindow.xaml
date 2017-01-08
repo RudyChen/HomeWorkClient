@@ -7,11 +7,73 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="672" Width="1224">
     <Grid>
-        <DockPanel>
-            <WrapPanel DockPanel.Dock="Top" Background="Blue" Visibility="Collapsed">
+        <DockPanel Name="mainPage" Visibility="Visible">
+            <!--<WrapPanel DockPanel.Dock="Top" Background="Blue" Visibility="Collapsed">
                 <Button Content="保存" Click="SaveEquationsButton_Clicked"></Button>
                 <Button Content="打开" Click="OpenEquationsButton_Clicked"></Button>
-            </WrapPanel>
+            </WrapPanel>-->
+            <StackPanel Orientation="Horizontal" Height="120" DockPanel.Dock="Top">
+                <Image Width="80" Height="80">
+                    <Image.Source>
+                        <BitmapImage UriSource="/Resources/Images/girl000001.jpg"/>
+                    </Image.Source>
+
+                </Image>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="等级：45"></TextBlock>
+                    <TextBlock Text="积分：2546"></TextBlock>
+                    <TextBlock Text="军衔：少尉"></TextBlock>
+
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel DockPanel.Dock="Left" Width="140" VerticalAlignment="Center">
+                <Button Width="80" Height="60" Content="生涯" Click="CareerButton_Clicked"></Button>
+                <Button Margin="0,40" Width="80" Height="60" Content="对决"></Button>
+                <Button Content="作业" Width="80" Height="60"></Button>
+            </StackPanel>
+
+
+            <DockPanel DockPanel.Dock="Top">
+
+            </DockPanel>
+           
+        </DockPanel>
+        <DockPanel Name="careerPage" Visibility="Collapsed">
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" DockPanel.Dock="Top">
+                <TextBlock Text="第一章:函数与方程" FontSize="32"></TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Height="100" HorizontalAlignment="Right">
+                <Button Content="返回" Click="CareerReturnButton_Clicked" Width="80" Height="60"></Button>
+            </StackPanel>
+            <DockPanel DockPanel.Dock="Top">
+                <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center">
+                    <Button Content="《" Width="80" Height="60"></Button>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                    <Button Content="》" Width="80" Height="60"></Button>
+                </StackPanel>
+                <DockPanel DockPanel.Dock="Left">
+                    <DockPanel.Background>
+                        <ImageBrush ImageSource="/Resources/Images/chapterbackground.png"/>
+                    </DockPanel.Background>
+                    <Canvas>
+                        <WrapPanel Margin="203,218">
+                            <Button Width="40" Height="40" Content="1" Click="SectionButton_Clicked"></Button>
+                            <TextBlock Text="1.一次函数与方程" Foreground="Red" FontSize="24" VerticalAlignment="Center"></TextBlock>
+                        </WrapPanel>
+                        <StackPanel Canvas.Left="249" Canvas.Top="286" >
+                            <Button Width="40" Height="40" Content="2" Click="SectionButton_Clicked"/>
+                            <TextBlock Text="2.反比例函数与方程" Foreground="Red" FontSize="24" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Canvas>
+                </DockPanel>
+            </DockPanel>
+        </DockPanel>
+        <DockPanel Name="workPage" Visibility="Collapsed">
+            <StackPanel HorizontalAlignment="Right" DockPanel.Dock="Top">
+                <Button Content="返回" Click="WorkPageReturnButton_Clicked" Width="40" Height="60"></Button>
+            </StackPanel>
             
             <local:MathEditor x:Name="mathEditor" DockPanel.Dock="Top"></local:MathEditor>
         </DockPanel>

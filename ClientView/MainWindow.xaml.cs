@@ -27,12 +27,40 @@ namespace ClientView
 
         private void SaveEquationsButton_Clicked(object sender, RoutedEventArgs e)
         {
-            mathEditor.SaveMathEquationText();
+            //mathEditor.SaveMathEquationText();
         }
 
         private void OpenEquationsButton_Clicked(object sender, RoutedEventArgs e)
         {
-            mathEditor.OpenMathEquationText();
+            //mathEditor.OpenMathEquationText();
+        }
+
+        private void CareerButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            mainPage.Visibility = Visibility.Collapsed;
+            careerPage.Visibility = Visibility.Visible;
+            workPage.Visibility = Visibility.Collapsed;
+        }
+
+        private void CareerReturnButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            mainPage.Visibility = Visibility.Visible;
+            careerPage.Visibility = Visibility.Collapsed;
+            workPage.Visibility = Visibility.Collapsed;
+        }
+
+        private void SectionButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            mainPage.Visibility = Visibility.Collapsed;
+            careerPage.Visibility = Visibility.Collapsed;
+            workPage.Visibility = Visibility.Visible;
+        }
+
+        private void WorkPageReturnButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            mainPage.Visibility = Visibility.Visible;
+            careerPage.Visibility = Visibility.Collapsed;
+            workPage.Visibility = Visibility.Collapsed;
         }
     }
 }
