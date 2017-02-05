@@ -10,5 +10,6 @@
 
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("dll/microsoft.windowsapicodepack.dll")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("dll/microsoft.windowsapicodepack.shell.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("dll/newtonsoft.json.dll")]
 
 

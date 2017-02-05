@@ -33,5 +33,10 @@ namespace MathData
         /// </summary>
         SubscriptCommand,
 
+        /// <summary>
+        /// 删除命令
+        /// </summary>
+        DeleteCommand,
+
     }
 }

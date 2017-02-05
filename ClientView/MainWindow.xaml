@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="672" Width="1224">
     <Grid>
-        <DockPanel Name="mainPage" Visibility="Visible">
+        <DockPanel Name="mainPage" Visibility="Collapsed">
             <!--<WrapPanel DockPanel.Dock="Top" Background="Blue" Visibility="Collapsed">
                 <Button Content="保存" Click="SaveEquationsButton_Clicked"></Button>
                 <Button Content="打开" Click="OpenEquationsButton_Clicked"></Button>
@@ -70,12 +70,201 @@
                 </DockPanel>
             </DockPanel>
         </DockPanel>
-        <DockPanel Name="workPage" Visibility="Collapsed">
+        <DockPanel Name="workPage" Visibility="Visible">
             <StackPanel HorizontalAlignment="Right" DockPanel.Dock="Top">
                 <Button Content="返回" Click="WorkPageReturnButton_Clicked" Width="40" Height="60"></Button>
             </StackPanel>
-            
-            <local:MathEditor x:Name="mathEditor" DockPanel.Dock="Top"></local:MathEditor>
+            <StackPanel DockPanel.Dock="Top">
+                <WrapPanel>
+                    <TextBlock Text="题目:" FontSize="32"/>
+                    <Button Content="序列化测试" Click="serializeTestButton_Clicked"></Button>
+                </WrapPanel>
+                <Grid Name="problemDescriptionGrid">
+                    <Canvas Name="problemDescriptionContainer" Width="{Binding Path=Width, ElementName=problemDescriptionGrid}" Height="{Binding Path=Height,ElementName=problemDescriptionGrid}">
+                        
+                    </Canvas>
+                </Grid>
+
+            </StackPanel>
+            <DockPanel  DockPanel.Dock="Bottom" Height="120">
+                <StackPanel Orientation="Horizontal" Width="260" DockPanel.Dock="Right">
+
+                    <UniformGrid Rows="2">
+                        <Button Width="40" Height="40" Focusable="False" Margin="2,0" Click="InputCharButton_Clicked">
+                            <TextBlock Text="x" FontFamily="Times new roman" FontStyle="Italic"/>
+                        </Button>
+
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="y" FontFamily="Times new roman" FontStyle="Italic"/>
+                        </Button>
+
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="a" FontFamily="Times new roman" FontStyle="Italic"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="b" FontFamily="Times new roman" FontStyle="Italic"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False"  Click="InputCharButton_Clicked">
+                            <TextBlock Text="c" FontFamily="Times new roman" FontStyle="Italic"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="f" FontFamily="Times new roman" FontStyle="Italic"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="g" FontFamily="Times new roman" FontStyle="Italic"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="m" FontFamily="Times new roman" FontStyle="Italic"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="n" FontFamily="Times new roman" FontStyle="Italic"/>
+                        </Button>
+
+                    </UniformGrid>
+                       
+                   
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Width="260" DockPanel.Dock="Right">
+
+                    <UniformGrid Rows="2">
+                        <Button Width="40" Height="40" Focusable="False" Margin="2,0" Click="InputCharButton_Clicked">
+                            <TextBlock Text="0" FontFamily="Times new roman"/>
+                        </Button>
+
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="1" FontFamily="Times new roman"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False"  Click="InputCharButton_Clicked">
+                            <TextBlock Text="2" FontFamily="Times new roman"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="3" FontFamily="Times new roman"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="4" FontFamily="Times new roman"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="5" FontFamily="Times new roman"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="6" FontFamily="Times new roman"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="7" FontFamily="Times new roman"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="8" FontFamily="Times new roman"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="9" FontFamily="Times new roman"/>
+                        </Button>
+                    </UniformGrid>
+                   
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Width="260" DockPanel.Dock="Right">
+
+                    <UniformGrid Rows="2">
+                        <Button Width="40" Height="40" Focusable="False" Margin="2,0" Click="InputCharButton_Clicked">
+                            <TextBlock Text="Δ"/>
+                        </Button>
+
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="Σ"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="α"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="β"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="π"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="δ"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="ε"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="η"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="θ"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="λ"/>
+                        </Button>
+                    </UniformGrid>
+
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Width="260" DockPanel.Dock="Right">
+
+                    <UniformGrid Rows="2">
+                        <Button Width="40" Height="40" Focusable="False" Margin="2,0" Click="InputCharButton_Clicked">
+                            <TextBlock Text="+"/>
+                        </Button>
+
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="-"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="╳"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="÷"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="≈"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="≌"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="≠"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="="/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="≤"/>
+                        </Button>
+                        <Button Width="40" Height="40" Focusable="False" Click="InputCharButton_Clicked">
+                            <TextBlock Text="≥"/>
+                        </Button>
+                    </UniformGrid>
+
+
+                </StackPanel>
+                <DockPanel DockPanel.Dock="Right">
+                    <UniformGrid Rows="2">
+                        <Button Width="40" Height="40" Content="分数" Click="InputCommandButton_Clicked" Tag="1" Focusable="False"></Button>
+                        <Button Width="40" Height="40" Content="指数" Click="InputCommandButton_Clicked" Tag="2" Focusable="False"></Button>
+                        <Button Width="40" Height="40" Content="根式" Click="InputCommandButton_Clicked" Tag="3" Focusable="False"></Button>
+                        <Button Width="40" Height="40" Content="下一部分" Click="InputCommandButton_Clicked" Tag="4" Focusable="False"></Button>
+                        <Button Width="40" Height="40" Content="←" Click="InputCommandButton_Clicked" Tag="5" Focusable="False"></Button>
+                    </UniformGrid>
+                </DockPanel>
+            </DockPanel>
+            <Grid DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                    <TabControl Name="friendAnswerBoardTab">
+                        <TabItem Header="友方">
+                        <local:MathEditor ></local:MathEditor>
+                        </TabItem>
+                    </TabControl>
+                <TabControl Grid.Column="1">
+                    <TabItem Header="敌方">
+                        <local:MathEditor></local:MathEditor>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+
         </DockPanel>
     </Grid>
 </Window>

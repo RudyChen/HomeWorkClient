@@ -64,3 +64,4 @@ F:\GitHub\HomeWorkClient\ClientView\obj\Debug\ClientView.Properties.Resources.re
 F:\GitHub\HomeWorkClient\ClientView\obj\Debug\ClientView.csproj.GenerateResource.Cache
 F:\GitHub\HomeWorkClient\ClientView\obj\Debug\ClientView.exe
 F:\GitHub\HomeWorkClient\ClientView\obj\Debug\ClientView.pdb
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\Newtonsoft.Json.dll

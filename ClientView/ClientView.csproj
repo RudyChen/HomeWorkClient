@@ -43,6 +43,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>F:\SVN\Projects\安全供电管理系统\安全供电管理系统客户端\Vodee.SecurityPowerSupply.OprTicket\DLL\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
@@ -121,6 +125,7 @@
   <ItemGroup>
     <Content Include="DLL\Microsoft.WindowsAPICodePack.dll" />
     <Content Include="DLL\Microsoft.WindowsAPICodePack.Shell.dll" />
+    <Content Include="DLL\Newtonsoft.Json.dll" />
     <Resource Include="Resources\Images\chapterbackground.png" />
     <Resource Include="Resources\Images\girl000001.jpg" />
   </ItemGroup>

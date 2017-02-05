@@ -62,5 +62,59 @@ namespace ClientView
             careerPage.Visibility = Visibility.Collapsed;
             workPage.Visibility = Visibility.Collapsed;
         }
+
+        private void InputCharButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            TextBlock buttonText = btn.Content as TextBlock;
+            var tabItem = friendAnswerBoardTab.Items[0] as TabItem;
+            var mathEditor = tabItem.Content as MathEditor;
+            if (mathEditor.caretTextBox.IsFocused)
+            {
+                double offsetX = mathEditor.AcceptEnglishInputText(0, 0, buttonText.Text, mathEditor.caretTextBox.FontSize, buttonText.FontFamily, buttonText.FontStyle);
+                mathEditor.RefreshAfterInput(offsetX, 0);
+            }
+        }
+
+        private void InputCommandButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            TextBlock buttonText = btn.Content as TextBlock;
+            var tabItem = friendAnswerBoardTab.Items[0] as TabItem;
+            var mathEditor = tabItem.Content as MathEditor;
+            if (mathEditor.caretTextBox.IsFocused)
+            {
+                string tagString = btn.Tag as string;
+                if (tagString == "1")
+                {
+                    mathEditor.AcceptInputCommand(MathData.InputCommands.FractionCommand);
+                }
+                else if (tagString=="2")
+                {
+                    mathEditor.AcceptInputCommand(MathData.InputCommands.Exponential);
+                }
+                else if (tagString=="3")
+                {
+                    mathEditor.AcceptInputCommand(MathData.InputCommands.Radical);
+                }
+                else if (tagString=="4")
+                {
+                    mathEditor.AcceptInputCommand(MathData.InputCommands.NextCommand);
+                }
+                else if (tagString=="5")
+                {
+                    mathEditor.AcceptInputCommand(MathData.InputCommands.DeleteCommand);
+                }
+            }
+        }
+
+        private void serializeTestButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            TextBlock buttonText = btn.Content as TextBlock;
+            var tabItem = friendAnswerBoardTab.Items[0] as TabItem;
+            var mathEditor = tabItem.Content as MathEditor;
+            mathEditor.SaveMathEquationText();
+        }
     }
 }

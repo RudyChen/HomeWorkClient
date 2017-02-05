@@ -1,6 +1,7 @@
 ﻿using MathData;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.WindowsAPICodePack.Shell;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -125,6 +126,10 @@ namespace ClientView
                     AddDefaultRadicalComponent();
 
                     break;
+                case InputCommands.DeleteCommand:
+                    DeleteElementBeforeCaret();
+                    break;
+
                 default:
                     break;
             }
@@ -310,13 +315,17 @@ namespace ClientView
             }
             else
             {
-                lineOffsetX = AcceptEnglishInputText(0, 0, e.Text);
+                lineOffsetX = AcceptEnglishInputText(0, 0, e.Text, FontSize, caretTextBox.FontFamily, caretTextBox.FontStyle);
             }
             e.Handled = true;
-            SetCaretOffset(lineOffsetX, 0);
+            RefreshAfterInput(lineOffsetX, 0);
+        }
+
+        public void RefreshAfterInput(double xOffset,double yOffset)
+        {
+            SetCaretOffset(xOffset, yOffset);
 
             UpdateBlockInputTicRectangles();
-
         }
 
         public void UpdateBlockInputTicRectangles()
@@ -363,13 +372,13 @@ namespace ClientView
         }
 
 
-        private double AcceptEnglishInputText(double lineOffsetX, double lineOffsetY, string text)
+        public double AcceptEnglishInputText(double lineOffsetX, double lineOffsetY, string text,double fontSize,FontFamily family,FontStyle fontStyle)
         {
             TextBlock inputedTextBlock = new TextBlock();
             inputedTextBlock.Text = text;
-            inputedTextBlock.FontSize = caretTextBox.FontSize;
-            inputedTextBlock.FontFamily = fontFamily;
-            inputedTextBlock.FontStyle = FontStyles.Italic;
+            inputedTextBlock.FontSize = fontSize;// caretTextBox.FontSize;
+            inputedTextBlock.FontFamily = family;// fontFamily;
+            inputedTextBlock.FontStyle = fontStyle;// FontStyles.Italic;
             inputedTextBlock.Uid = Guid.NewGuid().ToString();
 
             var rowPoint = GetRowPoint();
@@ -898,7 +907,8 @@ namespace ClientView
 
         private void BackSpaceButton_Clicked(object sender, RoutedEventArgs e)
         {
-            DeleteElementBeforeCaret();
+            AcceptInputCommand(InputCommands.DeleteCommand);
+           
         }
 
         private void DeleteElementBeforeCaret()
@@ -1062,6 +1072,10 @@ namespace ClientView
             if (saveFileDialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 string path = saveFileDialog.FileName;
+                JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
+                jsonSerializerSettings.TypeNameHandling = TypeNameHandling.All;//这一行就是设置Json.NET能够序列化接口或继承类的关键，将TypeNameHandling设置为All后，Json.NET会在序列化后的json文本中附加一个属性说明json到底是从什么类序列化过来的，也可以设置TypeNameHandling为Auto，表示让Json.NET自动判断是否需要在序列化后的json中添加类型属性，如果序列化的对象类型和声明类型不一样的话Json.NET就会在json中添加类型属性，反之就不添加，但是我发现TypeNameHandling.Auto有时候不太好用。。。
+                string textJson = JsonConvert.SerializeObject(currentInputBlockRow, jsonSerializerSettings);//将JsonSerializerSettings作为参数传入序列化函数，这样序列化后的Json就附带类型属性
+                var result = JsonConvert.DeserializeObject<BlockRow>(textJson, jsonSerializerSettings);//将JsonSerializerSettings作为参数传入反序列化函数，这样Json.NET就会读取json文本中的类型属性，知道应该反序列化成什么类型
                 BinaryFormatter formatter = new BinaryFormatter();
                 using (FileStream stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
