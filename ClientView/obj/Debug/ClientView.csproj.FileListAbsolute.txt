@@ -65,3 +65,25 @@ F:\GitHub\HomeWorkClient\ClientView\obj\Debug\ClientView.csproj.GenerateResource
 F:\GitHub\HomeWorkClient\ClientView\obj\Debug\ClientView.exe
 F:\GitHub\HomeWorkClient\ClientView\obj\Debug\ClientView.pdb
 D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\Newtonsoft.Json.dll
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\Entities.dll
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\Entities.pdb
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\MathKeyBoard.g.cs
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\MathKeyBoard.baml
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\GalaSoft.MvvmLight.dll
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\GalaSoft.MvvmLight.Extras.dll
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\GalaSoft.MvvmLight.Platform.dll
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\Microsoft.Practices.ServiceLocation.dll
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\System.Windows.Interactivity.dll
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\GalaSoft.MvvmLight.pdb
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\GalaSoft.MvvmLight.xml
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\GalaSoft.MvvmLight.Extras.pdb
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\GalaSoft.MvvmLight.Extras.xml
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\GalaSoft.MvvmLight.Platform.pdb
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\GalaSoft.MvvmLight.Platform.xml
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\Microsoft.Practices.ServiceLocation.pdb
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\Microsoft.Practices.ServiceLocation.xml
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\App.baml
+D:\Git Projects\HomeWorkClient\ClientView\obj\Debug\Resources\Controls\TableControl.baml
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\HomeWorkCommon.dll
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\HomeWorkCommon.pdb
+D:\Git Projects\HomeWorkClient\ClientView\bin\Debug\GongSolutions.Wpf.DragDrop.dll

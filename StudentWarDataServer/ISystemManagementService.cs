@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -16,6 +17,12 @@ namespace StudentWarDataServer
 
         [OperationContract]
         CompositeType GetDataUsingDataContract(CompositeType composite);
+
+        [OperationContract]
+        bool InsertMathProblem(string mathProblemJson);
+
+        [OperationContract]
+        string GetMathProblem(string queryParameters0);
 
         // TODO: 在此添加您的服务操作
     }
@@ -42,6 +49,4 @@ namespace StudentWarDataServer
             set { stringValue = value; }
         }
     }
-
- 
 }

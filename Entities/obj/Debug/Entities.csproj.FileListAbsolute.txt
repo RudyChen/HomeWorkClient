@@ -1,0 +1,5 @@
+D:\Git Projects\HomeWorkClient\Entities\bin\Debug\Entities.dll
+D:\Git Projects\HomeWorkClient\Entities\bin\Debug\Entities.pdb
+D:\Git Projects\HomeWorkClient\Entities\obj\Debug\Entities.csprojResolveAssemblyReference.cache
+D:\Git Projects\HomeWorkClient\Entities\obj\Debug\Entities.dll
+D:\Git Projects\HomeWorkClient\Entities\obj\Debug\Entities.pdb

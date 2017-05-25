@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Document>
+  <BlockComponent Type="Pgae">
+    <BlockComponent Type="Row">
+
+      <Block Type="Charactor" FontSize="12" FontStyle="Normal">12+3-6x+5</Block>
+      <Block Type="Charactor" FontFamily="Times new Roma" FontStyle="Italic">x</Block>
+      <Block Type="Charactor">+5</Block>
+      
+      <BlockComponent Type="Fraction">
+        <BlockComponent Type="Molecule">
+
+        </BlockComponent>
+        <BlockComponent Type="Denominator">
+
+        </BlockComponent>
+    
+    </BlockComponent>
+
+      <BlockComponent Type="Radical">
+        <BlockComponent Type="RootIndex">
+          
+        </BlockComponent>
+        <BlockComponent Type="Radicand">
+          
+        </BlockComponent>
+      
+    </BlockComponent>
+
+      <BlockComponent Type="Exponential">
+        <BlockComponent Type="Base">
+          
+        </BlockComponent>
+        <BlockComponent Type="Index">
+          
+        </BlockComponent>
+      </BlockComponent>
+      
+    </BlockComponent>
+  </BlockComponent>
+</Document>

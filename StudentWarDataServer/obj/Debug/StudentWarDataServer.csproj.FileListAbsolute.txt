@@ -4,3 +4,12 @@ D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\StudentWarDataServ
 D:\Git Projects\HomeWorkClient\StudentWarDataServer\obj\Debug\StudentWarDataServer.csprojResolveAssemblyReference.cache
 D:\Git Projects\HomeWorkClient\StudentWarDataServer\obj\Debug\StudentWarDataServer.dll
 D:\Git Projects\HomeWorkClient\StudentWarDataServer\obj\Debug\StudentWarDataServer.pdb
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\DLL\MySql.Data.dll
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\BusinessData.dll
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\DataAccess.dll
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\Entities.dll
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\MySql.Data.dll
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\Newtonsoft.Json.dll
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\BusinessData.pdb
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\DataAccess.pdb
+D:\Git Projects\HomeWorkClient\StudentWarDataServer\bin\Debug\Entities.pdb

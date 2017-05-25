@@ -1,5 +1,9 @@
-﻿using System;
+﻿using BusinessData;
+using Entities;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
@@ -26,6 +30,41 @@ namespace StudentWarDataServer
                 composite.StringValue += "Suffix";
             }
             return composite;
+        }
+
+        public string GetMathProblem(string queryParametersJson)
+        {
+            string mathproblemsJson = string.Empty;
+            MathProblemsBusiness business = new MathProblemsBusiness();
+            try
+            {
+                mathproblemsJson = business.GetMathProblems(queryParametersJson);
+            }
+            catch (Exception ex)
+            {
+                //Log:exception
+                return string.Empty;  
+            }
+
+            return mathproblemsJson;
+        }
+
+  
+
+        public bool InsertMathProblem(string mathProblemJson)
+        {
+            bool isSucceed = false;
+            MathProblem problem = Newtonsoft.Json.JsonConvert.DeserializeObject<MathProblem>(mathProblemJson);
+            try
+            {
+                MathProblemsBusiness business = new MathProblemsBusiness();
+                isSucceed = business.AddMathProblem(problem);
+            }
+            catch (Exception ex)
+            {
+                isSucceed = false;
+            }
+            return isSucceed;
         }
     }
 }

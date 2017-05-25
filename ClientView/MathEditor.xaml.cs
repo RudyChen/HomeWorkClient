@@ -321,7 +321,7 @@ namespace ClientView
             RefreshAfterInput(lineOffsetX, 0);
         }
 
-        public void RefreshAfterInput(double xOffset,double yOffset)
+        public void RefreshAfterInput(double xOffset, double yOffset)
         {
             SetCaretOffset(xOffset, yOffset);
 
@@ -372,7 +372,7 @@ namespace ClientView
         }
 
 
-        public double AcceptEnglishInputText(double lineOffsetX, double lineOffsetY, string text,double fontSize,FontFamily family,FontStyle fontStyle)
+        public double AcceptEnglishInputText(double lineOffsetX, double lineOffsetY, string text, double fontSize, FontFamily family, FontStyle fontStyle)
         {
             TextBlock inputedTextBlock = new TextBlock();
             inputedTextBlock.Text = text;
@@ -908,7 +908,7 @@ namespace ClientView
         private void BackSpaceButton_Clicked(object sender, RoutedEventArgs e)
         {
             AcceptInputCommand(InputCommands.DeleteCommand);
-           
+
         }
 
         private void DeleteElementBeforeCaret()
@@ -952,9 +952,9 @@ namespace ClientView
                 {
                     foreach (var item in behindBrothers)
                     {
-                       
+
                         var vector = new Vector(-blockRect.Width, 0);
-                        
+
                         var mathDataBlock = item as MathData.Block;
                         UpdateBlockLocation(mathDataBlock, vector);
                     }
@@ -976,7 +976,7 @@ namespace ClientView
                     }
                 }
 
-                var behindBrothers= GetBlockBehindBrothers(block);
+                var behindBrothers = GetBlockBehindBrothers(block);
                 var blockRect = block.GetRect();
                 if (null != behindBrothers && behindBrothers.Count > 0)
                 {
@@ -1013,7 +1013,7 @@ namespace ClientView
         {
             List<IBlockComponent> behindBrothers = null;
             var index = currentInputBlockRow.Children.IndexOf(blockComponent);
-            if (index>=0&&index<currentInputBlockRow.Children.Count)
+            if (index >= 0 && index < currentInputBlockRow.Children.Count)
             {
                 var count = currentInputBlockRow.Children.Count - index - 1;
                 behindBrothers = currentInputBlockRow.Children.GetRange(index + 1, count);
@@ -1043,7 +1043,7 @@ namespace ClientView
                     }
                 }
             }
-            else if(blockComponent is MathData.Block)
+            else if (blockComponent is MathData.Block)
             {
                 var block = blockComponent as MathData.Block;
                 RemoveUIElement(block);
@@ -1084,6 +1084,20 @@ namespace ClientView
                 }
             }
         }
+
+        public string GetEditorTypeInString()
+        {
+            string typeInString = string.Empty;
+
+            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
+            jsonSerializerSettings.TypeNameHandling = TypeNameHandling.All;//这一行就是设置Json.NET能够序列化接口或继承类的关键，将TypeNameHandling设置为All后，Json.NET会在序列化后的json文本中附加一个属性说明json到底是从什么类序列化过来的，也可以设置TypeNameHandling为Auto，表示让Json.NET自动判断是否需要在序列化后的json中添加类型属性，如果序列化的对象类型和声明类型不一样的话Json.NET就会在json中添加类型属性，反之就不添加，但是我发现TypeNameHandling.Auto有时候不太好用。。。
+            typeInString = JsonConvert.SerializeObject(currentInputBlockRow, jsonSerializerSettings);//将JsonSerializerSettings作为参数传入序列化函数，这样序列化后的Json就附带类型属性
+            //var result = JsonConvert.DeserializeObject<BlockRow>(textJson, jsonSerializerSettings);//将JsonSerializerSettings作为参数传入反序列化函数，这样Json.NET就会读取json文本中的类型属性，知道应该反序列化成什么类型
+
+
+            return typeInString;
+        }
+         
 
         public void OpenMathEquationText()
         {

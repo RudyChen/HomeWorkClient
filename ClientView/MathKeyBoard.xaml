@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="ClientView.MathKeyBoard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:local="clr-namespace:ClientView"
+             xmlns:command="http://www.galasoft.ch/mvvmlight"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             mc:Ignorable="d" 
+             DataContext="{Binding Source={StaticResource Locator}, Path=MathKeyBoardVM}"
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="MathKeyBoard_Loaded">
+    <UserControl.Resources>
+        <Style TargetType="ListBox">
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" Width="280"/>
+                    </ItemsPanelTemplate>                        
+                </Setter.Value>
+            </Setter>            
+        </Style>
+
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Button Width="50" Height="50" Content="{Binding Path=Charactor}" Margin="10"></Button>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                
+            </StackPanel>
+            <TabControl Style="{StaticResource ResourceKey=BottomTabControlStyle}">
+                <TabItem x:Name="symbolTabItem" Header="符号">
+                    <ListBox ItemsSource="{Binding Path=SymbolKeys}" 
+                         ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                         dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"/>
+                </TabItem>
+                <TabItem x:Name="operatorTabItem" Header="运算符">
+                    <ListBox ItemsSource="{Binding Path=OperatorKeys}" 
+                         ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                         dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"/>
+                </TabItem>
+                <TabItem x:Name="numberTabItem" Header="数字">
+                    <ListBox ItemsSource="{Binding Path=NumberKeys}" 
+                         ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                         dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"/>
+                </TabItem>
+                <TabItem x:Name="letterTabItem" Header="字母">
+                    <ListBox ItemsSource="{Binding Path=LetterKeys}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                         dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"/>
+                </TabItem>
+            </TabControl>
+        </StackPanel>
+       
+    </Grid>
+</UserControl>

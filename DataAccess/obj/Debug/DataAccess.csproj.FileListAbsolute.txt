@@ -1,0 +1,9 @@
+D:\Git Projects\HomeWorkClient\DataAccess\bin\Debug\DataAccess.dll
+D:\Git Projects\HomeWorkClient\DataAccess\bin\Debug\DataAccess.pdb
+D:\Git Projects\HomeWorkClient\DataAccess\bin\Debug\Entities.dll
+D:\Git Projects\HomeWorkClient\DataAccess\bin\Debug\MySql.Data.dll
+D:\Git Projects\HomeWorkClient\DataAccess\bin\Debug\Entities.pdb
+D:\Git Projects\HomeWorkClient\DataAccess\obj\Debug\DataAccess.csprojResolveAssemblyReference.cache
+D:\Git Projects\HomeWorkClient\DataAccess\obj\Debug\DataAccess.dll
+D:\Git Projects\HomeWorkClient\DataAccess\obj\Debug\DataAccess.pdb
+D:\Git Projects\HomeWorkClient\DataAccess\bin\Debug\Newtonsoft.Json.dll

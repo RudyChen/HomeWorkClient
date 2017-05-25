@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Keys>
+  <Key Group="Symbol" Charactor="Δ"/>
+  <Key Group="Symbol" Charactor="Σ"></Key>
+  <Key Group="Symbol" Charactor="α"></Key>
+  <Key Group="Symbol" Charactor="β"></Key>
+  <Key Group="Symbol" Charactor="π"></Key>
+  <Key Group="Symbol" Charactor="δ"></Key>
+  <Key Group="Symbol" Charactor="ε"></Key>
+  <Key Group="Symbol" Charactor="η"></Key>
+  <Key Group="Symbol" Charactor="θ"></Key>
+  <Key Group="Symbol" Charactor="λ"></Key>
+
+  <Key Group="Operator" Charactor="+"></Key>
+  <Key Group="Operator" Charactor="-"></Key>
+  <Key Group="Operator" Charactor="╳"></Key>
+  <Key Group="Operator" Charactor="÷"></Key>
+  <Key Group="Operator" Charactor="≈"></Key>
+  <Key Group="Operator" Charactor="≌"></Key>
+  <Key Group="Operator" Charactor="≠"></Key>
+  <Key Group="Operator" Charactor="="></Key>
+  <Key Group="Operator" Charactor="≤"></Key>
+  <Key Group="Operator" Charactor="≥"></Key>
+
+  <Key Group="Number" Charactor="0"></Key>
+  <Key Group="Number" Charactor="1"></Key>
+  <Key Group="Number" Charactor="2"></Key>
+  <Key Group="Number" Charactor="3"></Key>
+  <Key Group="Number" Charactor="4"></Key>
+  <Key Group="Number" Charactor="5"></Key>
+  <Key Group="Number" Charactor="6"></Key>
+  <Key Group="Number" Charactor="7"></Key>
+  <Key Group="Number" Charactor="8"></Key>
+  <Key Group="Number" Charactor="9"></Key>
+  <Key Group="Number" Charactor="."></Key>
+
+  <Key Group="Letter" Charactor="a"></Key>
+  <Key Group="Letter" Charactor="b"></Key>
+  <Key Group="Letter" Charactor="c"></Key>
+  <Key Group="Letter" Charactor="d"></Key>
+  <Key Group="Letter" Charactor="e"></Key>
+  <Key Group="Letter" Charactor="f"></Key>
+  <Key Group="Letter" Charactor="g"></Key>
+  <Key Group="Letter" Charactor="h"></Key>
+  <Key Group="Letter" Charactor="i"></Key>
+  <Key Group="Letter" Charactor="j"></Key>
+  <Key Group="Letter" Charactor="k"></Key>
+  <Key Group="Letter" Charactor="l"></Key>
+  <Key Group="Letter" Charactor="m"></Key>
+  <Key Group="Letter" Charactor="n"></Key>
+  <Key Group="Letter" Charactor="o"></Key>
+  <Key Group="Letter" Charactor="p"></Key>
+  <Key Group="Letter" Charactor="q"></Key>
+  <Key Group="Letter" Charactor="r"></Key>
+  <Key Group="Letter" Charactor="s"></Key>
+  <Key Group="Letter" Charactor="t"></Key>
+  <Key Group="Letter" Charactor="u"></Key>
+  <Key Group="Letter" Charactor="v"></Key>
+  <Key Group="Letter" Charactor="w"></Key>
+  <Key Group="Letter" Charactor="x"></Key>
+  
+</Keys>
